@@ -49,7 +49,7 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
   && mv shell.json.new shell.json
 ```
 
-In [my dotfiles](https://github.com/KamradSmeshnyavy/dotfiles) all of this is driven by a **Customizer**
+The [Customizer](https://github.com/KamradSmeshnyavy/omarchy-customizer) drives all of this in one
 overlay with live preview — skins, layouts and every setting below:
 
 ![Customizer](screenshots/customizer.webp)
@@ -136,7 +136,18 @@ Omarchy release: `diff -u $OMARCHY_PATH/shell/plugins/bar/Bar.qml Bar.qml`.
 - [omarchy-lock-designs](https://github.com/KamradSmeshnyavy/omarchy-lock-designs) — 21 lock screen designs
 - [omarchy-wallpaper-fx](https://github.com/KamradSmeshnyavy/omarchy-wallpaper-fx) — 24 wallpaper transitions
 - [omarchy-image-picker-styles](https://github.com/KamradSmeshnyavy/omarchy-image-picker-styles) — six theme/wallpaper picker styles
-- [dotfiles](https://github.com/KamradSmeshnyavy/dotfiles) — where all of them live, plus the Customizer
+- [omarchy-customizer](https://github.com/KamradSmeshnyavy/omarchy-customizer) — one overlay for all of them, with live preview
+- [dotfiles](https://github.com/KamradSmeshnyavy/dotfiles) — where all of them live
+
+## With the Customizer
+
+[omarchy-customizer](https://github.com/KamradSmeshnyavy/omarchy-customizer) is one overlay (Super+Shift+T) with live preview for this plugin's settings and
+the rest of the look & feel: themes, wallpapers, Hyprland animations, transparency, blur, screen shaders.
+One command installs it and offers this plugin and the others:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/KamradSmeshnyavy/omarchy-customizer/main/install.sh | bash
+```
 
 ## License
 

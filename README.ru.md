@@ -45,7 +45,7 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
   && mv shell.json.new shell.json
 ```
 
-В [моих dotfiles](https://github.com/KamradSmeshnyavy/dotfiles) всё это делается в оверлее **Customizer**
+В оверлее [Customizer](https://github.com/KamradSmeshnyavy/omarchy-customizer) всё это делается
 с живым предпросмотром (Super+Shift+T: Bar Skin, Bar Layout, Bar Tweaks):
 
 ![Customizer](screenshots/customizer.webp)
@@ -125,6 +125,16 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
 
 Правки стокового `Bar.qml` помечены `// skin:` — после обновления Omarchy их легко перенести:
 `diff -u $OMARCHY_PATH/shell/plugins/bar/Bar.qml Bar.qml`.
+
+## Вместе с Customizer
+
+[omarchy-customizer](https://github.com/KamradSmeshnyavy/omarchy-customizer) — один оверлей (Super+Shift+T) с живым предпросмотром для настроек этого
+плагина и всего остального оформления: темы, обои, анимации Hyprland, прозрачность, блюр, шейдеры экрана.
+Одна команда ставит его и предлагает этот плагин и остальные:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/KamradSmeshnyavy/omarchy-customizer/main/install.sh | bash
+```
 
 ## Лицензия
 
