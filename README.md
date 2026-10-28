@@ -1,183 +1,143 @@
-# Omarchy bar
+# Omarchy Bar Skins
 
-This is the Quickshell implementation of the Omarchy status bar. It is
-shipped as a first-party plugin of [`omarchy-shell`](../../README.md), the
-long-running shell host. The bar is mounted at startup and lives inside
-the shell for its whole session.
+[🇷🇺 Русский](README.ru.md)
 
-- `manifest.json` declares the plugin (`id: omarchy.bar`, `kind: bar`) and points at `Bar.qml` as the entry point.
-- `Bar.qml` is Omarchy-owned bar engine code, loaded by the omarchy-shell host. Users should not edit it directly.
-- `widgets/` holds simple first-party bar widgets with sibling manifests.
-- Feature plugins such as `../panels/audio/`, `../panels/network/`, `../panels/power/`, and `../agents/` provide richer popup bar plugins.
-- The bar receives its config from the host shell as a `barConfig` property; the host loads it from `~/.config/omarchy/shell.json` (or `config/omarchy/shell.json` when the user has no file).
-- `omarchy bar position` updates only the user shell.json file.
+A drop-in replacement for the [Omarchy](https://omarchy.org) top bar: the stock `omarchy.bar` with a skin
+layer on top. Every widget, panel and gesture of the stock bar keeps working — the skin only changes how
+the bar is drawn.
 
-## Customizing
+- **18 skins** — floating, islands, pill, notch, underline, hug, glass, neon, capsules, autohide, …
+- **9 layouts** — centered, bottom, left-vertical, right-heavy, media-center, …
+- **Compact mode** — the bar shrinks to a thin strip (only when a window is focused, only in fullscreen, or
+  always) and expands back when you hover it
+- **Workspaces** — 20+ label styles (roman, kanji, greek, circled, braille…), app icons per workspace,
+  an accent pill under the active one
+- Colours are theme roles, so the bar recolours itself with every `omarchy theme set`
 
-The bar config lives under the `bar:` key of [`~/.config/omarchy/shell.json`](../../README.md#shelljson-shape). Out of the box the shell uses [`config/omarchy/shell.json`](../../../config/omarchy/shell.json). Once you customize anything via the bar gestures, `omarchy bar ...`, or by editing shell.json directly, your file is canonical — there is no deep-merge.
+![Skins](screenshots/skins.webp)
 
-The bar is configured directly on the bar itself: drag empty bar space (or click-and-hold) to move the bar to another screen edge, double-left-click empty center-bar space to toggle transparency, and drag widgets to reorder them. The `omarchy bar position`, `omarchy bar transparent`, `omarchy bar move`, and `omarchy bar set` commands do the same from scripts. Enable or disable widgets with `omarchy plugin enable` and `omarchy plugin disable` (widget ids come from `omarchy plugin list`).
+Compact mode expanding on hover:
 
-Example `shell.json` (bar subtree only shown):
+![Compact mode](screenshots/compact.webp)
 
-```json
+## Install
+
+```sh
+omarchy plugin add https://github.com/KamradSmeshnyavy/omarchy-bar-skins --enable
+omarchy restart shell
+```
+
+`--enable` makes it the bar in use (`bar.id` in `~/.config/omarchy/shell.json`). If the plugin fails to
+load, the shell falls back to the stock bar on its own. To go back manually:
+`omarchy plugin enable omarchy.bar`.
+
+Tested on Omarchy 4.0.6 with Quickshell 0.3.2.
+
+## Pick a skin
+
+The active skin is `~/.config/omarchy/bar-skin.json`. The bar watches the file and redraws instantly:
+
+```sh
+cp ~/.config/omarchy/plugins/kamradsmeshnyavy.bar/skins/islands.json ~/.config/omarchy/bar-skin.json
+```
+
+A layout goes into the `bar` section of `shell.json`:
+
+```sh
+cd ~/.config/omarchy
+jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[0]' shell.json > shell.json.new \
+  && mv shell.json.new shell.json
+```
+
+In [my dotfiles](https://github.com/KamradSmeshnyavy/dotfiles) all of this is driven by a **Customizer**
+overlay with live preview — skins, layouts and every setting below:
+
+![Customizer](screenshots/customizer.webp)
+
+## Skin schema
+
+```jsonc
 {
-  "version": 1,
-  "bar": {
-    "position": "top",
-    "transparent": false,
-    "centerAnchor": "omarchy.clock",
-    "layout": {
-      "left": [
-        { "id": "omarchy.menu" },
-        { "id": "omarchy.spacer", "size": 12 },
-        { "id": "omarchy.workspaces" }
-      ],
-      "center": [
-        { "id": "omarchy.media" },
-        { "id": "omarchy.clock", "format": "HH:mm" }
-      ],
-      "right": [
-        { "id": "omarchy.audio" },
-        { "id": "omarchy.power" }
-      ]
-    }
-  }
+  "shape": "floating",        // full floating pill islands notch underline hug
+  "height": 30,               // 0 = stock height
+  "gap": 6,                   // distance from the screen edge
+  "margin": 10,               // left/right margins
+  "width": 1.0,               // share of the screen width (floating/pill/notch)
+  "radius": 12,
+  "padding": -1,              // module padding inside the background; -1 = stock
+  "islandGap": 6,
+  "background": "bar",        // colour: a role or #hex
+  "backgroundAlpha": 0.85,    // -1 = alpha from the theme
+  "gradient": "accent",       // second colour of a horizontal gradient (omit for none)
+  "border": "accent", "borderWidth": 1, "borderAlpha": 0.6,
+  "text": "bar", "active": "bar",
+  "shadow": true,
+  "glow": false,              // a halo in the border colour instead of a shadow
+  "autoHide": false,          // hide behind the edge, slide out on hover
+  "moduleStyle": "plain",     // plain pills hover
+  "moduleBackground": "foreground", "moduleAlpha": 0.08,
+  "spacing": 0,
+  "font": "",                 // empty = system font
+  "transparent": false        // stock transparent mode (written to shell.json)
 }
 ```
 
-`centerAnchor` pins one center module to the exact horizontal/vertical center and flanks others around it. Set to an empty string to disable anchoring (the center list is centered as a group).
+A colour is `bar` (the stock bar colour from the theme's `[bar]`), a shell role (`background`,
+`foreground`, `accent`, `muted`, `urgent`), any key of the current theme's `colors.toml` (`red`, `cyan`,
+`lighter_background`, …) or `#rrggbb`. Roles follow the theme.
 
-## Module catalogue
+Shapes: `full` is stock; `floating` — a strip with gaps; `pill` — floating with half-height radius;
+`islands` — one island per section; `notch` — a notch at the edge; `underline` — a line along the edge;
+`hug` — full width with concave corners below it. Vertical bars support only `full` and `floating`.
 
-### First-party interactive widgets
+### Compact
 
-| Name | What it does | Interactions |
+| Key | Default | |
 |---|---|---|
-| `omarchy.menu` | Omarchy menu launcher | left = menu · right = terminal |
-| `omarchy.workspaces` | Hyprland workspace switcher | left = focus workspace |
-| `omarchy.clock` | Date/time label + popup with a month grid, ISO week numbers, and month stepping | left = popup · right = cycle label format · middle = timezone selector |
-| `omarchy.media` | MPRIS now-playing — scrolling track + artist, cover-art popup | left = play/pause · middle = next · scroll = prev/next · right = popup |
-| `omarchy.indicators` | Manual state indicators | left = indicator action |
-| `omarchy.system-update` | Available update indicator | left = update |
-| `omarchy.tray` | System tray | hover = reveal drawer · right on chevron = manage |
-| `omarchy.weather` | Weather icon + popup with forecast | left = popup · right = full notification |
-| `omarchy.microphone` | Mic icon + scroll volume | left = mute toggle · middle = audio panel · scroll = source volume |
+| `compact` | `off` | `single` — one tiled window on the workspace; `fullscreen`; `always` |
+| `compactHeight` | `22` | background height in compact; `0` — unchanged |
+| `compactModules` | `essentials` | `essentials` (menu, workspaces, clock, network, audio, power), `center`, `minimal`, `all` |
+| `compactShape` | `full` | shape in compact; `same` — as usual |
+| `compactAlpha` | `-1` | background alpha in compact |
+| `compactReserve` | `keep` | `keep` — windows don't jump; `shrink` — windows take the space |
+| `compactExpandOnHover` | `true` | expand on hover and while a bar panel is open |
 
-| `omarchy.audio` | Volume icon + popup with master slider, output-device picker, per-app mixer | left = popup · right = mute · middle = popup · scroll = volume |
-| `omarchy.network` | Wi-Fi/Ethernet icon + popup with Wi-Fi scan, signal, connect, DNS provider selection | left = popup |
-| `omarchy.tailscale` | Tailscale status, connection switcher, machine browser, and copy actions | left = popup · right = toggle · middle = refresh |
-| `omarchy.agents` | AI coding agent limits with pace, today, last week, and all-time model breakdown | left = panel · right = launch agent · middle = next subscription |
-| `omarchy.power` | Battery/AC icon + popup with battery stats, power profiles, and system info | left = popup · right = toggle percentage |
-| `omarchy.bluetooth` | Bluetooth icon + popup with device list, connect/disconnect, battery | left = popup · right = toggle radio |
-| `omarchy.monitor` | Brightness and laptop display controls | left = popup |
+### Workspaces
 
-The `omarchy.indicators` widget loads individual bar indicators from `indicators/`. Omit `items` (or set it to an empty array) to show all indicators in the default order, or set `items` to a subset such as `["Dnd", "Reminder", "NightLight"]`. Set `alwaysShow` to `true` to keep inactive indicators visible instead of revealing them only on hover. Multiple `omarchy.indicators` instances are allowed, so different sections can show different subsets.
+| Key | Default | |
+|---|---|---|
+| `wsLabelStyle` | `omarchy` | omarchy numbers circled circled-filled circled-sans circled-sans-filled parens fullwidth superscript roman roman-small kanji greek cyrillic braille dots squares diamonds stars triangles hearts hexagons bars none |
+| `wsWindowIcons` | `false` | app icons inside a workspace |
+| `wsIconStyle` | `color` | color mono tinted accent bubble faded glyph letter dots count |
+| `wsMaxIcons` | `3` | icons per workspace, the rest is `+N` |
+| `wsDedupe` | `true` | one icon per app |
+| `wsShown` | `5` | workspaces always visible |
+| `wsShowEmpty` | `true` | show empty ones |
+| `wsActivePill` | `false` | accent pill under the active one |
+| `wsActiveColor` | style | colour of the active workspace: a role or `#hex` |
 
-## Orientation
+## Files
 
-All widgets work in `top`, `bottom`, `left`, and `right` positions. Popups anchor on the side opposite the bar edge, sliding into the workspace. Vertical bars use 28px width; widgets that show text fall back to compact icon-only forms (e.g. `media` hides its scrolling label).
+| File | |
+|---|---|
+| `BarSkin.qml` | reads the skin, defaults, colour roles |
+| `SkinFrame.qml` | the shaped background, input mask, exclusive zone |
+| `SkinIsland.qml` | islands under sections |
+| `SkinWorkspaces.qml` | workspaces widget that replaces `omarchy.workspaces` in this bar |
+| `skins/`, `layouts/` | presets |
+| `UPSTREAM.md` | stock `omarchy.bar` docs: widget catalogue, custom modules |
 
-## Custom user modules
+Changes against the stock `Bar.qml` are marked `// skin:`, so the clone is easy to rebase onto a new
+Omarchy release: `diff -u $OMARCHY_PATH/shell/plugins/bar/Bar.qml Bar.qml`.
 
-The schema accepts arbitrary module ids that you provide. Set `type` to `command` for shell-driven output or `qml` for a custom QML widget. Both still go under `bar.layout.<section>` in `shell.json`.
+## Related
 
-Command module:
+- [omarchy-launcher-skins](https://github.com/KamradSmeshnyavy/omarchy-launcher-skins) — 10 full-screen launcher skins
+- [omarchy-lock-designs](https://github.com/KamradSmeshnyavy/omarchy-lock-designs) — 21 lock screen designs
+- [omarchy-wallpaper-fx](https://github.com/KamradSmeshnyavy/omarchy-wallpaper-fx) — 24 wallpaper transitions
+- [omarchy-image-picker-styles](https://github.com/KamradSmeshnyavy/omarchy-image-picker-styles) — six theme/wallpaper picker styles
+- [dotfiles](https://github.com/KamradSmeshnyavy/dotfiles) — where all of them live, plus the Customizer
 
-```json
-{
-  "version": 1,
-  "bar": {
-    "layout": {
-      "right": [
-        { "id": "omarchy.tray" },
-        { "id": "vpn", "type": "command", "exec": "~/.config/omarchy/bar/scripts/vpn-status", "interval": 5, "tooltip": "VPN", "onClick": "nm-connection-editor" },
-        { "id": "omarchy.audio" }
-      ]
-    }
-  }
-}
-```
+## License
 
-The command may print plain text or Waybar-style JSON, for example:
-
-```json
-{"text":"󰌆","tooltip":"Work VPN","class":"active"}
-```
-
-QML module:
-
-```json
-{
-  "version": 1,
-  "bar": {
-    "layout": {
-      "right": [
-        { "id": "gpu", "type": "qml" },
-        { "id": "omarchy.audio" }
-      ]
-    }
-  }
-}
-```
-
-Then create `~/.config/omarchy/bar/modules/gpu.qml`. If you want to store it elsewhere, add a `source` path.
-
-Custom QML modules should be an `Item` with `implicitWidth` and `implicitHeight`. They may optionally define these properties, which the bar fills after loading:
-
-```qml
-import QtQuick
-
-Item {
-  property var bar
-  property string moduleName
-  property var settings
-
-  implicitWidth: 28
-  implicitHeight: bar ? bar.barSize : 26
-
-  Text {
-    anchors.centerIn: parent
-    text: "GPU"
-    color: bar ? bar.foreground : "white"
-    font.family: bar ? bar.fontFamily : "monospace"
-    font.pixelSize: 12
-  }
-
-  MouseArea {
-    anchors.fill: parent
-    onClicked: if (bar) bar.run("omarchy-launch-or-focus-tui btop")
-  }
-}
-```
-
-## Bar properties available to widgets
-
-Widgets receive `bar` (the shell root), `moduleName` (string), and `settings` (object) injected at load time. The bar exposes:
-
-- `bar.foreground`, `bar.background`, `bar.urgent` — theme colors (live-updated)
-- `bar.fontFamily` — current monospace family
-- `bar.position` — `"top" | "bottom" | "left" | "right"`
-- `bar.vertical` — boolean shortcut
-- `bar.barSize` — 26 horizontal / 28 vertical
-- `bar.run(command)` — fire-and-forget bash exec
-- `bar.shellQuote(value)` — safe shell-quote a string
-- `bar.showTooltip(target, text)` / `bar.hideTooltip(target)` — shared tooltip popup
-- `bar.requestPopout(owner)` / `bar.releasePopout(owner)` — one-popup-at-a-time coordinator
-
-First-party bar widgets are manifest-backed just like third-party widgets.
-Simple widgets carry sibling manifests such as `widgets/Workspaces.manifest.json`;
-richer popup plugins live in feature directories such as `../panels/audio/`,
-`../panels/network/`, and `../agents/`; and feature plugins such as
-`omarchy.menu` and `omarchy.media` declare their bar-widget entry points in their own
-`manifest.json`. Bar layout ids are namespaced, e.g. `omarchy.audio`,
-`omarchy.network`, and `omarchy.clock`. Older UpperCamelCase ids such as
-`AudioPanel` and `Clock` are migrated forward; new configs should use the
-namespaced ids.
-
-Third-party widgets ship as separate plugins under
-`~/.config/omarchy/plugins/<plugin-id>/` with their own `manifest.json`
-declaring `kinds: ["bar-widget"]` and a `barWidget` entry point. See
-[../../README.md](../../README.md) for the manifest schema. Rescan, enable,
-and place third-party plugins with `omarchy-shell shell rescanPlugins`,
-`omarchy plugin enable`, and `omarchy bar move`.
+MIT. Based on `omarchy.bar` from [Omarchy](https://github.com/basecamp/omarchy) (MIT, © David Heinemeier Hansson).

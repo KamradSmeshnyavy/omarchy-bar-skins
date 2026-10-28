@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "kamradsmeshnyavy.bar",
-  "name": "My Bar",
+  "name": "Bar Skins",
   "version": "1.0.0",
-  "author": "Omarchy",
-  "description": "Status bar with widgets",
+  "author": "KamradSmeshnyavy",
+  "description": "Omarchy bar with 18 skins, layouts, compact mode that expands on hover, and a workspaces widget with 20+ label styles",
   "kinds": [
     "bar"
   ],
@@ -13,5 +13,6 @@
   },
   "omarchy": {
     "clonedFrom": "omarchy.bar"
-  }
+  },
+  "homepage": "https://github.com/KamradSmeshnyavy/omarchy-bar-skins"
 }
