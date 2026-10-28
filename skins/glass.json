@@ -1,5 +1,6 @@
 {
-  "note": "Полупрозрачное стекло с блюром под баром",
+  "note": "Translucent glass with blur under the bar",
+  "note_ru": "Полупрозрачное стекло с блюром под баром",
   "shape": "floating",
   "gap": 6,
   "margin": 10,

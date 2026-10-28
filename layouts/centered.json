@@ -1,5 +1,6 @@
 {
-  "note": "Всё важное в центре, по краям только трей и статус",
+  "note": "Everything important in the center, only tray and status at the edges",
+  "note_ru": "Всё важное в центре, по краям только трей и статус",
   "position": "top",
   "centerAnchor": "omarchy.workspaces",
   "layout": {

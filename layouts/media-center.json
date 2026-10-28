@@ -1,5 +1,6 @@
 {
-  "note": "Плеер в центре, часы справа",
+  "note": "Player in the center, clock on the right",
+  "note_ru": "Плеер в центре, часы справа",
   "position": "top",
   "centerAnchor": "omarchy.media",
   "layout": {

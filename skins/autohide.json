@@ -1,5 +1,6 @@
 {
-  "note": "Стекло, которое прячется за край и выезжает по наведению",
+  "note": "Glass that hides behind the edge and slides out on hover",
+  "note_ru": "Стекло, которое прячется за край и выезжает по наведению",
   "shape": "floating",
   "gap": 6,
   "margin": 10,

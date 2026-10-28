@@ -1,5 +1,6 @@
 {
-  "note": "Плавающее стекло; при одном окне на workspace сжимается в тонкую полосу с главным",
+  "note": "Floating glass; with one window on the workspace it shrinks to a thin strip of essentials",
+  "note_ru": "Плавающее стекло; при одном окне на workspace сжимается в тонкую полосу с главным",
   "shape": "floating",
   "gap": 6,
   "margin": 10,

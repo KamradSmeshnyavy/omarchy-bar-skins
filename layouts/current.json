@@ -1,5 +1,6 @@
 {
-  "note": "Моя текущая раскладка",
+  "note": "My current layout",
+  "note_ru": "Моя текущая раскладка",
   "position": "top",
   "centerAnchor": "omarchy.workspaces",
   "layout": {

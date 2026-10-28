@@ -1,5 +1,6 @@
 {
-  "note": "Капсула на 80% ширины с градиентом",
+  "note": "A pill 80% wide with a gradient",
+  "note_ru": "Капсула на 80% ширины с градиентом",
   "shape": "pill",
   "gap": 6,
   "width": 0.8,

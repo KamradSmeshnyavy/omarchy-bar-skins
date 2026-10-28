@@ -1,5 +1,6 @@
 {
-  "note": "Тёмная полоса со светящейся рамкой magenta и cyan-текстом",
+  "note": "Dark strip with a glowing magenta border and cyan text",
+  "note_ru": "Тёмная полоса со светящейся рамкой magenta и cyan-текстом",
   "shape": "floating",
   "gap": 6,
   "margin": 10,

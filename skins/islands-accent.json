@@ -1,5 +1,6 @@
 {
-  "note": "Острова цвета акцента, тёмный текст",
+  "note": "Accent-coloured islands, dark text",
+  "note_ru": "Острова цвета акцента, тёмный текст",
   "shape": "islands",
   "gap": 6,
   "margin": 8,

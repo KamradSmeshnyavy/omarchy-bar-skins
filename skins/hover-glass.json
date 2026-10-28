@@ -1,5 +1,6 @@
 {
-  "note": "Плавающее стекло, модули подсвечиваются под курсором",
+  "note": "Floating glass, modules light up under the cursor",
+  "note_ru": "Плавающее стекло, модули подсвечиваются под курсором",
   "shape": "floating",
   "gap": 6,
   "margin": 10,

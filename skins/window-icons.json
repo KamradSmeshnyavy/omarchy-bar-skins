@@ -1,5 +1,6 @@
 {
-  "note": "Floating-полоса: в workspaces иконки окон, активный на плашке",
+  "note": "Floating strip: window icons in workspaces, the active one on a pill",
+  "note_ru": "Floating-полоса: в workspaces иконки окон, активный на плашке",
   "shape": "floating",
   "gap": 6,
   "margin": 10,

@@ -1,5 +1,6 @@
 {
-  "note": "Минимум: workspaces · часы · сеть/звук/батарея",
+  "note": "Minimal: workspaces · clock · network/audio/battery",
+  "note_ru": "Минимум: workspaces · часы · сеть/звук/батарея",
   "position": "top",
   "centerAnchor": "omarchy.clock",
   "layout": {

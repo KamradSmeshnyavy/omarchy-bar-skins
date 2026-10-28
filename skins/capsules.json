@@ -1,5 +1,6 @@
 {
-  "note": "Прозрачный бар, каждый модуль в своей капсуле",
+  "note": "Transparent bar, every module in its own capsule",
+  "note_ru": "Прозрачный бар, каждый модуль в своей капсуле",
   "shape": "full",
   "backgroundAlpha": 0,
   "moduleStyle": "pills",

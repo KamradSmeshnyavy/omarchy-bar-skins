@@ -1,5 +1,6 @@
 {
-  "note": "Сплошной бар цвета акцента",
+  "note": "Solid accent-coloured bar",
+  "note_ru": "Сплошной бар цвета акцента",
   "shape": "full",
   "background": "accent",
   "text": "background",

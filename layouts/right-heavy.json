@@ -1,5 +1,6 @@
 {
-  "note": "Workspaces слева, всё остальное и часы справа (macOS-стиль)",
+  "note": "Workspaces on the left, everything else and the clock on the right (macOS style)",
+  "note_ru": "Workspaces слева, всё остальное и часы справа (macOS-стиль)",
   "position": "top",
   "centerAnchor": "",
   "layout": {

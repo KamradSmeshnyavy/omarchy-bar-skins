@@ -1,5 +1,6 @@
 {
-  "note": "Прозрачный бар с линией акцента снизу",
+  "note": "Transparent bar with an accent line underneath",
+  "note_ru": "Прозрачный бар с линией акцента снизу",
   "shape": "underline",
   "backgroundAlpha": 0,
   "border": "accent",

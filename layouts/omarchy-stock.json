@@ -1,5 +1,6 @@
 {
-  "note": "Как в стоке Omarchy: меню и workspaces слева, часы в центре",
+  "note": "As in stock Omarchy: menu and workspaces on the left, clock in the center",
+  "note_ru": "Как в стоке Omarchy: меню и workspaces слева, часы в центре",
   "position": "top",
   "centerAnchor": "omarchy.clock",
   "layout": {

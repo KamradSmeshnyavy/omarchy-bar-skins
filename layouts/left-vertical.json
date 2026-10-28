@@ -1,5 +1,6 @@
 {
-  "note": "Вертикальный бар слева (скины: только full/floating)",
+  "note": "Vertical bar on the left (skins: full/floating only)",
+  "note_ru": "Вертикальный бар слева (скины: только full/floating)",
   "position": "left",
   "centerAnchor": "omarchy.workspaces",
   "layout": {

@@ -1,5 +1,6 @@
 {
-  "note": "Три острова: левая секция, центр, правая",
+  "note": "Three islands: left section, center, right",
+  "note_ru": "Три острова: левая секция, центр, правая",
   "shape": "islands",
   "gap": 6,
   "margin": 8,

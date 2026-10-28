@@ -1,5 +1,6 @@
 {
-  "note": "Текущая раскладка внизу экрана",
+  "note": "The current layout at the bottom of the screen",
+  "note_ru": "Текущая раскладка внизу экрана",
   "position": "bottom",
   "centerAnchor": "omarchy.workspaces",
   "layout": {

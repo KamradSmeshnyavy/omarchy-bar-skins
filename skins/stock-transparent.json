@@ -1,5 +1,6 @@
 {
-  "note": "Сток, прозрачный фон; цвет текста подбирается по обоям",
+  "note": "Stock, transparent background; text colour adapts to the wallpaper",
+  "note_ru": "Сток, прозрачный фон; цвет текста подбирается по обоям",
   "shape": "full",
   "transparent": true
 }

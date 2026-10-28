@@ -1,5 +1,6 @@
 {
-  "note": "Чёлка от верхнего края на 70% ширины",
+  "note": "A notch from the top edge, 70% wide",
+  "note_ru": "Чёлка от верхнего края на 70% ширины",
   "shape": "notch",
   "width": 0.7,
   "radius": 14,
