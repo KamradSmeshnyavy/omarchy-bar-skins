@@ -23,12 +23,13 @@ QtObject {
   readonly property string path: home + "/.config/omarchy/bar-skin.json"
 
   readonly property var defaults: ({
-    shape: "full",          // full floating pill islands notch underline hug
+    shape: "full",          // full floating pill islands notch underline hug frame
     height: 0,              // 0 = Style.bar.size*
     gap: 0,                 // отступ от края экрана (floating/pill/islands/notch)
     margin: 0,              // отступ слева/справа
     width: 1.0,             // доля ширины экрана (pill/notch/floating)
     radius: 0,
+    frameWidth: 8,          // frame: толщина рамки по остальным краям экрана
     padding: -1,            // отступ модулей от краёв подложки; -1 = сток
     islandGap: 0,           // islands: доп. отступ острова вокруг секции
     background: "bar",
@@ -70,19 +71,19 @@ QtObject {
   }
 
   readonly property string requestedShape: String(value("shape"))
-  // Вертикальный бар умеет только полосу и floating.
+  // Вертикальный бар умеет только полосу, floating и рамку.
   function normalizeShape(s) {
     s = String(s)
-    if (["full", "floating", "pill", "islands", "notch", "underline", "hug"].indexOf(s) === -1) s = "full"
+    if (["full", "floating", "pill", "islands", "notch", "underline", "hug", "frame"].indexOf(s) === -1) s = "full"
     if (vertical && s === "hug") s = "full"
-    if (vertical && s !== "full") s = "floating"
+    if (vertical && s !== "full" && s !== "frame") s = "floating"
     return s
   }
   readonly property string shape: normalizeShape(requestedShape)
 
   // Геометрия для произвольной формы: compact может подменить форму у одного окна.
-  function gapFor(s) { return s === "full" || s === "underline" || s === "notch" || s === "hug" ? 0 : Math.max(0, Math.round(num("gap"))) }
-  function marginFor(s) { return s === "full" || s === "underline" || s === "hug" ? 0 : Math.max(0, Math.round(num("margin"))) }
+  function gapFor(s) { return s === "full" || s === "underline" || s === "notch" || s === "hug" || s === "frame" ? 0 : Math.max(0, Math.round(num("gap"))) }
+  function marginFor(s) { return s === "full" || s === "underline" || s === "hug" || s === "frame" ? 0 : Math.max(0, Math.round(num("margin"))) }
   function widthFor(s) { return s === "pill" || s === "notch" || s === "floating" ? Math.max(0.2, Math.min(1, num("width"))) : 1 }
   function hugRadiusFor(s) { return s === "hug" ? Math.max(8, Math.round(num("radius"))) : 0 }
 
@@ -119,12 +120,16 @@ QtObject {
   }
   // hug: вогнутые углы под баром, радиус из radius (минимум 8, иначе их не видно).
   readonly property int hugRadius: hugRadiusFor(shape)
+  // frame: рамка по краям экрана (ScreenBorder.qml), внутренние углы скруглены radius (минимум 8).
+  readonly property bool framed: shape === "frame"
+  readonly property int frameWidth: Math.max(1, Math.round(num("frameWidth")))
+  readonly property int frameRadius: Math.max(8, Math.round(num("radius")))
   readonly property string font: String(value("font") || "")
 
   function radiusFor(h, s) {
     if (s === undefined) s = shape
     if (s === "pill") return h / 2
-    if (s === "hug" || s === "full") return 0
+    if (s === "hug" || s === "full" || s === "frame") return 0
     return Math.max(0, Math.min(num("radius"), h / 2))
   }
 

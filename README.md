@@ -6,7 +6,7 @@ A drop-in replacement for the [Omarchy](https://omarchy.org) top bar: the stock 
 layer on top. Every widget, panel and gesture of the stock bar keeps working — the skin only changes how
 the bar is drawn.
 
-- **18 skins** — floating, islands, pill, notch, underline, hug, glass, neon, capsules, autohide, …
+- **19 skins** — floating, islands, pill, notch, underline, hug, frame, glass, neon, capsules, autohide, …
 - **9 layouts** — centered, bottom, left-vertical, right-heavy, media-center, …
 - **Compact mode** — the bar shrinks to a thin strip (only when a window is focused, only in fullscreen, or
   always) and expands back when you hover it
@@ -58,12 +58,13 @@ overlay with live preview — skins, layouts and every setting below:
 
 ```jsonc
 {
-  "shape": "floating",        // full floating pill islands notch underline hug
+  "shape": "floating",        // full floating pill islands notch underline hug frame
   "height": 30,               // 0 = stock height
   "gap": 6,                   // distance from the screen edge
   "margin": 10,               // left/right margins
   "width": 1.0,               // share of the screen width (floating/pill/notch)
   "radius": 12,
+  "frameWidth": 8,            // frame: border width along the other screen edges
   "padding": -1,              // module padding inside the background; -1 = stock
   "islandGap": 6,
   "background": "bar",        // colour: a role or #hex
@@ -88,7 +89,9 @@ A colour is `bar` (the stock bar colour from the theme's `[bar]`), a shell role 
 
 Shapes: `full` is stock; `floating` — a strip with gaps; `pill` — floating with half-height radius;
 `islands` — one island per section; `notch` — a notch at the edge; `underline` — a line along the edge;
-`hug` — full width with concave corners below it. Vertical bars support only `full` and `floating`.
+`hug` — full width with concave corners below it; `frame` — a strip plus a border of the bar colour along the
+other three screen edges, with rounded inner corners (`radius`, at least 8) and space reserved so windows sit
+inside it. Vertical bars support only `full`, `floating` and `frame`.
 
 ### Compact
 

@@ -1282,6 +1282,23 @@ Item {
     }
   }
 
+  // skin: форма frame — рамка по остальным краям экрана (ScreenBorder.qml).
+  Variants {
+    model: root.skin.framed ? Quickshell.screens : []
+
+    delegate: Component {
+      ScreenBorder {
+        required property var modelData
+
+        screen: modelData
+        skin: root.skin
+        barSize: root.barSize
+        position: root.position
+        shown: !root.barHidden && !root.transparent
+      }
+    }
+  }
+
   Variants {
     model: Quickshell.screens
 

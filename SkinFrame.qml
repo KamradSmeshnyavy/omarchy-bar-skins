@@ -12,6 +12,7 @@ import QtQuick.Shapes
 //   notch      «чёлка» у края: скруглены только углы, обращённые к экрану
 //   underline  фон из скина (обычно прозрачный) + линия по внутреннему краю
 //   hug        полоса во всю ширину + вогнутые углы под ней (end-4 «Hug»)
+//   frame      полоса во всю сторону; рамку по остальным краям рисует ScreenBorder.qml
 //
 // autoHide: бар уезжает за край, в окне остаётся полоска hitArea в пару
 // пикселей; наведение на неё (или открытая панель) выдвигает бар обратно.
@@ -34,8 +35,9 @@ Item {
   readonly property bool vertical: position === "left" || position === "right"
 
   // ── Действующие значения (обычные или compact) ────────────────────────
-  readonly property string shape: compact && skin.compactShape !== "same" ? skin.compactShape : skin.shape
-  readonly property int thickness: compact && skin.compactHeight > 0 ? Math.min(skin.compactHeight, barSize) : barSize
+  // frame: compact не меняет толщину — рамка (другое окно) рисуется по полной.
+  readonly property string shape: compact && skin.compactShape !== "same" && !skin.framed ? skin.compactShape : skin.shape
+  readonly property int thickness: compact && skin.compactHeight > 0 && !skin.framed ? Math.min(skin.compactHeight, barSize) : barSize
   readonly property int gap: skin.gapFor(shape)
   readonly property int margin: skin.marginFor(shape)
   readonly property real widthFraction: skin.widthFor(shape)
@@ -44,14 +46,14 @@ Item {
     ? skin.withAlpha(skin.backgroundColor, skin.compactAlpha) : skin.backgroundColor
   readonly property color fill2: skin.withAlpha(skin.gradientColor, fill.a)
 
-  readonly property int shadowPad: (skin.shadow || skin.glow) && shape !== "full" && shape !== "hug" ? 10 : 0
+  readonly property int shadowPad: (skin.shadow || skin.glow) && shape !== "full" && shape !== "hug" && shape !== "frame" ? 10 : 0
   // Толщина окна: обычная геометрия (чтобы compact не менял размер поверхности),
   // а с compactReserve = shrink — по текущей.
-  readonly property int normalExtent: barSize + skin.gap + Math.max((skin.shadow || skin.glow) && skin.shape !== "full" && skin.shape !== "hug" ? 10 : 0, skin.hugRadius)
+  readonly property int normalExtent: barSize + skin.gap + Math.max((skin.shadow || skin.glow) && skin.shape !== "full" && skin.shape !== "hug" && skin.shape !== "frame" ? 10 : 0, skin.hugRadius)
   readonly property int currentExtent: thickness + gap + Math.max(shadowPad, hugRadius)
   readonly property int extent: compact && skin.compactShrink ? currentExtent : Math.max(normalExtent, currentExtent)
   // Сколько места бар резервирует у Hyprland: без тени и углов; авто-скрытие — ничего.
-  readonly property int reserved: skin.autoHide ? 0
+  readonly property int reserved: skin.autoHide && !skin.framed ? 0
     : (compact && skin.compactShrink ? thickness + gap : barSize + skin.gap)
 
   readonly property alias body: bodyItem
@@ -71,7 +73,8 @@ Item {
     interval: 450
     onTriggered: frame.revealed = !frame.skin.autoHide || frame.engaged
   }
-  readonly property bool hidden: skin.autoHide && !revealed
+  // frame не прячется: рамка вокруг экрана держится за полосу бара.
+  readonly property bool hidden: skin.autoHide && !skin.framed && !revealed
   // Насколько бар уехал за край (0 — на месте).
   property real slide: hidden ? thickness + gap + 2 : 0
   Behavior on slide { NumberAnimation { duration: 220; easing.type: Easing.OutCubic } }
@@ -124,7 +127,7 @@ Item {
     height: bodyItem.height + (frame.notch ? frame.radius : 0)
     radius: frame.radius
     color: frame.transparent || frame.shape === "underline" && frame.fill.a === 0 ? "transparent" : frame.fill
-    border.width: frame.shape === "underline" || frame.shape === "hug" ? 0 : frame.skin.borderWidth
+    border.width: frame.shape === "underline" || frame.shape === "hug" || frame.shape === "frame" ? 0 : frame.skin.borderWidth
     border.color: frame.skin.borderColor
 
     gradient: frame.skin.hasGradient && !frame.transparent ? plateGradient : null

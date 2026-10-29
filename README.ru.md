@@ -5,7 +5,7 @@
 Замена верхнего бара [Omarchy](https://omarchy.org): стоковый `omarchy.bar` с прослойкой скинов. Все
 виджеты, панели и жесты стокового бара работают как раньше — скин меняет только то, как бар нарисован.
 
-- **18 скинов** — floating, islands, pill, notch, underline, hug, glass, neon, capsules, autohide, …
+- **19 скинов** — floating, islands, pill, notch, underline, hug, frame, glass, neon, capsules, autohide, …
 - **9 раскладок** — centered, bottom, left-vertical, right-heavy, media-center, …
 - **Compact** — бар сжимается в тонкую полосу (при одном окне, в полноэкранном режиме или всегда) и
   разворачивается по наведению
@@ -54,12 +54,13 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
 
 ```jsonc
 {
-  "shape": "floating",        // full floating pill islands notch underline hug
+  "shape": "floating",        // full floating pill islands notch underline hug frame
   "height": 30,               // 0 = стоковая высота
   "gap": 6,                   // отступ от края экрана
   "margin": 10,               // поля слева/справа
   "width": 1.0,               // доля ширины (floating/pill/notch)
   "radius": 12,
+  "frameWidth": 8,            // frame: толщина рамки по остальным краям экрана
   "padding": -1,              // отступ модулей от краёв подложки; -1 = сток
   "islandGap": 6,             // поля островов
   "background": "bar",        // цвет: роль или #hex
@@ -84,7 +85,9 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
 
 Формы: `full` — сток; `floating` — полоса с отступами; `pill` — floating с радиусом в полвысоты;
 `islands` — остров под каждой секцией; `notch` — «чёлка» у края; `underline` — линия по краю; `hug` —
-полоса во всю ширину с вогнутыми углами. Вертикальный бар умеет только `full` и `floating`.
+полоса во всю ширину с вогнутыми углами; `frame` — полоса и рамка цвета бара по остальным трём краям
+экрана со скруглёнными внутренними углами (`radius`, минимум 8), место под рамку зарезервировано, окна
+внутри. Вертикальный бар умеет только `full`, `floating` и `frame`.
 
 ### Compact
 

@@ -1,0 +1,10 @@
+{
+  "note": "A strip plus a frame around the whole screen with rounded inner corners (like caelestia)",
+  "note_ru": "Полоса и рамка вокруг всего экрана со скруглёнными внутренними углами (как в caelestia)",
+  "shape": "frame",
+  "height": 30,
+  "frameWidth": 8,
+  "radius": 18,
+  "background": "darker_background",
+  "moduleStyle": "hover"
+}
