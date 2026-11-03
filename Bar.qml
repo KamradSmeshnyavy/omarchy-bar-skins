@@ -1484,7 +1484,12 @@ Item {
       Item {
         anchors.fill: parent
 
-        CenterModules { anchors.fill: parent }
+        // skin: центр не заходит на левую и правую секции (см. centerOffset).
+        CenterModules {
+          anchors.fill: parent
+          minStart: hLeft.x + hLeft.width + root.sectionPadding
+          maxEnd: hRight.x - root.sectionPadding
+        }
 
         // skin: острова под левой и правой секциями.
         SkinIsland { skin: root.skin; target: hLeft; vertical: false; transparent: root.transparent }
@@ -1512,15 +1517,21 @@ Item {
       Item {
         anchors.fill: parent
 
-        CenterModules { anchors.fill: parent }
+        CenterModules {
+          anchors.fill: parent
+          minStart: vLeft.y + vLeft.height + root.sectionPadding
+          maxEnd: vRight.y - root.sectionPadding
+        }
 
         LeftModules {
+          id: vLeft
           anchors.top: parent.top
           anchors.topMargin: root.sectionPadding
           anchors.horizontalCenter: parent.horizontalCenter
         }
 
         RightModules {
+          id: vRight
           anchors.bottom: parent.bottom
           anchors.bottomMargin: root.sectionPadding
           anchors.horizontalCenter: parent.horizontalCenter
@@ -1655,6 +1666,17 @@ Item {
     }
   }
 
+  // skin: центральная секция стоит посередине, но не поверх левой и правой: на вертикальном баре
+  // длинная правая секция (трей, индикаторы, часы) доходила до середины, и значок активного окна
+  // ложился на трей. Группа «до якоря + якорь + после» сдвигается назад от правой секции, затем
+  // вперёд от левой; при совсем переполненном баре прижата к левой.
+  function centerOffset(ideal, before, size, after, minStart, maxEnd) {
+    var pos = ideal
+    if (pos + size + after > maxEnd) pos = maxEnd - size - after
+    if (pos - before < minStart) pos = minStart + before
+    return pos
+  }
+
   function findCenterAnchorEntry() {
     var entries = root.layoutEntries("center")
     var idx = root.entryIndex(entries, root.centerAnchor)
@@ -1675,6 +1697,9 @@ Item {
     id: centerRoot
 
     property var entries: root.layoutEntries("center")
+    // skin: свободное место между левой и правой секциями (по x или по y).
+    property real minStart: 0
+    property real maxEnd: root.vertical ? height : width
     readonly property bool hasAnchor: root.entryIndex(entries, root.centerAnchor) !== -1
     readonly property var anchorEntry: root.findCenterAnchorEntry()
 
@@ -1715,7 +1740,8 @@ Item {
           visible: !centerRoot.hasAnchor
           entries: centerRoot.entries
           region: "center"
-          anchors.centerIn: parent
+          anchors.verticalCenter: parent.verticalCenter
+          x: root.centerOffset((parent.width - width) / 2, 0, width, 0, centerRoot.minStart, centerRoot.maxEnd)
         }
 
         ModuleList {
@@ -1732,7 +1758,9 @@ Item {
           visible: centerRoot.hasAnchor
           entry: centerRoot.anchorEntry
           region: "center"
-          anchors.centerIn: parent
+          anchors.verticalCenter: parent.verticalCenter
+          x: root.centerOffset((parent.width - width) / 2, hBefore.visible ? hBefore.width : 0, width,
+                               hAfter.visible ? hAfter.width : 0, centerRoot.minStart, centerRoot.maxEnd)
         }
 
         ModuleList {
@@ -1762,10 +1790,12 @@ Item {
           visible: !centerRoot.hasAnchor
           entries: centerRoot.entries
           region: "center"
-          anchors.centerIn: parent
+          anchors.horizontalCenter: parent.horizontalCenter
+          y: root.centerOffset((parent.height - height) / 2, 0, height, 0, centerRoot.minStart, centerRoot.maxEnd)
         }
 
         ModuleList {
+          id: vBefore
           visible: centerRoot.hasAnchor
           entries: root.entriesBefore(centerRoot.entries, root.centerAnchor)
           region: "center"
@@ -1778,10 +1808,13 @@ Item {
           visible: centerRoot.hasAnchor
           entry: centerRoot.anchorEntry
           region: "center"
-          anchors.centerIn: parent
+          anchors.horizontalCenter: parent.horizontalCenter
+          y: root.centerOffset((parent.height - height) / 2, vBefore.visible ? vBefore.height : 0, height,
+                               vAfter.visible ? vAfter.height : 0, centerRoot.minStart, centerRoot.maxEnd)
         }
 
         ModuleList {
+          id: vAfter
           visible: centerRoot.hasAnchor
           entries: root.entriesAfter(centerRoot.entries, root.centerAnchor)
           region: "center"
