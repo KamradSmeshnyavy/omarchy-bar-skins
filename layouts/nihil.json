@@ -1,0 +1,55 @@
+{
+  "note": "NIHIL left frame bar: mark & LED workspaces at top, active app in center, tray and Wi-Fi / Bluetooth / sound menus (Omarchy panels in the Nihil style), 10-LED battery, Doto clock & privacy LED at bottom",
+  "note_ru": "Левый бар NIHIL: логотип и LED-воркспейсы сверху, активное окно по центру, трей и меню Wi-Fi / Bluetooth / звука (панели Omarchy в стиле Nihil), батарея на 10 LED, часы Doto и индикатор микрофона снизу",
+  "position": "left",
+  "centerAnchor": "active-app",
+  "layout": {
+    "left": [
+      {
+        "id": "nihil-mark",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/NihilMark.qml"
+      },
+      {
+        "id": "omarchy.workspaces"
+      }
+    ],
+    "center": [
+      {
+        "id": "active-app",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/ActiveAppIcon.qml"
+      }
+    ],
+    "right": [
+      {
+        "id": "kamradsmeshnyavy.tray",
+        "collapse": false
+      },
+      {
+        "id": "kamradsmeshnyavy.network"
+      },
+      {
+        "id": "kamradsmeshnyavy.bluetooth"
+      },
+      {
+        "id": "kamradsmeshnyavy.audio"
+      },
+      {
+        "id": "battery-gauge",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/BatteryGauge.qml"
+      },
+      {
+        "id": "dot-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/DotClock.qml"
+      },
+      {
+        "id": "privacy-led",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/PrivacyLed.qml"
+      }
+    ]
+  }
+}

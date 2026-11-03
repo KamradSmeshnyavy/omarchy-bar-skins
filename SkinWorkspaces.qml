@@ -80,7 +80,7 @@ BarWidget {
   function label(id, focused, occupied) {
     var i = (id - 1) % 10
     var s = root.labelStyle
-    if (s === "none") return ""
+    if (s === "none" || s === "leds") return ""
     if (root.shapes[s]) {
       var g = root.shapes[s][focused || occupied ? 0 : 1]
       return s === "bars" && focused ? g + g + g : g
@@ -206,6 +206,8 @@ BarWidget {
         readonly property var workspace: root.workspaceById(modelData)
         readonly property bool occupied: workspace !== null && workspace.toplevels.values.length > 0
         readonly property bool focused: Hyprland.focusedWorkspace !== null && Hyprland.focusedWorkspace.id === modelData
+        readonly property bool urgent: workspace !== null && workspace.urgent === true
+        readonly property bool ledMode: root.labelStyle === "leds"
         readonly property var windows: root.windowsOf(workspace)
         readonly property var visibleWindows: windows.slice(0, root.maxIcons)
         readonly property int extra: windows.length - visibleWindows.length
@@ -214,11 +216,14 @@ BarWidget {
         readonly property bool plainStock: root.labelStyle === "omarchy"
 
         implicitWidth: root.vertical ? root.barSize
+          : ledMode && visibleWindows.length === 0 ? ledPill.width + Style.space(8)
           : (visibleWindows.length === 0 && root.labelStyle !== "none" ? Style.space(20) : content.implicitWidth + Style.space(12))
-        implicitHeight: root.vertical ? content.implicitHeight + Style.space(10) : root.barSize
+        implicitHeight: root.vertical
+          ? (ledMode && visibleWindows.length === 0 ? ledPill.height + Style.space(6) : content.implicitHeight + Style.space(10))
+          : root.barSize
         width: implicitWidth
         height: implicitHeight
-        opacity: occupied || focused ? 1 : 0.5
+        opacity: ledMode || occupied || focused ? 1 : 0.5
 
         Rectangle {
           visible: root.activePill && cell.focused
@@ -248,6 +253,21 @@ BarWidget {
           rowSpacing: Style.space(3)
           horizontalItemAlignment: Grid.AlignHCenter
           verticalItemAlignment: Grid.AlignVCenter
+
+          Rectangle {
+            id: ledPill
+            visible: cell.ledMode
+            width: root.vertical ? 6 : (cell.focused ? 24 : 8)
+            height: root.vertical ? (cell.focused ? 24 : 8) : 6
+            radius: 3
+            color: cell.urgent ? Commons.Color.urgent
+              : cell.focused ? (root.customActive ? root.activeColor : root.fg)
+              : cell.occupied ? root.fg
+              : Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.22)
+            Behavior on width { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
+            Behavior on height { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
+            Behavior on color { ColorAnimation { duration: 160 } }
+          }
 
           Text {
             visible: cell.text !== ""

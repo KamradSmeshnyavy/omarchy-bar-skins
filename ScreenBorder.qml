@@ -99,6 +99,24 @@ Scope {
           radius: border.radius
         }
       }
+
+      // Опциональный внутренний контур рамки (например, 1px #2a2a2a в скине nihil).
+      ShapePath {
+        readonly property real bw: border.skin.borderWidth
+        fillColor: "transparent"
+        strokeColor: bw > 0 ? border.skin.borderColor : "transparent"
+        strokeWidth: bw > 0 ? bw : -1
+
+        Behavior on strokeColor { ColorAnimation { duration: 280; easing.type: Easing.InOutCubic } }
+
+        PathRectangle {
+          x: border.inset("left") - border.skin.borderWidth * 0.5
+          y: border.inset("top") - border.skin.borderWidth * 0.5
+          width: overlay.width - border.inset("left") - border.inset("right") + border.skin.borderWidth
+          height: overlay.height - border.inset("top") - border.inset("bottom") + border.skin.borderWidth
+          radius: border.radius + border.skin.borderWidth * 0.5
+        }
+      }
     }
   }
 }

@@ -5,11 +5,11 @@
 Замена верхнего бара [Omarchy](https://omarchy.org): стоковый `omarchy.bar` с прослойкой скинов. Все
 виджеты, панели и жесты стокового бара работают как раньше — скин меняет только то, как бар нарисован.
 
-- **19 скинов** — floating, islands, pill, notch, underline, hug, frame, glass, neon, capsules, autohide, …
-- **9 раскладок** — centered, bottom, left-vertical, right-heavy, media-center, …
+- **20 скинов** — floating, islands, pill, notch, underline, hug, frame, nihil, glass, neon, capsules, autohide, …
+- **10 раскладок** — centered, bottom, left-vertical, nihil, right-heavy, media-center, …
 - **Compact** — бар сжимается в тонкую полосу (при одном окне, в полноэкранном режиме или всегда) и
   разворачивается по наведению
-- **Workspaces** — 20+ стилей подписей (римские, кандзи, греческие, в кружках, брайль…), иконки приложений,
+- **Workspaces** — 20+ стилей подписей (римские, кандзи, греческие, в кружках, брайль, leds…), иконки приложений,
   плашка под активным
 - Цвета — роли темы: бар перекрашивается при каждом `omarchy theme set`
 
@@ -105,7 +105,7 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
 
 | Ключ | Умолч. | |
 |---|---|---|
-| `wsLabelStyle` | `omarchy` | omarchy numbers circled circled-filled circled-sans circled-sans-filled parens fullwidth superscript roman roman-small kanji greek cyrillic braille dots squares diamonds stars triangles hearts hexagons bars none |
+| `wsLabelStyle` | `omarchy` | omarchy numbers circled circled-filled circled-sans circled-sans-filled parens fullwidth superscript roman roman-small kanji greek cyrillic braille dots leds squares diamonds stars triangles hearts hexagons bars none |
 | `wsWindowIcons` | `false` | иконки окон внутри workspace |
 | `wsIconStyle` | `color` | color mono tinted accent bubble faded glyph letter dots count |
 | `wsMaxIcons` | `3` | иконок на workspace, остальные — «+N» |
@@ -123,6 +123,7 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
 | `SkinFrame.qml` | подложка по форме, маска ввода, exclusive zone |
 | `SkinIsland.qml` | острова под секциями |
 | `SkinWorkspaces.qml` | workspaces, подменяет `omarchy.workspaces` в этом баре |
+| `modules/` | кастомные QML-модули для раскладки `nihil` (`NihilMark`, `ActiveAppIcon`, `BatteryGauge`, `DotClock`, `PrivacyLed`); трей, Wi-Fi, Bluetooth и звук в раскладке — клоны виджетов Omarchy `kamradsmeshnyavy.{tray,network,bluetooth,audio}` из dotfiles |
 | `skins/`, `layouts/` | пресеты |
 | `UPSTREAM.md` | документация стокового `omarchy.bar`: каталог виджетов, свои модули |
 

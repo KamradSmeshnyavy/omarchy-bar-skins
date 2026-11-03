@@ -1,0 +1,12 @@
+Third-party attributions for kamradsmeshnyavy.bar:
+
+- Base bar implementation (`omarchy.bar`):
+  Copyright (c) David Heinemeier Hansson / Basecamp (Omarchy, https://github.com/basecamp/omarchy)
+  Licensed under the MIT License.
+
+- NIHIL frame skin (`skins/nihil.json`), layout (`layouts/nihil.json`), LED workspace pills
+  (`wsLabelStyle: "leds"` in `SkinWorkspaces.qml`), inner bezel hairline (`ScreenBorder.qml`),
+  and custom modules (`modules/{NihilMark,ActiveAppIcon,BatteryGauge,DotClock,PrivacyLed}.qml`):
+  Adapted from Nihil-Shell (https://github.com/poligle/Nihil-Shell)
+  Copyright (c) 2026 Pol Iglesias
+  Licensed under the MIT License.

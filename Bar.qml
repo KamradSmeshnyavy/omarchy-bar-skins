@@ -2185,9 +2185,11 @@ Item {
 
     function injectProps() {
       var target = activeItem
-      if (!target) return
-      if ("bar" in target) target.bar = firstParty
-        ? root : root.pluginBarApiFor(pluginApiId, moduleName, registered)
+      if (!target || typeof root === "undefined" || !root) return
+      if ("bar" in target) {
+        var api = firstParty ? root : root.pluginBarApiFor(pluginApiId, moduleName, registered)
+        target.bar = api || null
+      }
       if ("moduleName" in target) target.moduleName = moduleName
       if ("settings" in target) target.settings = moduleSettings
     }
