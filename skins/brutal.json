@@ -1,0 +1,17 @@
+{
+  "note": "Brutalism: square strip, thick ink border and a hard offset shadow",
+  "note_ru": "Брутализм: прямая полоса, толстая рамка цвета текста и жёсткая смещённая тень",
+  "shape": "floating",
+  "gap": 8,
+  "margin": 12,
+  "radius": 0,
+  "height": 36,
+  "background": "background",
+  "backgroundAlpha": 1,
+  "border": "foreground",
+  "borderWidth": 3,
+  "borderAlpha": 1,
+  "hardShadow": 5,
+  "moduleStyle": "plain",
+  "spacing": 8
+}

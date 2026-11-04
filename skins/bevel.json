@@ -1,0 +1,14 @@
+{
+  "note": "Retro desktop: full-width grey strip with a 3D bevel (light top-left, dark bottom-right)",
+  "note_ru": "Ретро-десктоп: полоса во всю ширину с объёмным кантом (светлый сверху-слева, тёмный снизу-справа)",
+  "shape": "full",
+  "height": 32,
+  "background": "background",
+  "backgroundAlpha": 1,
+  "borderWidth": 0,
+  "bevel": true,
+  "moduleStyle": "pills",
+  "moduleBackground": "foreground",
+  "moduleAlpha": 0.06,
+  "spacing": 4
+}

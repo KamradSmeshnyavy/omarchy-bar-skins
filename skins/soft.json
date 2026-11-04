@@ -1,0 +1,17 @@
+{
+  "note": "Neumorphism: a soft floating slab in the background colour, no border, relief by shadow",
+  "note_ru": "Неоморфизм: мягкая плавающая плита цвета фона, без рамки, рельеф тенью",
+  "shape": "floating",
+  "gap": 10,
+  "margin": 16,
+  "radius": 18,
+  "height": 36,
+  "background": "background",
+  "backgroundAlpha": 1,
+  "borderWidth": 0,
+  "shadow": true,
+  "moduleStyle": "pills",
+  "moduleBackground": "foreground",
+  "moduleAlpha": 0.05,
+  "spacing": 6
+}

@@ -58,7 +58,9 @@ QtObject {
     compactExpandOnHover: true,
     font: "",
     texture: "",            // PNG-тайл поверх подложки (~ раскрывается); на тёмном фоне — <имя>-dark.png
-    textureAlpha: 0.9
+    textureAlpha: 0.9,
+    hardShadow: 0,          // жёсткая тень без размытия: сдвиг в px (брутализм), цвет — border
+    bevel: false            // ретро-кант: светлый сверху-слева, тёмный снизу-справа
   })
 
   property var raw: ({})
@@ -130,6 +132,8 @@ QtObject {
   readonly property string font: String(value("font") || "")
   readonly property string texture: String(value("texture") || "").replace(/^~\//, home + "/")
   readonly property real textureAlpha: Math.max(0, Math.min(1, num("textureAlpha")))
+  readonly property int hardShadow: Math.max(0, Math.round(num("hardShadow")))
+  readonly property bool bevel: value("bevel") === true
 
   function radiusFor(h, s) {
     if (s === undefined) s = shape

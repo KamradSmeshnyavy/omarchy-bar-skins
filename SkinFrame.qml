@@ -117,6 +117,17 @@ Item {
   // и скруглёнными остаются только углы со стороны экрана.
   clip: notch || skin.autoHide
 
+  // hardShadow: плашка цвета рамки, сдвинутая вниз-вправо, под подложкой (брутализм).
+  Rectangle {
+    visible: frame.skin.hardShadow > 0 && plate.visible && !frame.transparent
+    x: plate.x + frame.skin.hardShadow
+    y: plate.y + frame.skin.hardShadow
+    width: plate.width
+    height: plate.height
+    radius: plate.radius
+    color: Qt.rgba(frame.skin.borderColor.r, frame.skin.borderColor.g, frame.skin.borderColor.b, 1)
+  }
+
   Rectangle {
     id: plate
 
@@ -150,6 +161,21 @@ Item {
     }
 
     Behavior on color { ColorAnimation { duration: 280; easing.type: Easing.InOutCubic } }
+  }
+
+  // bevel: ретро-кант по 2 px — светлый сверху и слева, тёмный снизу и справа.
+  Item {
+    visible: frame.skin.bevel && plate.visible && !frame.transparent
+    x: plate.x
+    y: plate.y
+    width: plate.width
+    height: plate.height
+    readonly property color hi: Qt.lighter(frame.fill, 1.9)
+    readonly property color lo: Qt.darker(frame.fill, 2.2)
+    Rectangle { anchors { left: parent.left; right: parent.right; top: parent.top } height: 2; color: parent.hi }
+    Rectangle { anchors { left: parent.left; top: parent.top; bottom: parent.bottom } width: 2; color: parent.hi }
+    Rectangle { anchors { left: parent.left; right: parent.right; bottom: parent.bottom } height: 2; color: parent.lo }
+    Rectangle { anchors { right: parent.right; top: parent.top; bottom: parent.bottom } width: 2; color: parent.lo }
   }
 
   // texture: тайл бумаги / ткани поверх подложки, обрезанный по её скруглению.
