@@ -152,7 +152,7 @@ QtObject {
     if (s === "muted") return Commons.Color.muted
     if (s === "urgent") return Commons.Color.urgent
     // dotmatrix.bg / dotmatrix.fg / dotmatrix.line / dotmatrix.signal … — dotmatrix/Palette.qml (тема или монохром).
-    if (s.indexOf("dotmatrix.") === 0 && DotMatrix.Palette[s.slice(6)] !== undefined) return DotMatrix.Palette[s.slice(6)]
+    if (s.indexOf("dotmatrix.") === 0 && DotMatrix.Palette[s.slice("dotmatrix.".length)] !== undefined) return DotMatrix.Palette[s.slice("dotmatrix.".length)]
     if (palette[s]) return Qt.color(palette[s])
     return fallback
   }
