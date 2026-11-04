@@ -152,6 +152,47 @@ Item {
     Behavior on color { ColorAnimation { duration: 280; easing.type: Easing.InOutCubic } }
   }
 
+  // texture: тайл бумаги / ткани поверх подложки, обрезанный по её скруглению.
+  // Светлая подложка — сам файл, тёмная — <имя>-dark.png рядом (тёмные / светлые чернила).
+  Item {
+    id: textureLayer
+    visible: frame.skin.texture !== "" && plate.visible && !frame.transparent && grainImage.status === Image.Ready
+    x: plate.x
+    y: plate.y
+    width: plate.width
+    height: plate.height
+    readonly property bool dark: 0.299 * frame.fill.r + 0.587 * frame.fill.g + 0.114 * frame.fill.b < 0.45
+
+    Image {
+      id: grainImage
+      anchors.fill: parent
+      visible: false
+      source: frame.skin.texture === "" ? ""
+        : "file://" + (textureLayer.dark ? frame.skin.texture.replace(/\.png$/, "-dark.png") : frame.skin.texture)
+      fillMode: Image.Tile
+      horizontalAlignment: Image.AlignLeft
+      verticalAlignment: Image.AlignTop
+      smooth: false
+      asynchronous: true
+    }
+    Rectangle {
+      id: grainMask
+      anchors.fill: parent
+      radius: plate.radius
+      visible: false
+      layer.enabled: true
+    }
+    MultiEffect {
+      anchors.fill: parent
+      source: grainImage
+      opacity: frame.skin.textureAlpha
+      maskEnabled: true
+      maskSource: grainMask
+      maskThresholdMin: 0.5
+      maskSpreadAtMin: 1.0
+    }
+  }
+
   // hug: вогнутые углы под полосой у левого и правого края экрана.
   Repeater {
     model: frame.shape === "hug" && !frame.vertical && !frame.transparent ? 2 : 0

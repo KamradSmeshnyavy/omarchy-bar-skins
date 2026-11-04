@@ -5,7 +5,7 @@
 Замена верхнего бара [Omarchy](https://omarchy.org): стоковый `omarchy.bar` с прослойкой скинов. Все
 виджеты, панели и жесты стокового бара работают как раньше — скин меняет только то, как бар нарисован.
 
-- **20 скинов** — floating, islands, pill, notch, underline, hug, frame, nihil, glass, neon, capsules, autohide, …
+- **21 скин** — floating, islands, pill, notch, underline, hug, frame, nihil, paper, glass, neon, capsules, autohide, …
 - **10 раскладок** — centered, bottom, left-vertical, nihil, right-heavy, media-center, …
 - **Compact** — бар сжимается в тонкую полосу (при одном окне, в полноэкранном режиме или всегда) и
   разворачивается по наведению
@@ -75,6 +75,8 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
   "moduleBackground": "foreground", "moduleAlpha": 0.08,
   "spacing": 0,               // зазор между модулями
   "font": "",                 // пусто = системный шрифт
+  "texture": "",              // PNG-тайл поверх подложки (~ раскрывается); на тёмной — <имя>-dark.png
+  "textureAlpha": 0.9,
   "transparent": false        // стоковый прозрачный режим (пишется в shell.json)
 }
 ```

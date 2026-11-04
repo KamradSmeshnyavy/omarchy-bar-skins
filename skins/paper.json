@@ -1,0 +1,20 @@
+{
+  "note": "Paper strip: an opaque sheet with paper grain, a pencil hairline, a soft shadow and handwritten Caveat (Paper style)",
+  "note_ru": "Бумажная полоса: непрозрачный лист с зерном бумаги, карандашная обводка, мягкая тень и рукописный Caveat (стиль Paper)",
+  "shape": "floating",
+  "gap": 8,
+  "margin": 14,
+  "radius": 4,
+  "height": 34,
+  "background": "background",
+  "backgroundAlpha": 1,
+  "border": "foreground",
+  "borderWidth": 1,
+  "borderAlpha": 0.22,
+  "shadow": true,
+  "moduleStyle": "plain",
+  "spacing": 4,
+  "font": "Caveat",
+  "texture": "~/.config/omarchy/plugins/kamradsmeshnyavy.customizer/textures/paper.png",
+  "textureAlpha": 0.9
+}

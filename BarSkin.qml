@@ -56,7 +56,9 @@ QtObject {
     compactAlpha: -1,       // альфа фона в compact; -1 = как обычно
     compactReserve: "keep", // keep — место под баром прежнее (окна не дёргаются); shrink — ужимается
     compactExpandOnHover: true,
-    font: ""
+    font: "",
+    texture: "",            // PNG-тайл поверх подложки (~ раскрывается); на тёмном фоне — <имя>-dark.png
+    textureAlpha: 0.9
   })
 
   property var raw: ({})
@@ -126,6 +128,8 @@ QtObject {
   readonly property int frameWidth: Math.max(1, Math.round(num("frameWidth")))
   readonly property int frameRadius: Math.max(8, Math.round(num("radius")))
   readonly property string font: String(value("font") || "")
+  readonly property string texture: String(value("texture") || "").replace(/^~\//, home + "/")
+  readonly property real textureAlpha: Math.max(0, Math.min(1, num("textureAlpha")))
 
   function radiusFor(h, s) {
     if (s === undefined) s = shape

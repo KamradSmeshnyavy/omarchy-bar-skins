@@ -6,7 +6,7 @@ A drop-in replacement for the [Omarchy](https://omarchy.org) top bar: the stock 
 layer on top. Every widget, panel and gesture of the stock bar keeps working — the skin only changes how
 the bar is drawn.
 
-- **20 skins** — floating, islands, pill, notch, underline, hug, frame, nihil, glass, neon, capsules, autohide, …
+- **21 skins** — floating, islands, pill, notch, underline, hug, frame, nihil, paper, glass, neon, capsules, autohide, …
 - **10 layouts** — centered, bottom, left-vertical, nihil, right-heavy, media-center, …
 - **Compact mode** — the bar shrinks to a thin strip (only when a window is focused, only in fullscreen, or
   always) and expands back when you hover it
@@ -79,6 +79,8 @@ overlay with live preview — skins, layouts and every setting below:
   "moduleBackground": "foreground", "moduleAlpha": 0.08,
   "spacing": 0,
   "font": "",                 // empty = system font
+  "texture": "",              // PNG tile over the plate (~ expands); on a dark plate <name>-dark.png is used
+  "textureAlpha": 0.9,
   "transparent": false        // stock transparent mode (written to shell.json)
 }
 ```
