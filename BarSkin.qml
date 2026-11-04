@@ -3,7 +3,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 import qs.Commons as Commons
-import "nihil" as Nihil
+import "dotmatrix" as DotMatrix
 
 // Внешний вид бара из ~/.config/omarchy/bar-skin.json. Файл пишет Customizer
 // (customizer.sh bar-skins / bar-tweaks); FileView следит за ним, поэтому скин
@@ -151,8 +151,8 @@ QtObject {
     if (s === "accent") return Commons.Color.accent
     if (s === "muted") return Commons.Color.muted
     if (s === "urgent") return Commons.Color.urgent
-    // nihil.bg / nihil.fg / nihil.line / nihil.signal … — nihil/Palette.qml (тема или монохром).
-    if (s.indexOf("nihil.") === 0 && Nihil.Palette[s.slice(6)] !== undefined) return Nihil.Palette[s.slice(6)]
+    // dotmatrix.bg / dotmatrix.fg / dotmatrix.line / dotmatrix.signal … — dotmatrix/Palette.qml (тема или монохром).
+    if (s.indexOf("dotmatrix.") === 0 && DotMatrix.Palette[s.slice(6)] !== undefined) return DotMatrix.Palette[s.slice(6)]
     if (palette[s]) return Qt.color(palette[s])
     return fallback
   }

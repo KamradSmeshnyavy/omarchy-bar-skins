@@ -5,8 +5,8 @@
 Замена верхнего бара [Omarchy](https://omarchy.org): стоковый `omarchy.bar` с прослойкой скинов. Все
 виджеты, панели и жесты стокового бара работают как раньше — скин меняет только то, как бар нарисован.
 
-- **24 скина** — floating, islands, pill, notch, underline, hug, frame, nihil, paper, soft, brutal, bevel, glass, neon, capsules, autohide, …
-- **10 раскладок** — centered, bottom, left-vertical, nihil, right-heavy, media-center, …
+- **24 скина** — floating, islands, pill, notch, underline, hug, frame, dotmatrix, paper, soft, brutal, bevel, glass, neon, capsules, autohide, …
+- **10 раскладок** — centered, bottom, left-vertical, dotmatrix, right-heavy, media-center, …
 - **Compact** — бар сжимается в тонкую полосу (при одном окне, в полноэкранном режиме или всегда) и
   разворачивается по наведению
 - **Workspaces** — 20+ стилей подписей (римские, кандзи, греческие, в кружках, брайль, leds…), иконки приложений,
@@ -127,7 +127,7 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
 | `SkinFrame.qml` | подложка по форме, маска ввода, exclusive zone |
 | `SkinIsland.qml` | острова под секциями |
 | `SkinWorkspaces.qml` | workspaces, подменяет `omarchy.workspaces` в этом баре |
-| `modules/` | кастомные QML-модули для раскладки `nihil` (`NihilMark`, `ActiveAppIcon`, `BatteryGauge`, `DotClock`, `PrivacyLed`); трей, Wi-Fi, Bluetooth и звук в раскладке — клоны виджетов Omarchy `kamradsmeshnyavy.{tray,network,bluetooth,audio}` из dotfiles |
+| `modules/` | кастомные QML-модули для раскладки `dotmatrix` (`DotMatrixMark`, `ActiveAppIcon`, `BatteryGauge`, `DotClock`, `PrivacyLed`); трей, Wi-Fi, Bluetooth и звук в раскладке — клоны виджетов Omarchy `kamradsmeshnyavy.{tray,network,bluetooth,audio}` из dotfiles |
 | `skins/`, `layouts/` | пресеты |
 | `UPSTREAM.md` | документация стокового `omarchy.bar`: каталог виджетов, свои модули |
 

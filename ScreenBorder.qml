@@ -100,7 +100,7 @@ Scope {
         }
       }
 
-      // Опциональный внутренний контур рамки (например, 1px #2a2a2a в скине nihil).
+      // Опциональный внутренний контур рамки (например, 1px #2a2a2a в скине dotmatrix).
       ShapePath {
         readonly property real bw: border.skin.borderWidth
         fillColor: "transparent"

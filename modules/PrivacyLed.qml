@@ -1,6 +1,6 @@
 import QtQuick
 import Quickshell.Services.Pipewire
-import "../nihil" as Nihil
+import "../dotmatrix" as DotMatrix
 
 // Pulsing red privacy LED visible whenever an application is capturing audio.
 Item {
@@ -12,7 +12,7 @@ Item {
 
   readonly property bool tooltipHovered: hover.hovered
   // bar.urgent is the skin's active colour; battery/privacy alerts stay on theme urgent.
-  readonly property color urgentColor: Nihil.Palette.danger
+  readonly property color urgentColor: DotMatrix.Palette.danger
 
   readonly property bool micInUse: {
     var nodes = Pipewire.nodes && Pipewire.nodes.values ? Pipewire.nodes.values : []

@@ -1,8 +1,8 @@
 import QtQuick
 import Quickshell
-import "../nihil" as Nihil
+import "../dotmatrix" as DotMatrix
 
-// Arch / NIHIL mark at the start of the frame bar.
+// Arch / DOT-MATRIX mark at the start of the frame bar.
 // Left-click toggles the launcher; right-click opens the Customizer.
 Item {
   id: root
@@ -12,7 +12,7 @@ Item {
   property var settings: ({})
 
   readonly property bool tooltipHovered: hover.hovered
-  readonly property color inkColor: bar && bar.barForeground ? bar.barForeground : Nihil.Palette.fg
+  readonly property color inkColor: bar && bar.barForeground ? bar.barForeground : DotMatrix.Palette.fg
   readonly property color dimColor: Qt.rgba(inkColor.r, inkColor.g, inkColor.b, 0.56)
   readonly property string glyphText: settings && settings.glyph ? String(settings.glyph) : String.fromCodePoint(0xF08C7)
 
@@ -46,7 +46,7 @@ Item {
     width: 28
     height: 28
     radius: 14
-    color: root.tooltipHovered ? Nihil.Palette.lineSoft : "transparent"
+    color: root.tooltipHovered ? DotMatrix.Palette.lineSoft : "transparent"
     Behavior on color { ColorAnimation { duration: 140 } }
   }
 
@@ -66,7 +66,7 @@ Item {
     x: root.width / 2 - (ink.tightBoundingRect.x + ink.tightBoundingRect.width / 2)
     y: root.height / 2 - (line.ascent + ink.tightBoundingRect.y + ink.tightBoundingRect.height / 2)
     text: root.glyphText
-    font.family: Nihil.Palette.fontIcon
+    font.family: DotMatrix.Palette.fontIcon
     font.pixelSize: 20
     color: root.tooltipHovered ? root.inkColor : root.dimColor
     Behavior on color { ColorAnimation { duration: 140 } }

@@ -1,6 +1,6 @@
 import QtQuick
 import Quickshell
-import "../nihil" as Nihil
+import "../dotmatrix" as DotMatrix
 
 // Dot-matrix clock in Doto Bold: stacked HH over mm on vertical bars,
 // inline HH:mm on horizontal bars. Click opens the dashboard.
@@ -13,7 +13,7 @@ Item {
 
   readonly property bool vertical: !bar || bar.vertical !== false
   readonly property bool tooltipHovered: hover.hovered
-  readonly property color inkColor: bar && bar.barForeground ? bar.barForeground : Nihil.Palette.fg
+  readonly property color inkColor: bar && bar.barForeground ? bar.barForeground : DotMatrix.Palette.fg
   readonly property color dimColor: Qt.rgba(inkColor.r, inkColor.g, inkColor.b, 0.56)
   readonly property string dateTip: Qt.formatDateTime(clock.date, "dddd, d MMMM yyyy")
 
@@ -50,7 +50,7 @@ Item {
     Text {
       anchors.horizontalCenter: parent.horizontalCenter
       text: Qt.formatDateTime(clock.date, "HH")
-      font.family: Nihil.Palette.fontDot
+      font.family: DotMatrix.Palette.fontDot
       font.weight: Font.Bold
       font.pixelSize: 20
       color: root.inkColor
@@ -59,7 +59,7 @@ Item {
     Text {
       anchors.horizontalCenter: parent.horizontalCenter
       text: Qt.formatDateTime(clock.date, "mm")
-      font.family: Nihil.Palette.fontDot
+      font.family: DotMatrix.Palette.fontDot
       font.weight: Font.Bold
       font.pixelSize: 20
       color: root.dimColor
@@ -74,7 +74,7 @@ Item {
 
     Text {
       text: Qt.formatDateTime(clock.date, "HH")
-      font.family: Nihil.Palette.fontDot
+      font.family: DotMatrix.Palette.fontDot
       font.weight: Font.Bold
       font.pixelSize: 18
       color: root.inkColor
@@ -82,7 +82,7 @@ Item {
 
     Text {
       text: ":"
-      font.family: Nihil.Palette.fontDot
+      font.family: DotMatrix.Palette.fontDot
       font.weight: Font.Bold
       font.pixelSize: 18
       color: root.dimColor
@@ -90,7 +90,7 @@ Item {
 
     Text {
       text: Qt.formatDateTime(clock.date, "mm")
-      font.family: Nihil.Palette.fontDot
+      font.family: DotMatrix.Palette.fontDot
       font.weight: Font.Bold
       font.pixelSize: 18
       color: root.dimColor

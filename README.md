@@ -6,8 +6,8 @@ A drop-in replacement for the [Omarchy](https://omarchy.org) top bar: the stock 
 layer on top. Every widget, panel and gesture of the stock bar keeps working — the skin only changes how
 the bar is drawn.
 
-- **24 skins** — floating, islands, pill, notch, underline, hug, frame, nihil, paper, soft, brutal, bevel, glass, neon, capsules, autohide, …
-- **10 layouts** — centered, bottom, left-vertical, nihil, right-heavy, media-center, …
+- **24 skins** — floating, islands, pill, notch, underline, hug, frame, dotmatrix, paper, soft, brutal, bevel, glass, neon, capsules, autohide, …
+- **10 layouts** — centered, bottom, left-vertical, dotmatrix, right-heavy, media-center, …
 - **Compact mode** — the bar shrinks to a thin strip (only when a window is focused, only in fullscreen, or
   always) and expands back when you hover it
 - **Workspaces** — 20+ label styles (roman, kanji, greek, circled, braille, leds…), app icons per workspace,
@@ -131,7 +131,7 @@ inside it. Vertical bars support only `full`, `floating` and `frame`.
 | `SkinFrame.qml` | the shaped background, input mask, exclusive zone |
 | `SkinIsland.qml` | islands under sections |
 | `SkinWorkspaces.qml` | workspaces widget that replaces `omarchy.workspaces` in this bar |
-| `modules/` | custom QML modules for the `nihil` layout (`NihilMark`, `ActiveAppIcon`, `BatteryGauge`, `DotClock`, `PrivacyLed`); the tray, Wi-Fi, Bluetooth and sound in the layout are Nihil clones of the Omarchy widgets, `kamradsmeshnyavy.{tray,network,bluetooth,audio}` |
+| `modules/` | custom QML modules for the `dotmatrix` layout (`DotMatrixMark`, `ActiveAppIcon`, `BatteryGauge`, `DotClock`, `PrivacyLed`); the tray, Wi-Fi, Bluetooth and sound in the layout are DOT-MATRIX clones of the Omarchy widgets, `kamradsmeshnyavy.{tray,network,bluetooth,audio}` |
 | `skins/`, `layouts/` | presets |
 | `UPSTREAM.md` | stock `omarchy.bar` docs: widget catalogue, custom modules |
 

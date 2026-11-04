@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Services.UPower
-import "../nihil" as Nihil
+import "../dotmatrix" as DotMatrix
 
 // 10-LED battery meter with charging scan animation and Space Mono % readout.
 Item {
@@ -13,11 +13,11 @@ Item {
 
   readonly property bool vertical: !bar || bar.vertical !== false
   readonly property bool tooltipHovered: hover.hovered
-  readonly property color inkColor: bar && bar.barForeground ? bar.barForeground : Nihil.Palette.fg
+  readonly property color inkColor: bar && bar.barForeground ? bar.barForeground : DotMatrix.Palette.fg
   readonly property color unlitColor: Qt.rgba(inkColor.r, inkColor.g, inkColor.b, 0.16)
   readonly property color mutedColor: Qt.rgba(inkColor.r, inkColor.g, inkColor.b, 0.42)
   // bar.urgent is the skin's active colour; battery/privacy alerts stay on theme urgent.
-  readonly property color urgentColor: Nihil.Palette.danger
+  readonly property color urgentColor: DotMatrix.Palette.danger
 
   readonly property var device: UPower.displayDevice
   readonly property bool present: device ? device.isLaptopBattery : false
@@ -107,7 +107,7 @@ Item {
       x: root.vertical ? Math.round((content.width - implicitWidth) / 2) : (meterBox.width + 6)
       y: root.vertical ? (meterBox.height + 6) : Math.round((content.height - implicitHeight) / 2)
       text: String(Math.round(root.level * 100))
-      font.family: Nihil.Palette.fontMono
+      font.family: DotMatrix.Palette.fontMono
       font.pixelSize: 9
       color: root.low ? root.urgentColor : root.mutedColor
     }

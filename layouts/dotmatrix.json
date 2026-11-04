@@ -1,14 +1,14 @@
 {
-  "note": "NIHIL left frame bar: mark & LED workspaces at top, active app in center, tray and Wi-Fi / Bluetooth / sound menus (Omarchy panels in the Nihil style), 10-LED battery, Doto clock & privacy LED at bottom",
-  "note_ru": "Левый бар NIHIL: логотип и LED-воркспейсы сверху, активное окно по центру, трей и меню Wi-Fi / Bluetooth / звука (панели Omarchy в стиле Nihil), батарея на 10 LED, часы Doto и индикатор микрофона снизу",
+  "note": "DOT-MATRIX left frame bar: mark & LED workspaces at top, active app in center, tray and Wi-Fi / Bluetooth / sound menus (Omarchy panels in the DOT-MATRIX style), 10-LED battery, Doto clock & privacy LED at bottom",
+  "note_ru": "Левый бар DOT-MATRIX: логотип и LED-воркспейсы сверху, активное окно по центру, трей и меню Wi-Fi / Bluetooth / звука (панели Omarchy в стиле DOT-MATRIX), батарея на 10 LED, часы Doto и индикатор микрофона снизу",
   "position": "left",
   "centerAnchor": "active-app",
   "layout": {
     "left": [
       {
-        "id": "nihil-mark",
+        "id": "dotmatrix-mark",
         "type": "qml",
-        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/NihilMark.qml"
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/DotMatrixMark.qml"
       },
       {
         "id": "omarchy.workspaces"
