@@ -31,7 +31,23 @@ omarchy restart shell
 load, the shell falls back to the stock bar on its own. To go back manually:
 `omarchy plugin enable omarchy.bar`.
 
-Tested on Omarchy 4.0.6 with Quickshell 0.3.2.
+
+## Requirements
+
+Omarchy 4 (Quattro) with its shell. Tested on Omarchy 4.0.6 with Quickshell 0.3.2.
+
+- Optional: `cava` for the audio visualizer module.
+- DOT-MATRIX designs use the fonts shipped with the [Customizer](https://github.com/KamradSmeshnyavy/omarchy-customizer) (Doto, Space Grotesk, Space Mono); without them they fall back to the Omarchy font.
+
+## Uninstall
+
+```sh
+omarchy plugin enable omarchy.bar      # switch back to the stock one first
+omarchy plugin remove kamradsmeshnyavy.bar
+omarchy restart shell
+```
+
+Your settings stay in `~/.config/omarchy/bar-skin.json`, `~/.config/omarchy/bar-skins/`, `~/.config/omarchy/bar-layouts/` — delete them by hand if you don't need them.
 
 ## Pick a skin
 

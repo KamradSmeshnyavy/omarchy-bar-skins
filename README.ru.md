@@ -27,7 +27,23 @@ omarchy restart shell
 `--enable` делает его текущим баром (`bar.id` в `~/.config/omarchy/shell.json`). Если плагин не
 загрузится, шелл сам вернёт стоковый бар. Вернуть вручную: `omarchy plugin enable omarchy.bar`.
 
-Проверено на Omarchy 4.0.6 и Quickshell 0.3.2.
+
+## Требования
+
+Omarchy 4 (Quattro) с его оболочкой. Проверено на Omarchy 4.0.6 и Quickshell 0.3.2.
+
+- Необязательно: `cava` — модуль визуализатора звука.
+- Дизайны DOT-MATRIX используют шрифты из [Customizer](https://github.com/KamradSmeshnyavy/omarchy-customizer) (Doto, Space Grotesk, Space Mono); без них — шрифт Omarchy.
+
+## Удаление
+
+```sh
+omarchy plugin enable omarchy.bar      # сначала вернуть стоковый
+omarchy plugin remove kamradsmeshnyavy.bar
+omarchy restart shell
+```
+
+Настройки остаются в `~/.config/omarchy/bar-skin.json`, `~/.config/omarchy/bar-skins/`, `~/.config/omarchy/bar-layouts/` — удалите их вручную, если не нужны.
 
 ## Выбрать скин
 
