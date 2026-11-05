@@ -154,10 +154,10 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
 
 [omarchy-customizer](https://github.com/KamradSmeshnyavy/omarchy-customizer) — один оверлей (Super+Shift+T) с живым предпросмотром для настроек этого
 плагина и всего остального оформления: темы, обои, анимации Hyprland, прозрачность, блюр, шейдеры экрана.
-Одна команда ставит его и предлагает этот плагин и остальные:
+Поставьте его рядом с этим плагином (остальные компаньоны он найдёт сам):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/KamradSmeshnyavy/omarchy-customizer/main/install.sh | bash
+omarchy plugin add https://github.com/KamradSmeshnyavy/omarchy-customizer --enable
 ```
 
 ## Лицензия
