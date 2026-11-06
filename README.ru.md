@@ -15,6 +15,10 @@
 
 ![Скины](screenshots/skins.webp)
 
+![Вертикальный бар](screenshots/vertical.webp)
+
+<!-- Demo video: repo-videos/omarchy-bar-skins.mp4 — drag it here when editing this file on GitHub -->
+
 ![Compact](screenshots/compact.webp)
 
 ## Установка

@@ -16,6 +16,10 @@ the bar is drawn.
 
 ![Skins](screenshots/skins.webp)
 
+![Vertical bar](screenshots/vertical.webp)
+
+<!-- Demo video: repo-videos/omarchy-bar-skins.mp4 — drag it here when editing this file on GitHub -->
+
 Compact mode expanding on hover:
 
 ![Compact mode](screenshots/compact.webp)
