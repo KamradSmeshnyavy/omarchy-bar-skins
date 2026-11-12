@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Effects
 import QtQuick.Shapes
+import qs.Commons as Commons
 
 // Подложка бара по форме скина. Растянута на всё окно бара; `body` — видимая
 // часть, в неё Bar.qml кладёт секции модулей, `hitArea` — маска ввода.
@@ -176,6 +177,59 @@ Item {
     Rectangle { anchors { left: parent.left; top: parent.top; bottom: parent.bottom } width: 2; color: parent.hi }
     Rectangle { anchors { left: parent.left; right: parent.right; bottom: parent.bottom } height: 2; color: parent.lo }
     Rectangle { anchors { right: parent.right; top: parent.top; bottom: parent.bottom } width: 2; color: parent.lo }
+  }
+
+  // liquid: жидкое стекло (по мотивам Vitreus) поверх прозрачной подложки под блюром Hyprland —
+  // свет падает сверху-слева: мягкий блик на «верхней» половине (у вертикального бара — левой),
+  // яркая кромка с той же стороны, второй, внутренний ободок и слабая подсветка акцентом с другой стороны.
+  Item {
+    id: liquidLayer
+    visible: frame.skin.liquid && plate.visible && !frame.transparent
+    x: plate.x
+    y: plate.y
+    width: plate.width
+    height: plate.height
+    readonly property real r: plate.radius
+    readonly property color accent: Commons.Color.accent
+
+    Rectangle {   // блик: градиент от освещённой стороны
+      anchors.fill: parent
+      radius: liquidLayer.r
+      gradient: Gradient {
+        orientation: frame.vertical ? Gradient.Horizontal : Gradient.Vertical
+        GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.22) }
+        GradientStop { position: 0.45; color: Qt.rgba(1, 1, 1, 0.05) }
+        GradientStop { position: 0.55; color: Qt.rgba(1, 1, 1, 0.0) }
+        GradientStop { position: 1.0; color: Qt.rgba(liquidLayer.accent.r, liquidLayer.accent.g, liquidLayer.accent.b, 0.16) }
+      }
+    }
+    Rectangle {   // внешний ободок
+      anchors.fill: parent
+      radius: liquidLayer.r
+      color: "transparent"
+      border.width: 1
+      border.color: Qt.rgba(1, 1, 1, 0.22)
+    }
+    Rectangle {   // внутренний ободок — даёт стеклу толщину
+      anchors { fill: parent; margins: 2 }
+      radius: Math.max(0, liquidLayer.r - 2)
+      color: "transparent"
+      border.width: 1
+      border.color: Qt.rgba(1, 1, 1, 0.07)
+    }
+    Rectangle {   // яркая кромка с освещённой стороны, гаснет к дальнему концу
+      x: frame.vertical ? 0.5 : liquidLayer.r * 0.7
+      y: frame.vertical ? liquidLayer.r * 0.7 : 0.5
+      width: frame.vertical ? 1.5 : parent.width - liquidLayer.r * 1.4
+      height: frame.vertical ? parent.height - liquidLayer.r * 1.4 : 1.5
+      gradient: Gradient {
+        orientation: frame.vertical ? Gradient.Vertical : Gradient.Horizontal
+        GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.0) }
+        GradientStop { position: 0.12; color: Qt.rgba(1, 1, 1, 0.85) }
+        GradientStop { position: 0.5; color: Qt.rgba(1, 1, 1, 0.30) }
+        GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0.05) }
+      }
+    }
   }
 
   // texture: тайл бумаги / ткани поверх подложки, обрезанный по её скруглению.

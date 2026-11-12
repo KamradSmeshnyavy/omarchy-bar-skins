@@ -6,11 +6,12 @@
   "margin": 12,
   "radius": 18,
   "height": 32,
-  "backgroundAlpha": 0.35,
+  "backgroundAlpha": 0.28,
   "border": "foreground",
-  "borderWidth": 1,
+  "borderWidth": 0,
   "borderAlpha": 0.2,
   "shadow": true,
   "moduleStyle": "hover",
-  "moduleAlpha": 0.14
+  "moduleAlpha": 0.14,
+  "liquid": true
 }
