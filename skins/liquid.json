@@ -1,0 +1,16 @@
+{
+  "note": "Liquid glass (Vitreus): a very clear floating pill under strong blur, thin light rim, soft shadow",
+  "note_ru": "Жидкое стекло (Vitreus): очень прозрачная плавающая пилюля под сильным блюром, тонкий светлый ободок, мягкая тень",
+  "shape": "floating",
+  "gap": 8,
+  "margin": 12,
+  "radius": 18,
+  "height": 32,
+  "backgroundAlpha": 0.35,
+  "border": "foreground",
+  "borderWidth": 1,
+  "borderAlpha": 0.2,
+  "shadow": true,
+  "moduleStyle": "hover",
+  "moduleAlpha": 0.14
+}
