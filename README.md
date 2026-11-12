@@ -151,7 +151,7 @@ inside it. Vertical bars support only `full`, `floating` and `frame`.
 | `SkinFrame.qml` | the shaped background, input mask, exclusive zone |
 | `SkinIsland.qml` | islands under sections |
 | `SkinWorkspaces.qml` | workspaces widget that replaces `omarchy.workspaces` in this bar |
-| `modules/` | custom QML modules for the `dotmatrix` layout (`DotMatrixMark`, `ActiveAppIcon`, `BatteryGauge`, `DotClock`, `PrivacyLed`); the tray, Wi-Fi, Bluetooth and sound in the layout are DOT-MATRIX clones of the Omarchy widgets, `kamradsmeshnyavy.{tray,network,bluetooth,audio}` |
+| `modules/` | custom QML modules for the `dotmatrix` layout (`DotMatrixMark`, `ActiveAppIcon`, `BatteryGauge`, `DotClock`, `PrivacyLed`) and for any layout: `RunCat` (a pixel cat that runs faster as CPU load rises), `CpuRamRings` (radial CPU / RAM), `CavaDots` (8×5 dot spectrum, only while music plays), `FocusTimer` (pomodoro: click — start / pause, right click — reset, wheel — ±5 min; state survives a shell restart) — put them on the bar from Customizer → Bar Widgets → Not on the bar; the tray, Wi-Fi, Bluetooth and sound in the layout are DOT-MATRIX clones of the Omarchy widgets, `kamradsmeshnyavy.{tray,network,bluetooth,audio}` |
 | `skins/`, `layouts/` | presets |
 | `UPSTREAM.md` | stock `omarchy.bar` docs: widget catalogue, custom modules |
 

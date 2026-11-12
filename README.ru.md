@@ -147,7 +147,7 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
 | `SkinFrame.qml` | подложка по форме, маска ввода, exclusive zone |
 | `SkinIsland.qml` | острова под секциями |
 | `SkinWorkspaces.qml` | workspaces, подменяет `omarchy.workspaces` в этом баре |
-| `modules/` | кастомные QML-модули для раскладки `dotmatrix` (`DotMatrixMark`, `ActiveAppIcon`, `BatteryGauge`, `DotClock`, `PrivacyLed`); трей, Wi-Fi, Bluetooth и звук в раскладке — клоны виджетов Omarchy `kamradsmeshnyavy.{tray,network,bluetooth,audio}` из dotfiles |
+| `modules/` | кастомные QML-модули для раскладки `dotmatrix` (`DotMatrixMark`, `ActiveAppIcon`, `BatteryGauge`, `DotClock`, `PrivacyLed`) и для любой раскладки: `RunCat` (пиксельный кот бежит быстрее под нагрузкой CPU), `CpuRamRings` (радиальные CPU / RAM), `CavaDots` (спектр 8×5 точками, только пока играет музыка), `FocusTimer` (помодоро: клик — старт / пауза, ПКМ — сброс, колесо — ±5 мин; состояние переживает перезапуск оболочки) — ставятся из Customizer → Bar Widgets → «Не на баре»; трей, Wi-Fi, Bluetooth и звук в раскладке — клоны виджетов Omarchy `kamradsmeshnyavy.{tray,network,bluetooth,audio}` из dotfiles |
 | `skins/`, `layouts/` | пресеты |
 | `UPSTREAM.md` | документация стокового `omarchy.bar`: каталог виджетов, свои модули |
 
