@@ -7,10 +7,15 @@
   "compact": "empty",
   "compactShape": "pill",
   "compactModules": "taskbar",
-  "compactHeight": 48,
+  "compactHeight": 52,
   "compactReserve": "keep",
   "compactExpandOnHover": false,
   "radius": 16,
   "gap": 10,
-  "width": 0.4
+  "width": 0.3,
+  "border": "foreground",
+  "borderWidth": 1,
+  "borderAlpha": 0.22,
+  "shadow": true,
+  "compactAlpha": 0.98
 }
