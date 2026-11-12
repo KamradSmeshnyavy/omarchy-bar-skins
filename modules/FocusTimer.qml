@@ -18,6 +18,18 @@ Item {
   readonly property color ink: bar && bar.barForeground ? bar.barForeground : "#ffffff"
   readonly property color accent: bar && bar.urgent ? bar.urgent : "#e06c75"
 
+  // Язык — как в Customizer (~/.config/omarchy/customizer.json "lang"), иначе локаль системы.
+  property string uiLang: ""
+  readonly property bool ru: (uiLang !== "" ? uiLang : Qt.locale().name).indexOf("ru") === 0
+  function tr(en, r) { return ru ? r : en }
+  FileView {
+    path: Quickshell.env("HOME") + "/.config/omarchy/customizer.json"
+    watchChanges: true
+    printErrors: false
+    onLoaded: { try { root.uiLang = String(JSON.parse(text() || "{}").lang || "") } catch (e) { root.uiLang = "" } }
+    onFileChanged: reload()
+  }
+
   property int workMin: 25
   property int breakMin: 5
   property string phase: "work"          // work | break
@@ -31,8 +43,9 @@ Item {
   readonly property real done: total > 0 ? 1 - remain / total : 0
   function mmss(s) { var m = Math.floor(s / 60), x = s % 60; return m + ":" + (x < 10 ? "0" : "") + x }
 
-  implicitWidth: vertical ? 30 : label.implicitWidth + 30
-  implicitHeight: vertical ? 40 : 24
+  readonly property int across: bar && bar.barSize ? bar.barSize : 26
+  implicitWidth: vertical ? across : label.implicitWidth + 30
+  implicitHeight: vertical ? 40 : across
 
   FileView {
     id: store
@@ -70,7 +83,8 @@ Item {
     running = true
     save()
     Quickshell.execDetached(["omarchy", "notification", "send", "-t", "6000", "-g", wasWork ? "󰔟" : "󰂜", "--app-name", "Focus",
-      wasWork ? "Перерыв " + breakMin + " мин" : "Снова фокус: " + workMin + " мин", wasWork ? "Отрезок фокуса закончен" : "Перерыв закончен"])
+      wasWork ? tr("Break: ", "Перерыв: ") + breakMin + tr(" min", " мин") : tr("Focus again: ", "Снова фокус: ") + workMin + tr(" min", " мин"),
+      wasWork ? tr("Focus session done", "Отрезок фокуса закончен") : tr("Break is over", "Перерыв закончен")])
   }
 
   Timer {
@@ -80,8 +94,8 @@ Item {
 
   onTooltipHoveredChanged: {
     if (!bar) return
-    if (tooltipHovered) bar.showTooltip(root, (phase === "work" ? "Фокус" : "Перерыв") + " · " + mmss(remain) +
-      "\nклик — старт/пауза · ПКМ — сброс · колесо — ±")
+    if (tooltipHovered) bar.showTooltip(root, (phase === "work" ? tr("Focus", "Фокус") : tr("Break", "Перерыв")) + " · " + mmss(remain) +
+      "\n" + tr("click — start / pause · right click — reset · wheel — ±", "клик — старт / пауза · ПКМ — сброс · колесо — ±"))
     else bar.hideTooltip(root)
   }
   HoverHandler { id: hover }

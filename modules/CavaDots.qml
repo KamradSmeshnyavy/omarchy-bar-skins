@@ -20,8 +20,9 @@ Item {
   property var levels: []
 
   visible: playing
-  implicitWidth: !playing ? 0 : vertical ? rows * (dot + 2) : cols * (dot + 2)
-  implicitHeight: !playing ? 0 : vertical ? cols * (dot + 2) : rows * (dot + 2)
+  readonly property int across: bar && bar.barSize ? bar.barSize : rows * (dot + 2)
+  implicitWidth: !playing ? 0 : vertical ? across : cols * (dot + 2)
+  implicitHeight: !playing ? 0 : vertical ? cols * (dot + 2) : across
 
   Process {
     id: cava

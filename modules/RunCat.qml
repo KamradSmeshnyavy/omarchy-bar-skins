@@ -54,8 +54,10 @@ Item {
   property real cpu: 0
   property var prev: null
 
-  implicitWidth: vertical ? 30 : 14 * px + 6
-  implicitHeight: vertical ? 8 * px + 8 : 24
+  // Толщина слота — как у бара (штатные модули так же), иначе модуль прижат к верху ряда.
+  readonly property int across: bar && bar.barSize ? bar.barSize : 26
+  implicitWidth: vertical ? across : 14 * px + 6
+  implicitHeight: vertical ? 8 * px + 8 : across
 
   onTooltipHoveredChanged: {
     if (!bar) return

@@ -20,8 +20,10 @@ Item {
   property var prev: null
   readonly property int size: 22
 
-  implicitWidth: vertical ? size + 4 : size * 2 + 10
-  implicitHeight: vertical ? size * 2 + 10 : size + 4
+  // Толщина слота — как у бара, кольца по центру.
+  readonly property int across: bar && bar.barSize ? bar.barSize : size + 4
+  implicitWidth: vertical ? across : size * 2 + 10
+  implicitHeight: vertical ? size * 2 + 10 : across
 
   onTooltipHoveredChanged: {
     if (!bar) return
