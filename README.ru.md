@@ -5,7 +5,7 @@
 Замена верхнего бара [Omarchy](https://omarchy.org): стоковый `omarchy.bar` с прослойкой скинов. Все
 виджеты, панели и жесты стокового бара работают как раньше — скин меняет только то, как бар нарисован.
 
-- **25 скинов** (`liquid` рисует своё стекло: блик вдоль бара, яркую освещённую кромку, двойной светлый ободок и подсветку акцентом с другой стороны; ключ `liquid: true` работает в любом скине) — floating, islands, pill, notch, underline, hug, frame, dotmatrix, paper, soft, brutal, bevel, glass, liquid, neon, capsules, autohide, …
+- **28 скинов** (`liquid` рисует своё стекло: блик вдоль бара, яркую освещённую кромку, двойной светлый ободок и подсветку акцентом с другой стороны; ключ `liquid: true` работает в любом скине) — floating, islands, pill, notch, underline, hug, frame, dotmatrix, paper, soft, brutal, bevel, glass, liquid, notches, glyph-pill, surface-dock, neon, capsules, autohide, …
 - **10 раскладок** — centered, bottom, left-vertical, dotmatrix, right-heavy, media-center, …
 - **Compact** — бар сжимается в тонкую полосу (при одном окне, в полноэкранном режиме или всегда) и
   разворачивается по наведению
@@ -108,7 +108,8 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
 или `#rrggbb`. Роли перекрашиваются вместе с темой.
 
 Формы: `full` — сток; `floating` — полоса с отступами; `pill` — floating с радиусом в полвысоты;
-`islands` — остров под каждой секцией; `notch` — «чёлка» у края; `underline` — линия по краю; `hug` —
+`islands` — остров под каждой секцией; `notches` — остров под каждой секцией, свисающий с края экрана, скруглены
+только углы к экрану (по мотивам Vitreus; скин и раскладка `notches`); `notch` — «чёлка» у края; `underline` — линия по краю; `hug` —
 полоса во всю ширину с вогнутыми углами; `frame` — полоса и рамка цвета бара по остальным трём краям
 экрана со скруглёнными внутренними углами (`radius`, минимум 8), место под рамку зарезервировано, окна
 внутри. Вертикальный бар умеет только `full`, `floating` и `frame`.
@@ -117,9 +118,9 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
 
 | Ключ | Умолч. | |
 |---|---|---|
-| `compact` | `off` | `single` — на workspace одно тайловое окно; `fullscreen`; `always` |
+| `compact` | `off` | `single` — на workspace одно тайловое окно; `fullscreen`; `always`; `empty` — на столе нет окон |
 | `compactHeight` | `22` | высота подложки в compact; `0` — не менять |
-| `compactModules` | `essentials` | `essentials` (меню, workspaces, часы, сеть, звук, питание), `center`, `minimal`, `all` |
+| `compactModules` | `essentials` | `essentials` (меню, workspaces, часы, сеть, звук, питание), `center`, `minimal`, `all`, `taskbar` (только модуль Taskbar) |
 | `compactShape` | `full` | форма в compact; `same` — как обычно |
 | `compactAlpha` | `-1` | альфа фона в compact |
 | `compactReserve` | `keep` | `keep` — окна не дёргаются; `shrink` — окна получают место |
@@ -138,6 +139,14 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
 | `wsShowEmpty` | `true` | показывать пустые |
 | `wsActivePill` | `false` | плашка цвета акцента под активным |
 | `wsActiveColor` | как в стиле | цвет текущего workspace: роль темы или `#hex` |
+
+
+**Новые раскладки.** `notches` (три выреза: лаунчер с воркспейсами, часы, статус), `glyph-left` (левая пилюля по мотивам
+glyph-rice: лаунчер и воркспейсы сверху, RunCat посередине, статус, таймер фокуса и часы снизу — со скином `glyph-pill`),
+`taskbar` (снизу: воркспейсы, модуль `Taskbar` посередине, статус — со скином `surface-dock`). **Таскбар → док** (по
+мотивам surface-dots): модуль `Taskbar` показывает окна стола (клик — фокус), а на пустом столе — закреплённые
+приложения дока Omarchy (`omarchy dock pin <id>`; клик — запуск); у скина `surface-dock` `"compact": "empty"` +
+`"compactModules": "taskbar"`, поэтому на пустом столе бар сжимается в пилюлю по центру только с этим модулем.
 
 ## Файлы
 

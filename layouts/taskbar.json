@@ -1,0 +1,39 @@
+{
+  "note": "Taskbar at the bottom (after surface-dots): workspaces, windows of the workspace in the middle (pinned apps on an empty one), status and clock — pair with the surface-dock skin",
+  "note_ru": "Таскбар снизу (по мотивам surface-dots): воркспейсы, окна стола посередине (на пустом — закреплённые приложения), статус и часы — в паре со скином surface-dock",
+  "position": "bottom",
+  "layout": {
+    "left": [
+      {
+        "id": "kamradsmeshnyavy.menu"
+      },
+      {
+        "id": "omarchy.workspaces"
+      }
+    ],
+    "center": [
+      {
+        "id": "taskbar",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/Taskbar.qml"
+      }
+    ],
+    "right": [
+      {
+        "id": "omarchy.tray"
+      },
+      {
+        "id": "omarchy.network"
+      },
+      {
+        "id": "omarchy.audio"
+      },
+      {
+        "id": "omarchy.clock"
+      },
+      {
+        "id": "omarchy.power"
+      }
+    ]
+  }
+}

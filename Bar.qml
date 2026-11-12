@@ -109,6 +109,7 @@ Item {
     if (mode === "off") return false
     if (mode === "always") return true
     if (!workspace) return false
+    if (mode === "empty") return workspace.toplevels.values.length === 0
     if (workspace.hasFullscreen) return true
     if (mode === "fullscreen") return false
     var list = workspace.toplevels.values
@@ -1726,7 +1727,7 @@ Item {
           target: centerAnchorModule
           vertical: false
           transparent: root.transparent
-          visible: shape === "islands" && spanEnd - spanStart > 0
+          visible: root.skin.islandShape(shape) && spanEnd - spanStart > 0
           spanStart: centerRoot.hasAnchor
             ? (hBefore.width > 0 ? hBefore.x : centerAnchorModule.x)
             : hPlain.x

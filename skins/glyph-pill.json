@@ -1,0 +1,13 @@
+{
+  "note": "Glyph pill (after glyph-rice): a narrow fully rounded pill floating at the screen edge — for a left or right bar",
+  "note_ru": "Пилюля Glyph (по мотивам glyph-rice): узкая полностью скруглённая пилюля у края экрана — для бара слева или справа",
+  "shape": "floating",
+  "gap": 10,
+  "margin": 10,
+  "radius": 99,
+  "height": 44,
+  "backgroundAlpha": 0.96,
+  "border": "foreground",
+  "borderWidth": 1,
+  "borderAlpha": 0.1
+}

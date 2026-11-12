@@ -6,7 +6,7 @@ A drop-in replacement for the [Omarchy](https://omarchy.org) top bar: the stock 
 layer on top. Every widget, panel and gesture of the stock bar keeps working — the skin only changes how
 the bar is drawn.
 
-- **25 skins** (`liquid` draws its own glass: a highlight along the bar, a bright lit edge, a double light rim and an accent glow on the far side; the `liquid: true` key works in any skin) — floating, islands, pill, notch, underline, hug, frame, dotmatrix, paper, soft, brutal, bevel, glass, liquid, neon, capsules, autohide, …
+- **28 skins** (`liquid` draws its own glass: a highlight along the bar, a bright lit edge, a double light rim and an accent glow on the far side; the `liquid: true` key works in any skin) — floating, islands, pill, notch, underline, hug, frame, dotmatrix, paper, soft, brutal, bevel, glass, liquid, notches, glyph-pill, surface-dock, neon, capsules, autohide, …
 - **10 layouts** — centered, bottom, left-vertical, dotmatrix, right-heavy, media-center, …
 - **Compact mode** — the bar shrinks to a thin strip (only when a window is focused, only in fullscreen, or
   always) and expands back when you hover it
@@ -112,7 +112,8 @@ A colour is `bar` (the stock bar colour from the theme's `[bar]`), a shell role 
 `lighter_background`, …) or `#rrggbb`. Roles follow the theme.
 
 Shapes: `full` is stock; `floating` — a strip with gaps; `pill` — floating with half-height radius;
-`islands` — one island per section; `notch` — a notch at the edge; `underline` — a line along the edge;
+`islands` — one island per section; `notches` — an island per section hanging from the screen edge, only the
+corners facing the screen rounded (after Vitreus; skin + layout `notches`); `notch` — a notch at the edge; `underline` — a line along the edge;
 `hug` — full width with concave corners below it; `frame` — a strip plus a border of the bar colour along the
 other three screen edges, with rounded inner corners (`radius`, at least 8) and space reserved so windows sit
 inside it. Vertical bars support only `full`, `floating` and `frame`.
@@ -121,9 +122,9 @@ inside it. Vertical bars support only `full`, `floating` and `frame`.
 
 | Key | Default | |
 |---|---|---|
-| `compact` | `off` | `single` — one tiled window on the workspace; `fullscreen`; `always` |
+| `compact` | `off` | `single` — one tiled window on the workspace; `fullscreen`; `always`; `empty` — no windows on the workspace |
 | `compactHeight` | `22` | background height in compact; `0` — unchanged |
-| `compactModules` | `essentials` | `essentials` (menu, workspaces, clock, network, audio, power), `center`, `minimal`, `all` |
+| `compactModules` | `essentials` | `essentials` (menu, workspaces, clock, network, audio, power), `center`, `minimal`, `all`, `taskbar` (only the Taskbar module) |
 | `compactShape` | `full` | shape in compact; `same` — as usual |
 | `compactAlpha` | `-1` | background alpha in compact |
 | `compactReserve` | `keep` | `keep` — windows don't jump; `shrink` — windows take the space |
@@ -142,6 +143,15 @@ inside it. Vertical bars support only `full`, `floating` and `frame`.
 | `wsShowEmpty` | `true` | show empty ones |
 | `wsActivePill` | `false` | accent pill under the active one |
 | `wsActiveColor` | style | colour of the active workspace: a role or `#hex` |
+
+
+**New layouts.** `notches` (three notches: launcher + workspaces, clock, status), `glyph-left` (a left pill after
+glyph-rice: launcher and workspaces on top, RunCat in the middle, status, focus timer and clock below — with the
+`glyph-pill` skin), `taskbar` (bottom: workspaces, the `Taskbar` module in the middle, status — with the `surface-dock`
+skin). **Taskbar → dock** (after surface-dots): the `Taskbar` module shows the windows of the workspace (click — focus) and,
+on an empty workspace, the pinned apps of the Omarchy dock (`omarchy dock pin <id>`; click — launch); the `surface-dock`
+skin has `"compact": "empty"` + `"compactModules": "taskbar"`, so on an empty workspace the bar shrinks into a centred
+pill with that module only.
 
 ## Files
 

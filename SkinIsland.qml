@@ -22,15 +22,18 @@ Rectangle {
   }
   readonly property string shape: host ? host.skinShape : skin.shape
 
-  visible: shape === "islands" && target !== null && target.visible && spanEnd - spanStart > 0
+  visible: skin.islandShape(shape) && target !== null && target.visible && spanEnd - spanStart > 0
   z: -1
 
+  // notches: остров уходит за край экрана на радиус (окно его обрезает) — скруглены только углы к экрану.
+  readonly property bool notch: shape === "notches" && !vertical
+  readonly property bool atBottom: skin.position === "bottom"
   x: vertical ? 0 : spanStart - pad
-  y: vertical ? spanStart - pad : 0
+  y: vertical ? spanStart - pad : notch && !atBottom ? -radius : 0
   width: vertical ? parent.width : spanEnd - spanStart + 2 * pad
-  height: vertical ? spanEnd - spanStart + 2 * pad : parent.height
+  height: vertical ? spanEnd - spanStart + 2 * pad : parent.height + (notch ? radius : 0)
 
-  radius: skin.radiusFor(vertical ? width : height, "islands")
+  radius: skin.radiusFor(vertical ? width : parent.height, "islands")
   color: transparent ? "transparent" : skin.backgroundColor
   border.width: skin.borderWidth
   border.color: skin.borderColor

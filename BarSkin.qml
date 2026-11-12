@@ -24,7 +24,7 @@ QtObject {
   readonly property string path: home + "/.config/omarchy/bar-skin.json"
 
   readonly property var defaults: ({
-    shape: "full",          // full floating pill islands notch underline hug frame
+    shape: "full",          // full floating pill islands notches notch underline hug frame
     height: 0,              // 0 = Style.bar.size*
     gap: 0,                 // отступ от края экрана (floating/pill/islands/notch)
     margin: 0,              // отступ слева/справа
@@ -80,7 +80,7 @@ QtObject {
   // Вертикальный бар умеет только полосу, floating и рамку.
   function normalizeShape(s) {
     s = String(s)
-    if (["full", "floating", "pill", "islands", "notch", "underline", "hug", "frame"].indexOf(s) === -1) s = "full"
+    if (["full", "floating", "pill", "islands", "notches", "notch", "underline", "hug", "frame"].indexOf(s) === -1) s = "full"
     if (vertical && s === "hug") s = "full"
     if (vertical && s !== "full" && s !== "frame") s = "floating"
     return s
@@ -88,12 +88,14 @@ QtObject {
   readonly property string shape: normalizeShape(requestedShape)
 
   // Геометрия для произвольной формы: compact может подменить форму у одного окна.
-  function gapFor(s) { return s === "full" || s === "underline" || s === "notch" || s === "hug" || s === "frame" ? 0 : Math.max(0, Math.round(num("gap"))) }
+  function gapFor(s) { return s === "full" || s === "underline" || s === "notch" || s === "notches" || s === "hug" || s === "frame" ? 0 : Math.max(0, Math.round(num("gap"))) }
   function marginFor(s) { return s === "full" || s === "underline" || s === "hug" || s === "frame" ? 0 : Math.max(0, Math.round(num("margin"))) }
   function widthFor(s) { return s === "pill" || s === "notch" || s === "floating" ? Math.max(0.2, Math.min(1, num("width"))) : 1 }
   function hugRadiusFor(s) { return s === "hug" ? Math.max(8, Math.round(num("radius"))) : 0 }
 
-  readonly property bool detached: shape === "floating" || shape === "pill" || shape === "islands"
+  readonly property bool detached: shape === "floating" || shape === "pill" || shape === "islands" || shape === "notches"
+  // islands и notches — без общей подложки, у каждой секции свой остров (notches — свисает с края экрана).
+  function islandShape(s) { return s === "islands" || s === "notches" }
   readonly property int gap: gapFor(shape)
   readonly property int margin: marginFor(shape)
   readonly property real widthFraction: widthFor(shape)
@@ -107,9 +109,10 @@ QtObject {
   readonly property string moduleStyle: ["pills", "hover"].indexOf(String(value("moduleStyle"))) !== -1 ? String(value("moduleStyle")) : "plain"
   readonly property int spacing: Math.max(0, Math.round(num("spacing")))
 
-  readonly property string compactMode: ["single", "fullscreen", "always"].indexOf(String(value("compact"))) !== -1 ? String(value("compact")) : "off"
+  // empty — на пустом столе (вместе с compactModules "taskbar" бар становится доком, модуль Taskbar).
+  readonly property string compactMode: ["single", "fullscreen", "always", "empty"].indexOf(String(value("compact"))) !== -1 ? String(value("compact")) : "off"
   readonly property int compactHeight: Math.max(0, Math.round(num("compactHeight")))
-  readonly property string compactModules: ["all", "essentials", "center", "minimal"].indexOf(String(value("compactModules"))) !== -1 ? String(value("compactModules")) : "essentials"
+  readonly property string compactModules: ["all", "essentials", "center", "minimal", "taskbar"].indexOf(String(value("compactModules"))) !== -1 ? String(value("compactModules")) : "essentials"
   readonly property string compactShape: String(value("compactShape")) === "same" ? "same" : normalizeShape(value("compactShape"))
   readonly property real compactAlpha: num("compactAlpha")
   readonly property bool compactShrink: String(value("compactReserve")) === "shrink"
@@ -122,6 +125,7 @@ QtObject {
     if (compactModules === "all") return false
     if (compactModules === "center") return region !== "center"
     if (compactModules === "minimal") return name !== "omarchy.workspaces" && name !== "omarchy.clock"
+    if (compactModules === "taskbar") return name !== "taskbar"
     return compactEssentials.indexOf(name) === -1
   }
   // hug: вогнутые углы под баром, радиус из radius (минимум 8, иначе их не видно).

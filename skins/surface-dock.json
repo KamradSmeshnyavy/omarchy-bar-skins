@@ -1,0 +1,16 @@
+{
+  "note": "Taskbar that turns into a dock (after surface-dots): a full bar with windows; on an empty workspace it shrinks to a centred pill with the pinned apps only — use with the taskbar layout",
+  "note_ru": "Таскбар, превращающийся в док (по мотивам surface-dots): полный бар с окнами; на пустом столе сжимается в пилюлю по центру только с закреплёнными приложениями — вместе с раскладкой taskbar",
+  "shape": "full",
+  "height": 38,
+  "backgroundAlpha": 0.94,
+  "compact": "empty",
+  "compactShape": "pill",
+  "compactModules": "taskbar",
+  "compactHeight": 48,
+  "compactReserve": "keep",
+  "compactExpandOnHover": false,
+  "radius": 16,
+  "gap": 10,
+  "width": 0.4
+}

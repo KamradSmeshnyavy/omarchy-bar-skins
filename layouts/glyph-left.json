@@ -1,0 +1,47 @@
+{
+  "note": "Glyph left pill (after glyph-rice): launcher and workspaces on top, RunCat in the middle, status, focus timer and clock at the bottom",
+  "note_ru": "Левая пилюля Glyph (по мотивам glyph-rice): лаунчер и воркспейсы сверху, RunCat посередине, статус, таймер фокуса и часы снизу",
+  "position": "left",
+  "layout": {
+    "left": [
+      {
+        "id": "kamradsmeshnyavy.menu"
+      },
+      {
+        "id": "omarchy.workspaces"
+      }
+    ],
+    "center": [
+      {
+        "id": "runcat",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RunCat.qml"
+      }
+    ],
+    "right": [
+      {
+        "id": "omarchy.tray"
+      },
+      {
+        "id": "omarchy.network"
+      },
+      {
+        "id": "omarchy.bluetooth"
+      },
+      {
+        "id": "omarchy.audio"
+      },
+      {
+        "id": "focus-timer",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/FocusTimer.qml"
+      },
+      {
+        "id": "omarchy.clock"
+      },
+      {
+        "id": "omarchy.power"
+      }
+    ]
+  }
+}

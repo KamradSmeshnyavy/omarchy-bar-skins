@@ -1,0 +1,11 @@
+{
+  "note": "Notches hanging from the top edge, one per section (after Vitreus): flat against the screen edge, round bottom corners",
+  "note_ru": "Вырезы, свисающие с верхнего края, по одному на секцию (по мотивам Vitreus): вплотную к краю экрана, скруглены нижние углы",
+  "shape": "notches",
+  "margin": 10,
+  "radius": 14,
+  "height": 32,
+  "backgroundAlpha": 0.95,
+  "islandGap": 12,
+  "borderWidth": 0
+}

@@ -111,7 +111,7 @@ Item {
     height: !frame.hidden ? bodyItem.height : (frame.vertical ? frame.height : strip)
   }
 
-  readonly property bool drawsPlate: shape !== "islands"
+  readonly property bool drawsPlate: shape !== "islands" && shape !== "notches"
   readonly property bool notch: shape === "notch"
 
   // Чёлка: прямоугольник уходит за край экрана на радиус, окно его обрезает,
