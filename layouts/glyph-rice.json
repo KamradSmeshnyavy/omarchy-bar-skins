@@ -1,0 +1,40 @@
+{
+  "note": "Glyph (from glyph-rice): left pill — dot-ring mark (launcher, red while recording or the mic is in use), workspace dots, rotated window title, Doto clock in the middle, Wi-Fi arcs, Bluetooth, sound and an upright battery at the bottom",
+  "note_ru": "Glyph (из glyph-rice): пилюля слева — знак-кольцо из точек (лаунчер, краснеет при записи и занятом микрофоне), столы точками, повёрнутый заголовок окна, часы Doto посередине, дуги Wi-Fi, Bluetooth, звук и стоящая батарея внизу",
+  "position": "left",
+  "layout": {
+    "left": [
+      {
+        "id": "glyph-mark",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/GlyphMark.qml"
+      },
+      {
+        "id": "glyph-workspaces",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/GlyphWorkspaces.qml"
+      },
+      {
+        "id": "glyph-title",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/GlyphTitle.qml",
+        "length": 220
+      }
+    ],
+    "center": [
+      {
+        "id": "glyph-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/GlyphClock.qml"
+      }
+    ],
+    "right": [
+      {
+        "id": "glyph-tray",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/GlyphTray.qml",
+        "parts": "wifi,bluetooth,sound,battery"
+      }
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+singleton GTheme GTheme.qml
+Lb Lb.qml
+Num Num.qml
+Ring Ring.qml
+Icon Icon.qml

@@ -145,7 +145,7 @@ inside it. Vertical bars support only `full`, `floating` and `frame`.
 | `wsActiveColor` | style | colour of the active workspace: a role or `#hex` |
 
 
-**New layouts.** `notches` (three notches: launcher + workspaces, clock, status), `glyph-left` (a left pill after
+**New layouts.** `glyph-rice` (the bar of [glyph-rice](https://github.com/Nebelung-cloud/glyph-rice), ported as modules `modules/Glyph*.qml`: a dot-ring mark — the launcher, its centre turns red while recording or while the microphone is in use; workspace dots with the current one stretched into a pill; the window title rotated along the pill; a Doto clock in the middle — click: dashboard; Wi-Fi arcs, Bluetooth, sound — wheel: volume — and an upright battery that breathes while charging; click — Quick, right click — power menu. Tray parts and their order: `"parts": "wifi,bluetooth,sound,battery"` on the `glyph-tray` entry, title length: `"length"` on `glyph-title`), `notches` (three notches: launcher + workspaces, clock, status), `glyph-left` (a left pill after
 glyph-rice: launcher and workspaces on top, RunCat in the middle, status, focus timer and clock below — with the
 `glyph-pill` skin), `taskbar` (bottom: workspaces, the `Taskbar` module in the middle, status — with the `surface-dock`
 skin). **Taskbar → dock** (after surface-dots): the `Taskbar` module shows the windows of the workspace (click — focus) and,
@@ -189,4 +189,6 @@ omarchy plugin add https://github.com/KamradSmeshnyavy/omarchy-customizer --enab
 
 ## License
 
-MIT. Based on `omarchy.bar` from [Omarchy](https://github.com/basecamp/omarchy) (MIT, © David Heinemeier Hansson).
+GPL-3.0 (see [LICENSE](LICENSE); earlier versions were MIT), credits — in [NOTICE](NOTICE). Based on `omarchy.bar` from
+[Omarchy](https://github.com/basecamp/omarchy) (MIT, © David Heinemeier Hansson); the `Glyph*` modules come from
+[glyph-rice](https://github.com/Nebelung-cloud/glyph-rice) (GPL-3.0).

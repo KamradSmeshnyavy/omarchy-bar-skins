@@ -1,3 +1,6 @@
+kamradsmeshnyavy.bar is licensed under the GNU General Public License v3.0 (see LICENSE).
+Versions before the glyph-rice modules were released under the MIT License.
+
 Third-party attributions for kamradsmeshnyavy.bar:
 
 - Base bar implementation (`omarchy.bar`):
@@ -10,3 +13,9 @@ Third-party attributions for kamradsmeshnyavy.bar:
   Adapted from Nihil-Shell (https://github.com/poligle/Nihil-Shell)
   Copyright (c) 2026 Pol Iglesias
   Licensed under the MIT License.
+
+- glyph-rice bar modules (`modules/Glyph{Mark,Workspaces,Title,Clock,Tray}.qml`, `modules/glyphrice/`,
+  `layouts/glyph-rice.json`):
+  Adapted from glyph-rice (`bar/Bar.qml`, `components/*`, https://github.com/Nebelung-cloud/glyph-rice)
+  Copyright (c) Nebelung-cloud
+  Licensed under the GNU General Public License v3.0.

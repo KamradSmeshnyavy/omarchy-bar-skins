@@ -141,7 +141,7 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
 | `wsActiveColor` | как в стиле | цвет текущего workspace: роль темы или `#hex` |
 
 
-**Новые раскладки.** `notches` (три выреза: лаунчер с воркспейсами, часы, статус), `glyph-left` (левая пилюля по мотивам
+**Новые раскладки.** `glyph-rice` (бар [glyph-rice](https://github.com/Nebelung-cloud/glyph-rice), перенесён модулями `modules/Glyph*.qml`: знак-кольцо из точек — лаунчер, центр краснеет при записи экрана и занятом микрофоне; столы точками, текущий вытягивается в пилюлю; заголовок окна вдоль пилюли; часы Doto посередине — клик: дашборд; дуги Wi-Fi, Bluetooth, звук — колесо: громкость — и стоящая батарея, дышит на зарядке; клик — Quick, правый — меню выключения. Части трея и порядок — `"parts": "wifi,bluetooth,sound,battery"` у записи `glyph-tray`, длина заголовка — `"length"` у `glyph-title`), `notches` (три выреза: лаунчер с воркспейсами, часы, статус), `glyph-left` (левая пилюля по мотивам
 glyph-rice: лаунчер и воркспейсы сверху, RunCat посередине, статус, таймер фокуса и часы снизу — со скином `glyph-pill`),
 `taskbar` (снизу: воркспейсы, модуль `Taskbar` посередине, статус — со скином `surface-dock`). **Таскбар → док** (по
 мотивам surface-dots): модуль `Taskbar` показывает окна стола (клик — фокус), а на пустом столе — закреплённые
@@ -175,4 +175,6 @@ omarchy plugin add https://github.com/KamradSmeshnyavy/omarchy-customizer --enab
 
 ## Лицензия
 
-MIT. Основано на `omarchy.bar` из [Omarchy](https://github.com/basecamp/omarchy) (MIT, © David Heinemeier Hansson).
+GPL-3.0 (см. [LICENSE](LICENSE); прежние версии — MIT), авторы заимствований — в [NOTICE](NOTICE). Основано на
+`omarchy.bar` из [Omarchy](https://github.com/basecamp/omarchy) (MIT, © David Heinemeier Hansson); модули `Glyph*` — из
+[glyph-rice](https://github.com/Nebelung-cloud/glyph-rice) (GPL-3.0).
