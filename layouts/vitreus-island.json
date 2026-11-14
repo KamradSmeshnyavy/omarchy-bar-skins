@@ -8,12 +8,22 @@
         "id": "kamradsmeshnyavy.menu"
       },
       {
-        "id": "omarchy.workspaces"
+        "id": "vit-workspaces",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/VitWorkspaces.qml"
+      },
+      {
+        "id": "vit-title",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/VitTitle.qml",
+        "length": 260
       }
     ],
     "center": [
       {
-        "id": "omarchy.clock"
+        "id": "vit-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/VitClock.qml"
       }
     ],
     "right": [
@@ -28,6 +38,12 @@
       },
       {
         "id": "omarchy.audio"
+      },
+      {
+        "id": "vit-icons",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/VitIcons.qml",
+        "items": "overview,search,settings,controls"
       },
       {
         "id": "omarchy.power"
