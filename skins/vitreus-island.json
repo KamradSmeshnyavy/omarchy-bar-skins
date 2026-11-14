@@ -1,0 +1,16 @@
+{
+  "note": "Vitreus island: one rounded glass plate floating at the top, real liquid glass (refracts the wallpaper)",
+  "note_ru": "Остров Vitreus: одна скруглённая стеклянная пластина сверху, настоящее жидкое стекло (преломляет обои)",
+  "shape": "floating",
+  "gap": 8,
+  "margin": 14,
+  "width": 0.62,
+  "radius": 19,
+  "height": 40,
+  "backgroundAlpha": 0.3,
+  "border": "foreground",
+  "borderWidth": 0,
+  "moduleStyle": "hover",
+  "moduleAlpha": 0.1,
+  "vitreus": true
+}

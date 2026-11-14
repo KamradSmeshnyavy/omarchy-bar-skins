@@ -61,7 +61,9 @@ QtObject {
     textureAlpha: 0.9,
     hardShadow: 0,          // жёсткая тень без размытия: сдвиг в px (брутализм), цвет — border
     bevel: false,           // ретро-кант: светлый сверху-слева, тёмный снизу-справа
-    liquid: false           // жидкое стекло: блик вдоль бара, двойной светлый ободок, подсветка акцентом
+    liquid: false,          // жидкое стекло: блик вдоль бара, двойной светлый ободок, подсветка акцентом
+    vitreus: false          // настоящее стекло Vitreus (LiquidGlass: преломление обоев); рамка — одним куском с полосой,
+                            // вырезы вливаются в край экрана вогнутыми изгибами
   })
 
   property var raw: ({})
@@ -140,6 +142,7 @@ QtObject {
   readonly property int hardShadow: Math.max(0, Math.round(num("hardShadow")))
   readonly property bool bevel: value("bevel") === true
   readonly property bool liquid: value("liquid") === true
+  readonly property bool vitreus: value("vitreus") === true
 
   function radiusFor(h, s) {
     if (s === undefined) s = shape

@@ -118,6 +118,20 @@ Item {
   // и скруглёнными остаются только углы со стороны экрана.
   clip: notch || skin.autoHide
 
+  // vitreus: стекло Vitreus под полосой бара (остров, полоса без рамки). У рамки стекло — в ScreenBorder одним куском.
+  LiquidGlass {
+    visible: frame.skin.vitreus && plate.visible && !frame.transparent && !frame.skin.framed
+    active: visible
+    x: plate.x
+    y: plate.y
+    width: plate.width
+    height: plate.height
+    radius: plate.radius
+    layerNamespace: "omarchy-bar"
+    belowWindows: true
+    tintColor: Qt.rgba(frame.fill.r, frame.fill.g, frame.fill.b, 1)
+  }
+
   // hardShadow: плашка цвета рамки, сдвинутая вниз-вправо, под подложкой (брутализм).
   Rectangle {
     visible: frame.skin.hardShadow > 0 && plate.visible && !frame.transparent
@@ -138,7 +152,8 @@ Item {
     y: frame.notch && frame.position === "top" ? bodyItem.y - frame.radius : bodyItem.y
     height: bodyItem.height + (frame.notch ? frame.radius : 0)
     radius: frame.radius
-    color: frame.transparent || frame.shape === "underline" && frame.fill.a === 0 ? "transparent" : frame.fill
+    // vitreus: подложку рисует стекло — у рамки окно рамки (ScreenBorder), у острова — vitreusPlate ниже
+    color: frame.transparent || frame.skin.vitreus || frame.shape === "underline" && frame.fill.a === 0 ? "transparent" : frame.fill
     border.width: frame.shape === "underline" || frame.shape === "hug" || frame.shape === "frame" ? 0 : frame.skin.borderWidth
     border.color: frame.skin.borderColor
 
@@ -151,7 +166,7 @@ Item {
       GradientStop { position: 1; color: frame.fill2 }
     }
 
-    layer.enabled: frame.shadowPad > 0 && !frame.transparent
+    layer.enabled: frame.shadowPad > 0 && !frame.transparent && !frame.skin.vitreus
     layer.effect: MultiEffect {
       shadowEnabled: true
       // glow: мягкий ореол цвета рамки вокруг всей подложки, без сдвига.
@@ -184,7 +199,7 @@ Item {
   // яркая кромка с той же стороны, второй, внутренний ободок и слабая подсветка акцентом с другой стороны.
   Item {
     id: liquidLayer
-    visible: frame.skin.liquid && plate.visible && !frame.transparent
+    visible: frame.skin.liquid && !frame.skin.vitreus && plate.visible && !frame.transparent
     x: plate.x
     y: plate.y
     width: plate.width

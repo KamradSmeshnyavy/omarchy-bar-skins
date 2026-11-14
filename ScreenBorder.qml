@@ -67,10 +67,33 @@ Scope {
     surfaceFormat.opaque: false
     mask: Region {}
     WlrLayershell.namespace: "omarchy-bar-frame"
-    WlrLayershell.layer: WlrLayer.Top
+    // vitreus: стекло рамки — под окнами (они в рамку не заходят: её место зарезервировано), бар (Top) — над ним
+    WlrLayershell.layer: border.skin.vitreus ? WlrLayer.Bottom : WlrLayer.Top
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
+    // vitreus: полоса бара и рамка — один кусок стекла (LiquidGlass): поле окна минус рабочая область со скруглёнными
+    // углами; главная фигура — полоса бара. Окно рамки — на весь экран монитора, его угол и есть начало координат.
+    LiquidGlass {
+      visible: border.skin.vitreus
+      active: visible
+      anchors.fill: parent
+      screenOrigin: Qt.point(0, 0)
+      belowWindows: true
+      tintColor: Qt.rgba(border.skin.backgroundColor.r, border.skin.backgroundColor.g, border.skin.backgroundColor.b, 1)
+      radius: 0
+      panelRect: border.position === "left" ? Qt.rect(0, 0, border.barSize, overlay.height)
+        : border.position === "right" ? Qt.rect(overlay.width - border.barSize, 0, border.barSize, overlay.height)
+        : border.position === "top" ? Qt.rect(0, 0, overlay.width, border.barSize)
+        : Qt.rect(0, overlay.height - border.barSize, overlay.width, border.barSize)
+      frameOn: true
+      frameHole: Qt.rect(border.inset("left"), border.inset("top"), overlay.width - border.inset("left") - border.inset("right"),
+                         overlay.height - border.inset("top") - border.inset("bottom"))
+      frameHoleRadius: border.radius
+      frameK: 0
+    }
+
     Shape {
+      visible: !border.skin.vitreus
       anchors.fill: parent
       preferredRendererType: Shape.CurveRenderer
 

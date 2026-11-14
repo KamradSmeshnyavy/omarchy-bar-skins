@@ -1,0 +1,14 @@
+{
+  "note": "Vitreus notches: three glass pieces hanging from the top edge, melting into it with concave curves",
+  "note_ru": "Вырезы Vitreus: три стеклянных куска свисают с верхнего края и вливаются в него вогнутыми изгибами",
+  "shape": "notches",
+  "height": 36,
+  "radius": 18,
+  "islandGap": 10,
+  "backgroundAlpha": 0.3,
+  "border": "foreground",
+  "borderWidth": 0,
+  "moduleStyle": "hover",
+  "moduleAlpha": 0.1,
+  "vitreus": true
+}

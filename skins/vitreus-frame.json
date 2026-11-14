@@ -1,0 +1,14 @@
+{
+  "note": "Vitreus frame (the caelestia shape): a glass strip down one side and a thin glass frame round the screen with rounded inner corners, all one piece",
+  "note_ru": "Рамка Vitreus (форма caelestia): стеклянная полоса сбоку и тонкая стеклянная рамка вокруг экрана со скруглёнными внутренними углами — одним куском",
+  "shape": "frame",
+  "height": 46,
+  "frameWidth": 9,
+  "radius": 22,
+  "backgroundAlpha": 0.3,
+  "border": "foreground",
+  "borderWidth": 0,
+  "moduleStyle": "hover",
+  "moduleAlpha": 0.1,
+  "vitreus": true
+}

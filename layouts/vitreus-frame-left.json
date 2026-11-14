@@ -1,0 +1,45 @@
+{
+  "note": "Vitreus frame (with the vitreus-frame skin, caelestia shape): a strip on the left — launcher and workspaces at the top, the window title down the middle, clock and status at the bottom",
+  "note_ru": "Рамка Vitreus (со скином vitreus-frame, форма caelestia): полоса слева — лаунчер и столы сверху, заголовок окна посередине, часы и статус снизу",
+  "position": "left",
+  "layout": {
+    "left": [
+      {
+        "id": "kamradsmeshnyavy.menu"
+      },
+      {
+        "id": "omarchy.workspaces"
+      }
+    ],
+    "center": [
+      {
+        "id": "glyph-title",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/GlyphTitle.qml",
+        "length": 200
+      }
+    ],
+    "right": [
+      {
+        "id": "omarchy.tray"
+      },
+      {
+        "id": "omarchy.network"
+      },
+      {
+        "id": "omarchy.bluetooth"
+      },
+      {
+        "id": "omarchy.audio"
+      },
+      {
+        "id": "glyph-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/GlyphClock.qml"
+      },
+      {
+        "id": "omarchy.power"
+      }
+    ]
+  }
+}

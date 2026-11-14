@@ -1,0 +1,37 @@
+{
+  "note": "Vitreus notches (with the vitreus-notches skin): three pieces hanging from the top edge — workspaces, clock, status",
+  "note_ru": "Вырезы Vitreus (со скином vitreus-notches): три куска с верхнего края — столы, часы, статус",
+  "position": "top",
+  "layout": {
+    "left": [
+      {
+        "id": "kamradsmeshnyavy.menu"
+      },
+      {
+        "id": "omarchy.workspaces"
+      }
+    ],
+    "center": [
+      {
+        "id": "omarchy.clock"
+      }
+    ],
+    "right": [
+      {
+        "id": "omarchy.tray"
+      },
+      {
+        "id": "omarchy.network"
+      },
+      {
+        "id": "omarchy.bluetooth"
+      },
+      {
+        "id": "omarchy.audio"
+      },
+      {
+        "id": "omarchy.power"
+      }
+    ]
+  }
+}

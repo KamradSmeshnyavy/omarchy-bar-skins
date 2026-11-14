@@ -34,11 +34,26 @@ Rectangle {
   height: vertical ? spanEnd - spanStart + 2 * pad : parent.height + (notch ? radius : 0)
 
   radius: skin.radiusFor(vertical ? width : parent.height, "islands")
-  color: transparent ? "transparent" : skin.backgroundColor
-  border.width: skin.borderWidth
+  color: transparent || skin.vitreus ? "transparent" : skin.backgroundColor
+  border.width: skin.vitreus ? 0 : skin.borderWidth
   border.color: skin.borderColor
 
-  gradient: skin.hasGradient && !transparent ? islandGradient : null
+  gradient: skin.hasGradient && !transparent && !skin.vitreus ? islandGradient : null
+
+  // vitreus: вырез — стекло, вливающееся в край экрана вогнутыми изгибами (перешеек к полоске у края)
+  LiquidGlass {
+    visible: island.skin.vitreus && !island.transparent && island.visible
+    active: visible
+    anchors.fill: parent
+    radius: island.radius
+    layerNamespace: "omarchy-bar"
+    belowWindows: true
+    tintColor: Qt.rgba(island.skin.backgroundColor.r, island.skin.backgroundColor.g, island.skin.backgroundColor.b, 1)
+    bleed: island.notch ? 30 : 0
+    joinRect: island.notch ? Qt.rect(-30, island.atBottom ? island.height - 2 : island.radius, island.width + 60, 2) : Qt.rect(0, 0, 0, 0)
+    joinRadius: 1
+    joinK: island.notch ? 26 : 0
+  }
   Gradient {
     id: islandGradient
     orientation: island.vertical ? Gradient.Vertical : Gradient.Horizontal
