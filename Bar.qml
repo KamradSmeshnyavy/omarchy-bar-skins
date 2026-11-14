@@ -452,6 +452,38 @@ Item {
     return out
   }
 
+  // Геометрия бара для панелей (widgets/BarGeom.qml — дашборд, Quick и др. растут из своей кнопки, как у Vitreus):
+  // $XDG_RUNTIME_DIR/omarchy-bar-geom.json — край, толщина, рамка, где кнопки модулей по экранам (px окна бара; где окно
+  // на экране, BarGeom знает от Hyprland). Пишется раз в 1.5 с, и только когда что-то сдвинулось.
+  property string geomText: ""
+  function exportGeometry() {
+    var mods = {}
+    for (var i = 0; i < moduleSlots.length; i++) {
+      var slot = moduleSlots[i]
+      if (!slot || !slot.activeItem || !slot.visible || slot.width <= 0 || slot.height <= 0) continue
+      var win = targetWindow(slot)
+      var scr = win && win.screen ? win.screen.name : ""
+      var p
+      try { p = slot.mapToItem(null, 0, 0) } catch (e) { continue }
+      if (!mods[scr]) mods[scr] = {}
+      mods[scr][slot.moduleName] = [Math.round(p.x), Math.round(p.y), Math.round(slot.width), Math.round(slot.height)]
+    }
+    var t = JSON.stringify({
+      position: root.position, barSize: root.barSize, hidden: root.barHidden === true,
+      shape: String(skin.value("shape")), framed: skin.framed === true, frameWidth: skin.frameWidth, frameRadius: skin.frameRadius,
+      vitreus: skin.vitreus, tabs: skin.value("tabs") === true, modules: mods
+    })
+    if (t === geomText) return
+    geomText = t
+    geomFile.setText(t + "\n")
+  }
+  FileView {
+    id: geomFile
+    path: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/omarchy-bar-geom.json"
+    printErrors: false
+  }
+  Timer { interval: 1500; running: true; repeat: true; triggeredOnStart: true; onTriggered: root.exportGeometry() }
+
   function targetWindow(target) {
     return target && target.QsWindow ? target.QsWindow.window : null
   }

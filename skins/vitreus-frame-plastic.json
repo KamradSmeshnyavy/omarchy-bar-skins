@@ -10,5 +10,6 @@
   "border": "foreground",
   "borderWidth": 2,
   "moduleStyle": "hover",
-  "moduleAlpha": 0.12
+  "moduleAlpha": 0.12,
+  "tabs": true
 }

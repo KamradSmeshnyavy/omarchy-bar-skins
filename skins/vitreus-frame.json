@@ -10,5 +10,6 @@
   "borderWidth": 0,
   "moduleStyle": "hover",
   "moduleAlpha": 0.1,
-  "vitreus": true
+  "vitreus": true,
+  "tabs": true
 }

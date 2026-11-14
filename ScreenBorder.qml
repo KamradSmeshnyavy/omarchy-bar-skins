@@ -142,4 +142,13 @@ Scope {
       }
     }
   }
+
+  // язычки рамки (скин "tabs": true)
+  VitTabs {
+    screen: border.screen
+    skin: border.skin
+    barSize: border.barSize
+    position: border.position
+    shown: border.shown
+  }
 }
