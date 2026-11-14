@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Shapes
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 
 // skin: форма frame — рамка цвета бара по остальным краям экрана, внутренние углы
@@ -21,6 +22,30 @@ Scope {
   readonly property int radius: skin.frameRadius
   // Отступы рабочей области от краёв экрана: у края с баром — сам бар.
   function inset(edge) { return edge === position ? barSize : frameWidth }
+
+  // Места стыков: карточки виджетов стола у кромки слиты с рамкой (kamradsmeshnyavy.widgets пишет
+  // $XDG_RUNTIME_DIR/omarchy-merge-widgets[-float]-<экран>.json: [{ edge, a0, a1, f }] в px рабочей области). Слой
+  // виджетов — под рамкой, поэтому контур рамки на стыке стирает она сама (вогнутые углы рисует карточка).
+  readonly property string screenName: screen ? String(screen.name) : ""
+  property var spots: []
+  property var spotsFloat: []
+  readonly property var allSpots: spots.concat(spotsFloat)
+  FileView {
+    path: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/omarchy-merge-widgets-" + border.screenName + ".json"
+    watchChanges: true
+    printErrors: false
+    onFileChanged: reload()
+    onLoaded: { try { border.spots = JSON.parse(text()) || [] } catch (e) { border.spots = [] } }
+    onLoadFailed: border.spots = []
+  }
+  FileView {
+    path: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/omarchy-merge-widgets-float-" + border.screenName + ".json"
+    watchChanges: true
+    printErrors: false
+    onFileChanged: reload()
+    onLoaded: { try { border.spotsFloat = JSON.parse(text()) || [] } catch (e) { border.spotsFloat = [] } }
+    onLoadFailed: border.spotsFloat = []
+  }
 
   Variants {
     model: ["top", "bottom", "left", "right"].filter(e => e !== border.position)
@@ -139,6 +164,30 @@ Scope {
           height: overlay.height - border.inset("top") - border.inset("bottom") + border.skin.borderWidth
           radius: border.radius + border.skin.borderWidth * 0.5
         }
+      }
+    }
+
+    // разрывы контура на стыках (только у сплошной рамки с контуром; у стекла слияние рисует сама карточка)
+    Repeater {
+      model: !border.skin.vitreus && border.skin.borderWidth > 0 ? border.allSpots : []
+      // Item, не Rectangle: внутри Rectangle имя border — его собственный контур, а не ScreenBorder
+      Item {
+        id: gapItem
+        required property var modelData
+        readonly property color col: border.skin.backgroundColor
+        Rectangle { anchors.fill: parent; color: gapItem.col }
+        readonly property string e: String(modelData.edge)
+        readonly property bool horiz: e === "top" || e === "bottom"
+        readonly property real bw: border.skin.borderWidth
+        readonly property real f: Number(modelData.f) || 14
+        readonly property real a0: Number(modelData.a0) - f * 0.5
+        readonly property real a1: Number(modelData.a1) + f * 0.5
+        x: horiz ? border.inset("left") + a0
+          : e === "left" ? border.inset("left") - bw - 0.5 : overlay.width - border.inset("right") - 0.5
+        y: !horiz ? border.inset("top") + a0
+          : e === "top" ? border.inset("top") - bw - 0.5 : overlay.height - border.inset("bottom") - 0.5
+        width: horiz ? a1 - a0 : bw + 1
+        height: horiz ? bw + 1 : a1 - a0
       }
     }
   }
