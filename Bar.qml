@@ -334,6 +334,7 @@ Item {
       _unregisterClickTarget: function(target) { root.unregisterPluginClickTarget(key, target) },
       _requestPopout: function(owner) { root.requestPluginPopout(key, owner) },
       _releasePopout: function(owner) { root.releasePluginPopout(key, owner) },
+      _notePopoutCard: function(card) { root.notePopoutCard(card) },
       _switchPanelFrom: function(owner, direction) { return root.switchPanelFrom(owner, direction) },
       _targetBelongsToWindow: function(target, window) { return root.targetBelongsToWindow(target, window) },
       _moduleWidgets: function(requestedId) {
@@ -653,11 +654,20 @@ Item {
       else if ("close" in activePopout) activePopout.close()
     }
     activePopout = owner
+    popCard = null
   }
 
   function releasePopout(owner) {
-    if (activePopout === owner) activePopout = null
+    if (activePopout === owner) { activePopout = null; popCard = null }
   }
+
+  // Карточка открытой панели модуля (KeyboardPanel из qs.Ui сообщает, где она: { screen, x, y, width, height } в px
+  // экрана). По ней PopBridge сливает карточку с баром / рамкой (как у Vitreus): мост через зазор, вогнутые углы.
+  property var popCard: null
+  function notePopoutCard(card) { popCard = card && activePopout ? card : null }
+  // слияние — только у бара во всю длину края (рамка, сплошной); у плавающих пилюль и островов зазор — часть вида
+  readonly property bool mergePopups: !transparent && skin.value("mergePopups") !== false
+    && ["floating", "pill", "islands", "notches", "notch", "hug"].indexOf(String(skin.value("shape"))) === -1
 
   readonly property bool vertical: position === "left" || position === "right"
   // skin: отступ секций от краёв подложки; -1 в скине = сток.
@@ -1311,6 +1321,18 @@ Item {
         required property var modelData
 
         screen: modelData
+      }
+    }
+  }
+
+  // Мост от бара к карточке открытой панели модуля (PopBridge.qml).
+  Variants {
+    model: Quickshell.screens
+    delegate: Component {
+      PopBridge {
+        required property var modelData
+        screen: modelData
+        bar: root
       }
     }
   }
