@@ -775,6 +775,108 @@ Item {
     }
     activePopout = owner
     popCard = null
+    Qt.callLater(function() { root.attachPopTab(owner) })
+  }
+
+  // ── Язычок на карточке панели модуля: за него карточку тянут по столу ──
+  // Карточку рисует стоковый KeyboardPanel (qs.Ui); владелец панели (owner из requestPopout) держит его в data. Язычок
+  // создаётся прямо в карточке (в окне панели: клик по нему не считается кликом мимо). Тянут — карточка уезжает
+  // (её x / y отвязываются от места у бара), мост к бару прячется; панель закрылась — место снова у бара.
+  property var popDetached: null
+  function findIn(obj, test, depth) {
+    if (!obj || depth > 4) return null
+    if (test(obj)) return obj
+    var lists = [obj.data, obj.children, obj.contentItem ? [obj.contentItem] : []]
+    for (var l = 0; l < lists.length; l++) {
+      var list = lists[l]
+      if (!list) continue
+      for (var i = 0; i < list.length; i++) {
+        var r = findIn(list[i], test, depth + 1)
+        if (r) return r
+      }
+    }
+    return null
+  }
+  function attachPopTab(owner) {
+    if (!owner || root.activePopout !== owner) return
+    var kp = findIn(owner, function(o) { return o !== owner && o.cardOrigin !== undefined && o.anchorItem !== undefined && o.contentItem !== undefined }, 0)
+    if (!kp) return
+    var card = findIn(kp, function(o) { return o !== kp && o.borderSpec !== undefined && o.contentTopInset !== undefined && o.width > 0 }, 0)
+    if (!card) return
+    for (var i = 0; i < card.children.length; i++) if (card.children[i].objectName === "omarchyPopTab") return
+    popTabComponent.createObject(card, { kp: kp, card: card, owner: owner })
+  }
+  Component {
+    id: popTabComponent
+    Item {
+      id: tab
+      objectName: "omarchyPopTab"
+      property var kp
+      property var card
+      property var owner
+      readonly property color accent: Commons.Color.accent
+      readonly property color line: root.skin.borderWidth > 0 ? root.skin.borderColor : Commons.Color.popups.border
+      x: 24; y: -11
+      width: 78; height: 24
+      z: 100
+      // литой язычок: основание темнее, лицо цветом акцента, блик, контур
+      Rectangle { x: 2; y: 3; width: parent.width; height: parent.height; radius: 6; color: Qt.rgba(0, 0, 0, 0.28) }
+      Rectangle { anchors.fill: parent; radius: 6; color: Qt.darker(tab.accent, 1.35) }
+      Rectangle { width: parent.width; height: 19; radius: 6; color: tab.accent }
+      Rectangle { x: 6; y: 2; width: parent.width - 12; height: 2.2; radius: 1.1; color: Qt.rgba(1, 1, 1, 0.55) }
+      Rectangle { anchors.fill: parent; radius: 6; color: "transparent"; border.width: 1.4; border.color: tab.line }
+      // клик по язычку — не «мимо»: не пускать его к закрывающей области окна
+      MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons }
+      property point start
+      // поверх MouseArea: DragHandler в её родителе нажатия не видит
+      Item {
+        anchors.fill: parent
+        HoverHandler { cursorShape: tabDrag.active ? Qt.ClosedHandCursor : Qt.OpenHandCursor }
+        DragHandler {
+          id: tabDrag
+          target: null
+          dragThreshold: 3
+          onActiveChanged: {
+            if (active) {
+              tab.start = Qt.point(tab.card.x, tab.card.y)
+              root.popDetached = tab.owner
+              root.popCard = null
+              return
+            }
+            // отпустили у кромки рамки / бара (ближе 32 px) — вплотную к ней, мост сольёт карточку с ней
+            var kp = tab.kp, c = tab.card, w = kp.width, h = kp.height
+            function inset(e) { return e === root.position ? root.barSize : root.skin.framed ? root.skin.frameWidth : 0 }
+            function ok(e) { return root.mergePopups && (root.skin.framed || e === root.position) }
+            var d = { left: c.x - inset("left"), right: w - inset("right") - (c.x + c.width),
+                      top: c.y - inset("top"), bottom: h - inset("bottom") - (c.y + c.height) }
+            var best = "", bd = 32
+            for (var e in d) if (ok(e) && Math.abs(d[e]) < bd) { bd = Math.abs(d[e]); best = e }
+            if (best === "left") c.x = inset("left") + 6
+            else if (best === "right") c.x = w - inset("right") - c.width - 6
+            else if (best === "top") c.y = inset("top") + 6
+            else if (best === "bottom") c.y = h - inset("bottom") - c.height - 6
+            root.popCard = best ? { screen: kp.screen ? String(kp.screen.name) : "", x: c.x, y: c.y, width: c.width, height: c.height, edge: best } : null
+          }
+          onTranslationChanged: if (active) {
+            var w = tab.kp.width, h = tab.kp.height
+            tab.card.x = Math.max(0, Math.min(w - tab.card.width, tab.start.x + translation.x))
+            tab.card.y = Math.max(12, Math.min(h - tab.card.height, tab.start.y + translation.y))
+          }
+        }
+      }
+      // панель закрылась — карточка снова у бара (вернуть привязки KeyboardPanel)
+      Connections {
+        target: tab.kp
+        function onOpenChanged() {
+          if (tab.kp.open) return
+          var kp = tab.kp
+          tab.card.x = Qt.binding(function() { return kp.morphed(kp.morphFrom.x, kp.cardOrigin.x) })
+          tab.card.y = Qt.binding(function() { return kp.morphed(kp.morphFrom.y, kp.cardOrigin.y) })
+          if (root.popDetached === tab.owner) root.popDetached = null
+          tab.destroy()
+        }
+      }
+    }
   }
 
   function releasePopout(owner) {
@@ -784,7 +886,8 @@ Item {
   // Карточка открытой панели модуля (KeyboardPanel из qs.Ui сообщает, где она: { screen, x, y, width, height } в px
   // экрана). По ней PopBridge сливает карточку с баром / рамкой (как у Vitreus): мост через зазор, вогнутые углы.
   property var popCard: null
-  function notePopoutCard(card) { popCard = card && activePopout ? card : null }
+  // карточку утащили за язычок — её место знает язычок, а не KeyboardPanel (тот публикует место у бара)
+  function notePopoutCard(card) { if (popDetached === null) popCard = card && activePopout ? card : null }
   // слияние — только у бара во всю длину края (рамка, сплошной); у плавающих пилюль и островов зазор — часть вида
   readonly property bool mergePopups: !transparent && skin.value("mergePopups") !== false
     && ["floating", "pill", "islands", "notches", "notch", "hug"].indexOf(String(skin.value("shape"))) === -1

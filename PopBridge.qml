@@ -14,7 +14,9 @@ Scope {
 
   required property var screen
   required property var bar
-  readonly property bool want: bar.mergePopups && bar.popCard !== null && screen && bar.popCard.screen === String(screen.name)
+  // карточку утащили за язычок — она больше не у бара
+  // утащенная за язычок карточка сливается только с той кромкой, у которой её отпустили (popCard.edge)
+  readonly property bool want: bar.mergePopups && bar.popCard !== null && (bar.popDetached === null || !!bar.popCard.edge) && screen && bar.popCard.screen === String(screen.name)
 
   // Окно создаётся заново на каждое открытие: новый слой Overlay ложится выше карточки, открытой перед ним
   // (заранее созданное окно Hyprland держал под ней).
@@ -27,9 +29,10 @@ Scope {
       property var scr: root.screen
       screen: scr
       readonly property var card: bar.popCard && scr && bar.popCard.screen === String(scr.name) ? bar.popCard : null
-      readonly property string e: bar.position
-      readonly property real bs: bar.barSize
-      // внутренняя кромка бара
+      readonly property string e: card && card.edge ? String(card.edge) : bar.position
+      // толщина бара или рамки у этой кромки
+      readonly property real bs: e === bar.position ? bar.barSize : bar.skin.framed ? bar.skin.frameWidth : 0
+      // внутренняя кромка бара / рамки
       readonly property real edgeAt: e === "left" || e === "top" ? bs : e === "right" ? width - bs : height - bs
       readonly property rect c: card ? Qt.rect(card.x, card.y, card.width, card.height) : Qt.rect(0, 0, 0, 0)
       // зазор между кромкой и карточкой
