@@ -29,7 +29,9 @@ Scope {
   readonly property string screenName: screen ? String(screen.name) : ""
   property var spots: []
   property var spotsFloat: []
-  readonly property var allSpots: spots.concat(spotsFloat)
+  // и модули бара, вытащенные на стол (BarDeskPanel в Bar.qml)
+  property var extraSpots: []
+  readonly property var allSpots: spots.concat(spotsFloat, extraSpots)
   FileView {
     path: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/omarchy-merge-widgets-" + border.screenName + ".json"
     watchChanges: true

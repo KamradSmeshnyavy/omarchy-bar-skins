@@ -40,7 +40,9 @@ Scope {
       readonly property var spec: Border.surfaceSpec("popups", "border", Commons.Color.popups.border, Math.max(1, Style.space(2)))
       readonly property real bw: Math.max(1, Border.left(spec))
       readonly property color fill: Commons.Color.popups.background
-      readonly property color line: Commons.Color.popups.border
+      // один цвет стыка: контур карточки целиком перекрашивается в контур бара (если он есть), иначе — свой
+      readonly property bool barLine: bar.skin.borderWidth > 0
+      readonly property color line: barLine ? bar.skin.borderColor : Commons.Color.popups.border
       readonly property real r: Style.cornerRadius
       readonly property real f: 12
       readonly property real ext: 3
@@ -75,6 +77,15 @@ Scope {
         opacity: br.shown
         visible: br.on
 
+        // контур карточки цветом бара — поверх её собственного (сторону у бара закроет заливка ниже)
+        Rectangle {
+          visible: br.barLine
+          x: br.c.x; y: br.c.y; width: br.c.width; height: br.c.height
+          radius: br.r
+          color: "transparent"
+          border.width: br.bw + 0.5
+          border.color: br.line
+        }
         // заливка зазора и полоски контура карточки у бара (с заходом на кромку бара на ext)
         Rectangle {
           color: br.fill

@@ -647,6 +647,126 @@ Item {
     }, Qt.size(grabWidth, grabHeight))
   }
 
+  // ── Модули на рабочем столе (как у Vitreus: любой элемент бара можно вытащить на стол) ──
+  // Модуль, отпущенный дальше 60 px от бара, уходит из раскладки (shell.json) на стол — карточкой в окне BarDeskPanel
+  // (слой Bottom, под окнами). Карточку тянут куда угодно; у кромки рамки / бара она встаёт вплотную и сливается;
+  // принесённая к бару — возвращается в раскладку (в ту треть бара, напротив которой отпущена).
+  // ~/.config/omarchy/bar-desk.json: { items: [{ entry, screen, x, y }] } — x, y — левый верхний угол, px экрана.
+  property var deskItems: []
+  property var deskSpots: ({})          // экран → места стыков карточек с рамкой (их стирает ScreenBorder)
+  FileView {
+    id: deskFile
+    path: Quickshell.env("HOME") + "/.config/omarchy/bar-desk.json"
+    watchChanges: true
+    printErrors: false
+    onFileChanged: reload()
+    onLoaded: {
+      try { var d = JSON.parse(text()); root.deskItems = Array.isArray(d.items) ? d.items : [] } catch (e) { root.deskItems = [] }
+    }
+    onLoadFailed: root.deskItems = []
+  }
+  function saveDesk(items) {
+    root.deskItems = items
+    deskFile.setText(JSON.stringify({ items: items }, null, 2) + "\n")
+  }
+  function setDeskSpots(screenName, spots) {
+    var o = Object.assign({}, root.deskSpots)
+    o[screenName] = spots
+    root.deskSpots = o
+  }
+  // внутренняя кромка бара на экране этой ширины / высоты
+  function barInnerEdge(w, h) {
+    return position === "left" || position === "top" ? barSize : position === "right" ? w - barSize : h - barSize
+  }
+  // модуль, который несут на стол: { slot, screen, x, y, image } (x, y — курсор, px экрана)
+  property var carry: null
+  property string carryImage: ""
+  onBarDragImageUrlChanged: if (barDragImageUrl) carryImage = String(barDragImageUrl)
+  function dropCarry(x, y) {
+    var c = root.carry
+    root.carry = null
+    if (!c || !c.slot) return
+    var scr = null, ss = Quickshell.screens
+    for (var i = 0; i < ss.length; i++) if (String(ss[i].name) === c.screen) scr = ss[i]
+    if (!scr) return
+    var inner = root.barInnerEdge(scr.width, scr.height)
+    var away = root.position === "left" ? x - inner : root.position === "right" ? inner - x
+      : root.position === "top" ? y - inner : inner - y
+    if (away > 60) root.detachModule(c.slot, x - c.slot.width / 2 - 8, y - c.slot.height / 2 - 8, c.screen)
+  }
+  property var pendingDrop: null
+  function finishBarDrag(slot, targetSlot, afterTarget) {
+    var scr = root.targetWindow(slot) ? root.targetWindow(slot).screen : null
+    pendingDrop = { slot: slot, target: targetSlot, after: afterTarget, screen: scr }
+    if (!cursorProbe.running) cursorProbe.running = true
+  }
+  // позиция курсора в px экрана монитора (hyprctl cursorpos — глобальная)
+  function localCursor(o, scr) {
+    var m = Hyprland.monitors.values, mx = 0, my = 0
+    for (var i = 0; i < m.length; i++)
+      if (scr && m[i].name === scr.name && m[i].lastIpcObject) { mx = m[i].lastIpcObject.x || 0; my = m[i].lastIpcObject.y || 0 }
+    return { x: Number(o.x) - mx, y: Number(o.y) - my }
+  }
+  Process {
+    id: cursorProbe
+    command: ["hyprctl", "cursorpos", "-j"]
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var d = root.pendingDrop
+        root.pendingDrop = null
+        if (!d || !d.slot) return
+        var away = -1, p = null
+        try {
+          p = root.localCursor(JSON.parse(text), d.screen)
+          if (d.screen) {
+            var inner = root.barInnerEdge(d.screen.width, d.screen.height)
+            away = root.position === "left" ? p.x - inner : root.position === "right" ? inner - p.x
+              : root.position === "top" ? p.y - inner : inner - p.y
+          }
+        } catch (e) {}
+        // курсор ещё в баре — перестановка; ушёл за край — «несём» модуль: дальше его ведёт окно стола (BarDeskPanel)
+        if (away > 0 && d.screen) root.carry = { slot: d.slot, screen: String(d.screen.name), x: p.x, y: p.y, image: root.carryImage }
+        else if (d.target) root.dropBarModuleAtTarget(d.slot, d.target, d.after)
+      }
+    }
+  }
+
+  function detachModule(slot, sx, sy, screenName) {
+    if (!slot || !slot.region || slot.commandCustom || !root.shell || typeof root.shell.mutateShellConfig !== "function") return false
+    // mutateShellConfig может выполнить правку позже — запись модуля берём из слота, а не из правки
+    var taken = JSON.parse(JSON.stringify(slot.entry))
+    var region = slot.region, name = slot.moduleName
+    root.shell.mutateShellConfig(function(config) {
+      var list = rawLayoutSection(config, region)
+      var i = rawEntryIndex(list, name)
+      if (i >= 0) list.splice(i, 1)
+    })
+    var items = root.deskItems.slice()
+    items.push({ entry: taken, screen: screenName, x: Math.round(sx), y: Math.round(sy) })
+    saveDesk(items)
+    return true
+  }
+  function dockDeskItem(index, along, length) {
+    var it = root.deskItems[index]
+    if (!it || !root.shell || typeof root.shell.mutateShellConfig !== "function") return
+    it = JSON.parse(JSON.stringify(it))
+    var region = along < length / 3 ? "left" : along > 2 * length / 3 ? "right" : "center"
+    root.shell.mutateShellConfig(function(config) {
+      var list = rawLayoutSection(config, region)
+      if (region === "left") list.push(it.entry)
+      else list.splice(region === "right" ? 0 : list.length, 0, it.entry)
+    })
+    var items = root.deskItems.slice()
+    items.splice(index, 1)
+    saveDesk(items)
+  }
+  function moveDeskItem(index, x, y) {
+    var items = root.deskItems.slice()
+    if (!items[index]) return
+    items[index] = Object.assign({}, items[index], { x: Math.round(x), y: Math.round(y) })
+    saveDesk(items)
+  }
+
   function requestPopout(owner) {
     if (activePopout === owner) return
     if (activePopout) {
@@ -1325,6 +1445,17 @@ Item {
     }
   }
 
+  // Модули, вытащенные на рабочий стол.
+  Variants {
+    model: Quickshell.screens
+    delegate: Component {
+      BarDeskPanel {
+        required property var modelData
+        screen: modelData
+      }
+    }
+  }
+
   // Мост от бара к карточке открытой панели модуля (PopBridge.qml).
   Variants {
     model: Quickshell.screens
@@ -1350,6 +1481,7 @@ Item {
         barSize: root.barSize
         position: root.position
         shown: !root.barHidden && !root.transparent
+        extraSpots: root.deskSpots[String(modelData.name)] || []
       }
     }
   }
@@ -1600,6 +1732,249 @@ Item {
 
   Component { id: emptyModuleComponent; Item { implicitWidth: 0; implicitHeight: 0; visible: false } }
 
+  // Модули бара на рабочем столе (deskItems этого экрана): карточка цвета бара с его контуром, внутри — тот же модуль,
+  // что был на баре (тот же компонент из реестра или свой QML, тот же bar-api). Тянут за любое место (клик — модулю);
+  // у кромки рамки / бара карточка вплотную и сливается (углы у кромки вогнутые, контур рамки стирает ScreenBorder).
+  component BarDeskPanel: PanelWindow {
+    id: deskWin
+
+    readonly property string scrName: screen ? String(screen.name) : ""
+    readonly property var mine: {
+      var out = []
+      for (var i = 0; i < root.deskItems.length; i++)
+        if (String(root.deskItems[i].screen || "") === scrName) out.push({ index: i, item: root.deskItems[i] })
+      return out
+    }
+    // рабочая область (без бара и рамки)
+    function inset(e) { return e === root.position ? root.barSize : root.skin.framed ? root.skin.frameWidth : 0 }
+    readonly property rect work: Qt.rect(inset("left"), inset("top"), width - inset("left") - inset("right"), height - inset("top") - inset("bottom"))
+    readonly property bool solidEdges: ["floating", "pill", "islands", "notches", "notch", "hug"].indexOf(String(root.skin.value("shape"))) === -1
+    function mergeable(e) { return solidEdges && !root.transparent && (root.skin.framed || e === root.position) }
+    property bool holding: false
+
+    // несут модуль с бара на этот экран: окно ловит курсор целиком, призрак модуля идёт за ним
+    readonly property bool carrying: root.carry !== null && root.carry.screen === scrName
+    property point carryPt: carrying ? Qt.point(root.carry.x, root.carry.y) : Qt.point(0, 0)
+    onCarryingChanged: if (carrying) { carryPt = Qt.point(root.carry.x, root.carry.y); carryIdle.restart() }
+    Timer { id: carryIdle; interval: 700; onTriggered: if (deskWin.carrying) root.dropCarry(deskWin.carryPt.x, deskWin.carryPt.y) }
+
+    visible: (mine.length > 0 || carrying) && !root.barHidden
+    anchors { top: true; bottom: true; left: true; right: true }
+    exclusionMode: ExclusionMode.Ignore
+    color: "transparent"
+    surfaceFormat.opaque: false
+    WlrLayershell.namespace: "omarchy-bar-desk"
+    WlrLayershell.layer: WlrLayer.Bottom
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+    mask: Region { regions: deskWin.holding || deskWin.carrying ? [deskAll] : deskRegions.instances }
+    Region { id: deskAll; x: 0; y: 0; width: deskWin.width; height: deskWin.height }
+    // область ввода — прямоугольники карточек (их обновляет таймер ниже: itemAt() в привязке маски срабатывает раньше,
+    // чем Repeater создаст карточки, и маска выходит пустой)
+    property var cardRects: []
+    Variants {
+      id: deskRegions
+      model: deskWin.cardRects
+      Region { required property var modelData; x: modelData.x; y: modelData.y; width: modelData.w; height: modelData.h }
+    }
+
+    // места стыков — ScreenBorder (в px рабочей области)
+    function exportSpots() {
+      var out = []
+      for (var i = 0; i < deskCards.count; i++) {
+        var c = deskCards.itemAt(i)
+        if (!c) continue
+        for (var j = 0; j < c.merged.length; j++) {
+          var e = c.merged[j], v = e === "top" || e === "bottom"
+          out.push({ edge: e, a0: Math.round(v ? c.x - work.x : c.y - work.y), a1: Math.round(v ? c.x + c.width - work.x : c.y + c.height - work.y), f: 12 })
+        }
+      }
+      root.setDeskSpots(scrName, out)
+      var rects = []
+      for (var k = 0; k < deskCards.count; k++) {
+        var it = deskCards.itemAt(k)
+        if (it) rects.push({ x: Math.round(it.x), y: Math.round(it.y), w: Math.round(it.width), h: Math.round(it.height) })
+      }
+      if (JSON.stringify(rects) !== JSON.stringify(cardRects)) cardRects = rects
+    }
+    Timer { interval: 250; running: deskWin.visible; repeat: true; triggeredOnStart: true; onTriggered: deskWin.exportSpots() }
+    onVisibleChanged: if (!visible) root.setDeskSpots(scrName, [])
+
+    MouseArea {
+      anchors.fill: parent
+      visible: deskWin.carrying
+      z: 100
+      hoverEnabled: true
+      acceptedButtons: Qt.AllButtons
+      cursorShape: Qt.ClosedHandCursor
+      onPositionChanged: function(m) { deskWin.carryPt = Qt.point(m.x, m.y); carryIdle.restart() }
+      onPressed: function(m) { root.dropCarry(m.x, m.y) }
+      onReleased: function(m) { if (deskWin.carrying) root.dropCarry(m.x, m.y) }
+    }
+    Image {
+      visible: deskWin.carrying
+      z: 99
+      source: deskWin.carrying ? root.carry.image : ""
+      x: deskWin.carryPt.x - width / 2
+      y: deskWin.carryPt.y - height / 2
+      opacity: 0.85
+    }
+
+    Repeater {
+      id: deskCards
+      model: deskWin.mine
+
+      Item {
+        id: card
+        required property var modelData
+        readonly property int deskIndex: modelData.index
+        readonly property var entry: modelData.item.entry
+        readonly property string moduleName: root.entryId(entry)
+        readonly property var moduleSettings: root.entrySettings(entry)
+        readonly property string customType: root.customModuleType(entry)
+        readonly property var registryMetadata: root.barWidgetRegistry.metadataFor(root.canonicalWidgetId(moduleName))
+        readonly property bool firstParty: registryMetadata && registryMetadata.firstParty === true
+        readonly property bool registered: registryComponent !== null
+        readonly property string pluginApiId: registered ? root.canonicalWidgetId(moduleName) : "bar-entry:" + moduleName
+        readonly property var registryComponent: {
+          var w = root.barWidgetRegistry.widgets
+          if (customType) return null
+          var name = root.canonicalWidgetId(moduleName)
+          if (name === "omarchy.workspaces" && w[name]) return skinWorkspacesComponent
+          return w[name] ? w[name].component : null
+        }
+        readonly property bool qmlCustom: customType === "qml"
+        readonly property var activeItem: registered ? deskReg.item : qmlCustom ? deskQml.item : null
+        function injectProps() {
+          var t = activeItem
+          if (!t) return
+          if ("bar" in t) t.bar = firstParty ? root : root.pluginBarApiFor(pluginApiId, moduleName, registered) || null
+          if ("moduleName" in t) t.moduleName = moduleName
+          if ("settings" in t) t.settings = moduleSettings
+        }
+        onActiveItemChanged: Qt.callLater(injectProps)
+
+        readonly property real pad: 8
+        readonly property real mw: activeItem ? Math.max(1, root.vertical ? root.barSize : activeItem.implicitWidth) : 40
+        readonly property real mh: activeItem ? Math.max(1, root.vertical ? activeItem.implicitHeight : root.barSize) : 40
+        width: mw + 2 * pad
+        height: mh + 2 * pad
+        // позиция: сохранённая или та, куда тянут; в пределах рабочей области, у сливающейся кромки — вплотную
+        property point drag: Qt.point(NaN, NaN)
+        function fit(px, py) {
+          var w = deskWin.work
+          var x = Math.max(w.x, Math.min(w.x + w.width - width, px))
+          var y = Math.max(w.y, Math.min(w.y + w.height - height, py))
+          if (deskWin.mergeable("left") && x - w.x < 32) x = w.x
+          if (deskWin.mergeable("right") && w.x + w.width - (x + width) < 32) x = w.x + w.width - width
+          if (deskWin.mergeable("top") && y - w.y < 32) y = w.y
+          if (deskWin.mergeable("bottom") && w.y + w.height - (y + height) < 32) y = w.y + w.height - height
+          return Qt.point(x, y)
+        }
+        readonly property point at: fit(isNaN(drag.x) ? (isFinite(Number(modelData.item.x)) ? Number(modelData.item.x) : deskWin.work.x + 40) : drag.x,
+                                        isNaN(drag.y) ? (isFinite(Number(modelData.item.y)) ? Number(modelData.item.y) : deskWin.work.y + 40) : drag.y)
+        x: at.x
+        y: at.y
+
+        readonly property var merged: {
+          var w = deskWin.work, out = []
+          if (deskWin.mergeable("top") && y <= w.y + 0.5) out.push("top")
+          if (deskWin.mergeable("bottom") && y + height >= w.y + w.height - 0.5) out.push("bottom")
+          if (deskWin.mergeable("left") && x <= w.x + 0.5) out.push("left")
+          if (deskWin.mergeable("right") && x + width >= w.x + w.width - 0.5) out.push("right")
+          return out
+        }
+        function isMerged(e) { return merged.indexOf(e) !== -1 }
+
+        // карточка: у слитых сторон уходит под рамку (там её контур и скругления не видны), сверху — вогнутые углы
+        readonly property real bw: root.skin.borderWidth
+        readonly property real r: 14
+        readonly property real hide: r + bw + 3
+        Rectangle {
+          x: card.isMerged("left") ? -card.hide : 0
+          y: card.isMerged("top") ? -card.hide : 0
+          width: card.width + (card.isMerged("left") ? card.hide : 0) + (card.isMerged("right") ? card.hide : 0)
+          height: card.height + (card.isMerged("top") ? card.hide : 0) + (card.isMerged("bottom") ? card.hide : 0)
+          radius: card.r
+          color: Qt.rgba(root.skin.backgroundColor.r, root.skin.backgroundColor.g, root.skin.backgroundColor.b, Math.max(0.85, root.skin.backgroundColor.a))
+          border.width: card.bw
+          border.color: root.skin.borderColor
+        }
+        Repeater {
+          model: [["top", -1], ["top", 1], ["bottom", -1], ["bottom", 1], ["left", -1], ["left", 1], ["right", -1], ["right", 1]].filter(function(m) {
+            var adj = m[0] === "top" || m[0] === "bottom" ? (m[1] < 0 ? "left" : "right") : (m[1] < 0 ? "top" : "bottom")
+            return card.isMerged(m[0]) && !card.isMerged(adj)
+          })
+          MergeFillet {
+            required property var modelData
+            edge: modelData[0]; side: modelData[1]
+            w: card.width; h: card.height
+            f: 12; bw: card.bw; ext: 3
+            fill: Qt.rgba(root.skin.backgroundColor.r, root.skin.backgroundColor.g, root.skin.backgroundColor.b, Math.max(0.85, root.skin.backgroundColor.a))
+            line: root.skin.borderColor
+          }
+        }
+
+        Item {
+          id: holder
+          x: card.pad; y: card.pad
+          width: card.mw; height: card.mh
+          Loader {
+            id: deskReg
+            active: card.registered
+            sourceComponent: card.registered ? card.registryComponent : null
+            anchors.fill: parent
+            onLoaded: { card.injectProps(); Qt.callLater(card.injectProps) }
+          }
+          Loader {
+            id: deskQml
+            active: card.qmlCustom
+            source: card.qmlCustom ? root.customModuleSource(card.entry) : ""
+            anchors.fill: parent
+            onLoaded: { card.injectProps(); Qt.callLater(card.injectProps) }
+          }
+        }
+        // перенос и клики — с элемента поверх модуля: тянут — DragHandler, клик — модулю, как на баре (цели раздаёт
+        // pressModuleClickTarget; свои MouseArea модулей тут нажатие не получают)
+        Item {
+          anchors.fill: parent
+          z: 10
+          TapHandler {
+            acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+            onTapped: function(ev, button) {
+              var p = ev.position
+              root.pressModuleClickTarget(card, button, p.x, p.y)
+            }
+          }
+          DragHandler {
+            id: cardDrag
+            target: null
+            dragThreshold: 6
+            property point base
+            onActiveChanged: {
+              deskWin.holding = active
+              if (active) { base = Qt.point(card.x, card.y); card.drag = Qt.point(card.x, card.y); return }
+              var p = { x: Number(card.drag.x), y: Number(card.drag.y) }, w = deskWin.width, h = deskWin.height
+              var cx = p.x + card.width / 2, cy = p.y + card.height / 2
+              var inner = root.barInnerEdge(w, h)
+              var near = root.position === "left" ? p.x - inner < 24 : root.position === "right" ? inner - (p.x + card.width) < 24
+                : root.position === "top" ? p.y - inner < 24 : inner - (p.y + card.height) < 24
+              card.drag = Qt.point(NaN, NaN)
+              if (near) root.dockDeskItem(card.deskIndex, root.vertical ? cy : cx, root.vertical ? h : w)
+              else { var f = card.fit(p.x, p.y); root.moveDeskItem(card.deskIndex, f.x, f.y) }
+            }
+            onTranslationChanged: if (active) card.drag = Qt.point(Number(base.x) + translation.x, Number(base.y) + translation.y)
+          }
+          HoverHandler { cursorShape: cardDrag.active ? Qt.ClosedHandCursor : Qt.ArrowCursor }
+        }
+        // пока тянут — без привязки к кромкам, чтобы до бара можно было дотянуть
+        states: State {
+          when: cardDrag.active
+          PropertyChanges { target: card; x: card.drag.x; y: card.drag.y }
+        }
+      }
+    }
+  }
+
   component DragGhostPanel: PanelWindow {
     id: ghostWindow
 
@@ -1629,6 +2004,7 @@ Item {
     // Visual-only drag feedback. Keep the input region empty so the ghost can
     // sit under the cursor without stealing the MouseArea's active pointer grab.
     mask: Region {}
+
 
     Item {
       visible: ghostWindow.visible
@@ -2243,8 +2619,11 @@ Item {
         dragging = false
         root.clearBarDrag()
 
-        if (wasDragging && targetSlot) {
-          root.dropBarModuleAtTarget(slot, targetSlot, afterTarget)
+        // За краем бара Hyprland не шлёт ему движения, а отпускание приходит с последней точкой внутри бара — где курсор
+        // на самом деле, спрашиваем у Hyprland: дальше 60 px от бара — модуль уходит на стол (BarDeskPanel),
+        // иначе — обычная перестановка.
+        if (wasDragging) {
+          root.finishBarDrag(slot, targetSlot, afterTarget)
           mouse.accepted = true
         } else if (!wasDragging) {
           mouse.accepted = false
