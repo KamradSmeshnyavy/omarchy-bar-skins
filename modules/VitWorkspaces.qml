@@ -102,7 +102,9 @@ Item {
           Behavior on opacity { NumberAnimation { duration: 160 } }
         }
         HoverHandler { id: hov; cursorShape: Qt.PointingHandCursor }
-        TapHandler { onTapped: root.go(slot.n) }
+        // клики приходят от бара: поверх модуля — его область нажатий (перетаскивание), она зовёт triggerPress
+        function triggerPress(button) { root.go(slot.n) }
+        property BarClick click: BarClick { bar: root.bar; target: slot }
       }
     }
     // капсула текущего: тянется от хвоста к голове
@@ -131,7 +133,10 @@ Item {
     }
     // «+»: первый пустой стол
     Item {
+      id: plus
       visible: root.fresh > 0
+      function triggerPress(button) { root.go(root.fresh) }
+      property BarClick click: BarClick { bar: root.bar; target: plus }
       readonly property real p: root.startOf(root.marks.length) + 4 * root.k
       x: root.vertical ? 0 : p
       y: root.vertical ? p : 0
@@ -140,7 +145,6 @@ Item {
       Rectangle { anchors.centerIn: parent; width: root.dot; height: 1.6 * root.k; radius: 1; color: root.fg; opacity: plusHov.hovered ? 0.9 : 0.45 }
       Rectangle { anchors.centerIn: parent; width: 1.6 * root.k; height: root.dot; radius: 1; color: root.fg; opacity: plusHov.hovered ? 0.9 : 0.45 }
       HoverHandler { id: plusHov; cursorShape: Qt.PointingHandCursor; margin: 6 }
-      TapHandler { margin: 6; onTapped: root.go(root.fresh) }
     }
   }
   WheelHandler { onWheel: function(e) { root.go(e.angleDelta.y > 0 ? "e-1" : "e+1") } }

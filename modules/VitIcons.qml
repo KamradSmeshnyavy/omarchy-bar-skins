@@ -127,7 +127,11 @@ Item {
             }
           }
           HoverHandler { id: hov; cursorShape: Qt.PointingHandCursor }
-          TapHandler { onTapped: Quickshell.execDetached(root.actions[cellItem.modelData]) }
+          function triggerPress(button) { Quickshell.execDetached(root.actions[cellItem.modelData]) }
+          // клики приходят от бара: поверх модуля — его область нажатий (перетаскивание), она зовёт triggerPress
+          // у зарегистрированных целей под курсором
+          property BarClick click: BarClick { bar: root.bar; target: cellItem }
+
         }
       }
     }

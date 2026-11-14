@@ -60,5 +60,6 @@ Item {
     }
   }
   HoverHandler { cursorShape: Qt.PointingHandCursor }
-  TapHandler { onTapped: Quickshell.execDetached(["omarchy-shell", "widgets", "toggleDashboard"]) }
+  // клик приходит от бара (его область нажатий поверх модуля зовёт triggerPress)
+  function triggerPress(button) { Quickshell.execDetached(["omarchy-shell", "widgets", "toggleDashboard"]) }
 }
