@@ -19,7 +19,7 @@ Item {
 
   readonly property var actions: ({
     overview: ["omarchy-shell", "widgets", "toggleOverview"],
-    search: ["omarchy-shell", "omarchy.dock", "apps"],
+    search: ["omarchy-menu", "toggle", "root"],
     settings: ["omarchy-shell", "shell", "toggle", "kamradsmeshnyavy.customizer"],
     controls: ["omarchy-shell", "widgets", "toggleSettings"]
   })
