@@ -292,7 +292,9 @@ Item {
   // coalesced resync.
   function requestPluginPopout(pluginId, owner) {
     if (!root.markPluginObject(pluginId, owner, "popout")) return
+    root.popKeyNext = String(pluginId || "")
     root.requestPopout(owner)
+    root.popKeyNext = ""
     root.syncPluginBarApiObjects(pluginBarApis[String(pluginId || "")])
   }
 
@@ -775,7 +777,8 @@ Item {
     }
     activePopout = owner
     popCard = null
-    Qt.callLater(function() { root.attachPopTab(owner) })
+    var key = popKeyNext || String(owner).replace(/(_QML(TYPE)?_\d+)?\(.*$/, "")
+    Qt.callLater(function() { root.attachPopTab(owner, key) })
   }
 
   // ── Язычок на карточке панели модуля: за него карточку тянут по столу ──
@@ -783,6 +786,27 @@ Item {
   // создаётся прямо в карточке (в окне панели: клик по нему не считается кликом мимо). Тянут — карточка уезжает
   // (её x / y отвязываются от места у бара), мост к бару прячется; панель закрылась — место снова у бара.
   property var popDetached: null
+  property string popKeyNext: ""
+  // где стоят утащенные панели: ~/.config/omarchy/pop-places.json { ключ модуля: { screen, x, y, edge } } —
+  // следующее открытие панели сразу там; двойной клик по язычку возвращает её к бару (место забывается)
+  property var popPlaces: ({})
+  FileView {
+    id: popPlacesFile
+    path: Quickshell.env("HOME") + "/.config/omarchy/pop-places.json"
+    watchChanges: true
+    printErrors: false
+    onFileChanged: reload()
+    onLoaded: { try { var d = JSON.parse(text()); root.popPlaces = d && typeof d === "object" ? d : {} } catch (e) { root.popPlaces = {} } }
+    onLoadFailed: root.popPlaces = {}
+  }
+  function savePopPlace(key, place) {
+    if (!key) return
+    var o = Object.assign({}, root.popPlaces)
+    if (place) o[key] = place
+    else delete o[key]
+    root.popPlaces = o
+    popPlacesFile.setText(JSON.stringify(o, null, 2) + "\n")
+  }
   function findIn(obj, test, depth) {
     if (!obj || depth > 4) return null
     if (test(obj)) return obj
@@ -797,14 +821,19 @@ Item {
     }
     return null
   }
-  function attachPopTab(owner) {
+  function attachPopTab(owner, key) {
     if (!owner || root.activePopout !== owner) return
     var kp = findIn(owner, function(o) { return o !== owner && o.cardOrigin !== undefined && o.anchorItem !== undefined && o.contentItem !== undefined }, 0)
     if (!kp) return
     var card = findIn(kp, function(o) { return o !== kp && o.borderSpec !== undefined && o.contentTopInset !== undefined && o.width > 0 }, 0)
     if (!card) return
     for (var i = 0; i < card.children.length; i++) if (card.children[i].objectName === "omarchyPopTab") return
-    popTabComponent.createObject(card, { kp: kp, card: card, owner: owner })
+    // ключ места — имя модуля бара, у которого открыта панель (слот над anchorItem), иначе плагин / тип владельца
+    for (var a = kp.anchorItem, n = 0; a && n < 12; a = a.parent, n++)
+      if (typeof a.moduleName === "string" && a.moduleName) { key = a.moduleName; break }
+    var tab = popTabComponent.createObject(card, { kp: kp, card: card, owner: owner, key: key || "" })
+    var p = key ? root.popPlaces[key] : null
+    if (tab && p && kp.screen && p.screen === String(kp.screen.name)) tab.placeAt(p)
   }
   Component {
     id: popTabComponent
@@ -814,6 +843,34 @@ Item {
       property var kp
       property var card
       property var owner
+      property string key: ""
+      // поставить карточку на сохранённое место (сразу при открытии)
+      function placeAt(p) {
+        // окно панели при открытии ещё может быть не во весь экран — ограничивать по экрану
+        var w = kp.screen ? kp.screen.width : kp.width, h = kp.screen ? kp.screen.height : kp.height
+        root.popDetached = owner
+        card.x = Math.max(0, Math.min(w - card.width, Number(p.x) || 0))
+        card.y = Math.max(12, Math.min(h - card.height, Number(p.y) || 0))
+        snap(p.edge ? String(p.edge) : "")
+      }
+      function inset(e) { return e === root.position ? root.barSize : root.skin.framed ? root.skin.frameWidth : 0 }
+      // прижать к кромке e (или ни к какой) и сообщить мосту
+      function snap(best) {
+        var c = card, w = kp.screen ? kp.screen.width : kp.width, h = kp.screen ? kp.screen.height : kp.height
+        if (best === "left") c.x = inset("left") + 6
+        else if (best === "right") c.x = w - inset("right") - c.width - 6
+        else if (best === "top") c.y = inset("top") + 6
+        else if (best === "bottom") c.y = h - inset("bottom") - c.height - 6
+        root.popCard = best ? { screen: kp.screen ? String(kp.screen.name) : "", x: c.x, y: c.y, width: c.width, height: c.height, edge: best } : null
+      }
+      // высота карточки меняется (список устройств растёт) — у нижней кромки она остаётся прижатой
+      Connections {
+        target: tab.card
+        function onHeightChanged() {
+          if (root.popDetached !== tab.owner || !root.popCard || !root.popCard.edge) return
+          tab.snap(String(root.popCard.edge))
+        }
+      }
       readonly property color accent: Commons.Color.accent
       readonly property color line: root.skin.borderWidth > 0 ? root.skin.borderColor : Commons.Color.popups.border
       x: 24; y: -11
@@ -828,10 +885,24 @@ Item {
       // клик по язычку — не «мимо»: не пускать его к закрывающей области окна
       MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons }
       property point start
+      function home() {
+        var kp = tab.kp
+        tab.card.x = Qt.binding(function() { return kp.morphed(kp.morphFrom.x, kp.cardOrigin.x) })
+        tab.card.y = Qt.binding(function() { return kp.morphed(kp.morphFrom.y, kp.cardOrigin.y) })
+        if (root.popDetached === tab.owner) root.popDetached = null
+      }
       // поверх MouseArea: DragHandler в её родителе нажатия не видит
       Item {
         anchors.fill: parent
         HoverHandler { cursorShape: tabDrag.active ? Qt.ClosedHandCursor : Qt.OpenHandCursor }
+        // двойной клик — обратно к бару, место забыто
+        TapHandler {
+          onDoubleTapped: {
+            tab.home()
+            root.savePopPlace(tab.key, null)
+            if (tab.kp && typeof tab.kp.publishCard === "function") Qt.callLater(tab.kp.publishCard)
+          }
+        }
         DragHandler {
           id: tabDrag
           target: null
@@ -845,17 +916,13 @@ Item {
             }
             // отпустили у кромки рамки / бара (ближе 32 px) — вплотную к ней, мост сольёт карточку с ней
             var kp = tab.kp, c = tab.card, w = kp.width, h = kp.height
-            function inset(e) { return e === root.position ? root.barSize : root.skin.framed ? root.skin.frameWidth : 0 }
             function ok(e) { return root.mergePopups && (root.skin.framed || e === root.position) }
-            var d = { left: c.x - inset("left"), right: w - inset("right") - (c.x + c.width),
-                      top: c.y - inset("top"), bottom: h - inset("bottom") - (c.y + c.height) }
+            var d = { left: c.x - tab.inset("left"), right: w - tab.inset("right") - (c.x + c.width),
+                      top: c.y - tab.inset("top"), bottom: h - tab.inset("bottom") - (c.y + c.height) }
             var best = "", bd = 32
             for (var e in d) if (ok(e) && Math.abs(d[e]) < bd) { bd = Math.abs(d[e]); best = e }
-            if (best === "left") c.x = inset("left") + 6
-            else if (best === "right") c.x = w - inset("right") - c.width - 6
-            else if (best === "top") c.y = inset("top") + 6
-            else if (best === "bottom") c.y = h - inset("bottom") - c.height - 6
-            root.popCard = best ? { screen: kp.screen ? String(kp.screen.name) : "", x: c.x, y: c.y, width: c.width, height: c.height, edge: best } : null
+            tab.snap(best)
+            root.savePopPlace(tab.key, { screen: kp.screen ? String(kp.screen.name) : "", x: Math.round(c.x), y: Math.round(c.y), edge: best })
           }
           onTranslationChanged: if (active) {
             var w = tab.kp.width, h = tab.kp.height
@@ -869,10 +936,7 @@ Item {
         target: tab.kp
         function onOpenChanged() {
           if (tab.kp.open) return
-          var kp = tab.kp
-          tab.card.x = Qt.binding(function() { return kp.morphed(kp.morphFrom.x, kp.cardOrigin.x) })
-          tab.card.y = Qt.binding(function() { return kp.morphed(kp.morphFrom.y, kp.cardOrigin.y) })
-          if (root.popDetached === tab.owner) root.popDetached = null
+          tab.home()
           tab.destroy()
         }
       }
