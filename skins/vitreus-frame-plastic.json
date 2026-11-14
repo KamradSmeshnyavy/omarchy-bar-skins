@@ -1,0 +1,14 @@
+{
+  "note": "Vitreus frame in plastic (Retro, Doodle, Proxy, Milk, Paper themes): the same strip and frame, solid in the theme's colour with an ink outline",
+  "note_ru": "Рамка Vitreus из пластика (темы Retro, Doodle, Proxy, Milk, Paper): те же полоса и рамка, сплошные цветом темы с контуром чернилами",
+  "shape": "frame",
+  "height": 46,
+  "frameWidth": 9,
+  "radius": 10,
+  "background": "background",
+  "backgroundAlpha": 1,
+  "border": "foreground",
+  "borderWidth": 2,
+  "moduleStyle": "hover",
+  "moduleAlpha": 0.12
+}
