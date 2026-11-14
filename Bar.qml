@@ -824,7 +824,7 @@ Item {
   function attachPopTab(owner, key) {
     if (!owner || root.activePopout !== owner) return
     var kp = findIn(owner, function(o) { return o !== owner && o.cardOrigin !== undefined && o.anchorItem !== undefined && o.contentItem !== undefined }, 0)
-    if (!kp) return
+    if (!kp) { attachPopupTab(owner, key); return }
     var card = findIn(kp, function(o) { return o !== kp && o.borderSpec !== undefined && o.contentTopInset !== undefined && o.width > 0 }, 0)
     if (!card) return
     for (var i = 0; i < card.children.length; i++) if (card.children[i].objectName === "omarchyPopTab") return
@@ -834,6 +834,194 @@ Item {
     var tab = popTabComponent.createObject(card, { kp: kp, card: card, owner: owner, key: key || "" })
     var p = key ? root.popPlaces[key] : null
     if (tab && p && kp.screen && p.screen === String(kp.screen.name)) tab.placeAt(p)
+  }
+  // Меню-всплывашки (PopupCard из qs.Ui: меню трея, календарь, погода…) — это xdg-popup бара, они сами не сообщают,
+  // где карточка. Её место — прямоугольник якоря в окне бара (оно во весь экран, т. е. это px экрана) и размер окна.
+  // Язычок тот же: тянут — окно меню переезжает (якорь переставляется после расчёта самого PopupCard), у кромки
+  // рамки / бара прилипает и сливается мостом, место запоминается (pop-places.json).
+  function attachPopupTab(owner, key) {
+    function isPc(o) { return o.triggerMode !== undefined && o.anchorItem !== undefined && o.popupScreen !== undefined && o.anchor !== undefined }
+    // у владельца может быть несколько меню (у трея — меню значка и управление значками): берём открытое
+    var pc = isPc(owner) && owner.open ? owner : findIn(owner, function(o) { return o !== owner && isPc(o) && o.open === true }, 0)
+    if (!pc) return
+    // contentItem у PopupCard переопределён (список содержимого) — карточку ищем от самого окна
+    var card = findIn(pc, function(o) { return o !== pc && o.borderSpec !== undefined && o.contentTopInset !== undefined }, 0)
+    if (!card) return
+    for (var i = 0; i < card.children.length; i++) if (card.children[i].objectName === "omarchyPopTab") return
+    for (var a = pc.anchorItem, n = 0; a && n < 12; a = a.parent, n++)
+      if (typeof a.moduleName === "string" && a.moduleName) { key = a.moduleName; break }
+    var tab = popupTabComponent.createObject(card, { pc: pc, card: card, owner: owner, key: key || "" })
+    var p = key ? root.popPlaces[key] : null
+    if (tab && p && pc.popupScreen && p.screen === String(pc.popupScreen.name)) tab.placeAt(p)
+    else if (tab) tab.publish()
+  }
+  Component {
+    id: popupTabComponent
+    Item {
+      id: ptab
+      objectName: "omarchyPopTab"
+      property var pc
+      property var card
+      property var owner
+      property string key: ""
+      property bool placed: false          // стоит на своём месте (утащен), а не у кнопки
+      property point at: Qt.point(0, 0)    // левый верхний угол окна меню, px экрана
+      property string edge: ""
+      readonly property real sw: pc && pc.popupScreen ? pc.popupScreen.width : 1440
+      readonly property real sh: pc && pc.popupScreen ? pc.popupScreen.height : 900
+      readonly property real pw: pc ? pc.implicitWidth : 0
+      readonly property real ph: pc ? pc.implicitHeight : 0
+      readonly property color accent: Commons.Color.accent
+      readonly property color line: root.skin.borderWidth > 0 ? root.skin.borderColor : Commons.Color.popups.border
+      x: 24; y: 2
+      width: 78; height: 14
+      z: 100
+      function inset(e) { return e === root.position ? root.barSize : root.skin.framed ? root.skin.frameWidth : 0 }
+      // сообщить мосту, где карточка (у кнопки — где её поставил PopupCard)
+      function publish() {
+        if (!pc || !pc.open) return
+        var r = placed ? Qt.rect(at.x, at.y, pw, ph) : Qt.rect(pc.anchor.rect.x, pc.anchor.rect.y, pw, ph)
+        root.popCard = { screen: pc.popupScreen ? String(pc.popupScreen.name) : "", x: r.x, y: r.y, width: r.width, height: r.height, edge: placed ? edge : "" }
+        if (placed && !edge) root.popCard = null
+      }
+      function moveTo(p) {
+        at = Qt.point(Math.max(0, Math.min(sw - pw, p.x)), Math.max(0, Math.min(sh - ph, p.y)))
+        if (!pdrag.active) remap()
+      }
+      // показанный xdg-popup Hyprland не переставляет — окно меню показывается заново (якорь пересчитает PopupCard,
+      // а Connections ниже поставит его на at)
+      function remap() {
+        if (!pc || !pc.open) return
+        if (placed) { pc.anchor.rect.x = Math.round(at.x); pc.anchor.rect.y = Math.round(at.y) }
+        var c = card
+        pc.visible = false
+        Qt.callLater(function() { if (pc) pc.visible = Qt.binding(function() { return pc.open || c.opacity > 0 }) })
+      }
+      function snapTo(best) {
+        var p = at
+        if (best === "left") p = Qt.point(inset("left") + 6, p.y)
+        else if (best === "right") p = Qt.point(sw - inset("right") - pw - 6, p.y)
+        else if (best === "top") p = Qt.point(p.x, inset("top") + 6)
+        else if (best === "bottom") p = Qt.point(p.x, sh - inset("bottom") - ph - 6)
+        edge = best
+        moveTo(p)
+      }
+      function placeAt(p) {
+        placed = true
+        root.popDetached = owner
+        at = Qt.point(Number(p.x) || 0, Number(p.y) || 0)
+        snapTo(p.edge ? String(p.edge) : "")
+        publish()
+      }
+      function finish() {
+        var d = { left: at.x - inset("left"), right: sw - inset("right") - (at.x + pw),
+                  top: at.y - inset("top"), bottom: sh - inset("bottom") - (at.y + ph) }
+        function ok(e) { return root.mergePopups && (root.skin.framed || e === root.position) }
+        var best = "", bd = 32
+        for (var e in d) if (ok(e) && Math.abs(d[e]) < bd) { bd = Math.abs(d[e]); best = e }
+        snapTo(best)
+        publish()
+        var sc = pc.popupScreen ? String(pc.popupScreen.name) : ""
+        root.savePopPlace(key, { screen: sc, x: Math.round(at.x), y: Math.round(at.y), edge: best })
+      }
+      Timer { id: follow; interval: 16; repeat: true; onTriggered: if (!probe.running) probe.running = true }
+      // пока тянут — по экрану едет контур меню (само окно меню переедет на отпускании)
+      LazyLoader {
+        active: pdrag.active
+        PanelWindow {
+          screen: ptab.pc ? ptab.pc.popupScreen : null
+          anchors { top: true; bottom: true; left: true; right: true }
+          exclusionMode: ExclusionMode.Ignore
+          color: "transparent"
+          surfaceFormat.opaque: false
+          mask: Region {}
+          WlrLayershell.layer: WlrLayer.Overlay
+          WlrLayershell.namespace: "omarchy-pop-ghost"
+          WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+          Rectangle {
+            x: ptab.at.x; y: ptab.at.y; width: ptab.pw; height: ptab.ph
+            radius: Style.cornerRadius
+            color: Qt.rgba(Commons.Color.popups.background.r, Commons.Color.popups.background.g, Commons.Color.popups.background.b, 0.55)
+            border.width: 2
+            border.color: ptab.accent
+            Rectangle { x: 24; y: 2; width: 78; height: 11; radius: 5; color: ptab.accent }
+          }
+        }
+      }
+      Process {
+        id: probe
+        command: ["hyprctl", "cursorpos", "-j"]
+        stdout: StdioCollector {
+          onStreamFinished: {
+            if (!pdrag.active) return
+            try {
+              var c = JSON.parse(text), sc = ptab.pc.popupScreen
+              ptab.moveTo(Qt.point(c.x - (sc ? sc.x : 0) - pdrag.grab.x, c.y - (sc ? sc.y : 0) - pdrag.grab.y))
+            } catch (e) {}
+          }
+        }
+      }
+      function home() {
+        placed = false
+        edge = ""
+        if (root.popDetached === owner) root.popDetached = null
+        remap()
+      }
+      // PopupCard пересчитывает якорь при каждом показе / смене размера — утащенное меню возвращаем на его место
+      Connections {
+        target: ptab.pc ? ptab.pc.anchor : null
+        function onAnchoring() {
+          if (ptab.placed) { ptab.pc.anchor.rect.x = Math.round(ptab.at.x); ptab.pc.anchor.rect.y = Math.round(ptab.at.y) }
+          Qt.callLater(ptab.publish)
+        }
+      }
+      Connections {
+        target: ptab.pc
+        function onImplicitHeightChanged() { if (ptab.placed && ptab.edge) ptab.snapTo(ptab.edge); Qt.callLater(ptab.publish) }
+        function onOpenChanged() {
+          if (ptab.pc.open) return
+          if (root.popDetached === ptab.owner) root.popDetached = null
+          ptab.destroy()
+        }
+      }
+      // язычок внутри карточки у верхней кромки (xdg-popup не рисует за своими краями)
+      Rectangle { anchors.fill: parent; radius: 5; color: Qt.darker(ptab.accent, 1.35) }
+      Rectangle { width: parent.width; height: parent.height - 3; radius: 5; color: ptab.accent }
+      Rectangle { x: 6; y: 2; width: parent.width - 12; height: 2; radius: 1; color: Qt.rgba(1, 1, 1, 0.55) }
+      Rectangle { anchors.fill: parent; radius: 5; color: "transparent"; border.width: 1.2; border.color: ptab.line }
+      MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons }
+      Item {
+        anchors.fill: parent
+        HoverHandler { cursorShape: pdrag.active ? Qt.ClosedHandCursor : Qt.OpenHandCursor }
+        TapHandler {
+          onDoubleTapped: { ptab.home(); root.savePopPlace(ptab.key, null) }
+        }
+        DragHandler {
+          id: pdrag
+          target: null
+          dragThreshold: 3
+          // окно меню едет за курсором: смещение внутри окна ничего не говорит о курсоре на экране (окно уехало
+          // вместе с ним), поэтому место берётся из глобального курсора (hyprctl cursorpos), пока держат язычок
+          property point grab
+          onActiveChanged: {
+            if (active) {
+              var r = ptab.pc.anchor.rect
+              ptab.at = Qt.point(r.x, r.y)
+              ptab.placed = true
+              ptab.edge = ""
+              root.popDetached = ptab.owner
+              root.popCard = null
+              grab = ptab.card.mapFromItem(null, centroid.scenePressPosition.x, centroid.scenePressPosition.y)
+              grab = Qt.point(grab.x + ptab.card.x, grab.y + ptab.card.y)
+              follow.start()
+              return
+            }
+            follow.stop()
+            ptab.finish()
+          }
+        }
+      }
+    }
   }
   Component {
     id: popTabComponent
