@@ -23,6 +23,16 @@ QtObject {
       pal.toml = out
     }
   }
+  // смена темы подменяет папку current/theme целиком — слежение за старым colors.toml обрывается; перечитываем по
+  // theme.name (он переписывается при каждой смене)
+  property FileView themeName: FileView {
+    path: Quickshell.env("HOME") + "/.local/state/omarchy/current/theme.name"
+    watchChanges: true
+    printErrors: false
+    onFileChanged: { reload(); pal.file.reload(); pal.again.restart() }
+  }
+  // и ещё раз чуть позже — если theme.name записан раньше, чем скопирована папка темы
+  property Timer again: Timer { interval: 900; onTriggered: pal.file.reload() }
   function pick(k, fallback) { return toml[k] ? Qt.color(toml[k]) : fallback }
   readonly property color tab: pick("background", Commons.Color.background)
   readonly property color body: pick("dark_background", Qt.lighter(Commons.Color.background, 1.25))

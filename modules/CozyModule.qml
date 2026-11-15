@@ -12,7 +12,7 @@ import Quickshell.Services.UPower
 //   launcher — значок из четырёх ромбов (клик — меню выключения);
 //   groups   — точки столов 1–8 (settings.count): занятые — акцентом, текущий — своим цветом, пустые — тёмные; клик — стол;
 //   layout   — значок колонок и раскладка стола (dwindle / master / scrolling…); клик — следующая раскладка стола;
-//   search   — лупа и «Search» (клик — лаунчер);
+//   search   — лупа и «Search» (клик — список приложений, omarchy-apps);
 //   title    — заголовок активного окна, на пустом столе — «Desktop»;
 //   memory   — занято памяти «2186M» (клик — btop); battery — «Full» / «85%»; volume — «50%» (колесо, клик — без звука);
 //   clock    — часы «01:15 PM» (settings.hour12 false — 24 ч; клик — дашборд).
@@ -214,7 +214,7 @@ Item {
   function triggerPress(button) {
     if (settings && settings.command) { Quickshell.execDetached(["bash", "-c", String(settings.command)]); return }
     if (kind === "launcher") Quickshell.execDetached(["omarchy-shell", "widgets", "togglePower"])
-    else if (kind === "search") Quickshell.execDetached(["omarchy-menu", "toggle", "root"])
+    else if (kind === "search") Quickshell.execDetached(["omarchy-apps"])
     else if (kind === "layout") Quickshell.execDetached(["omarchy-hyprland-workspace-layout-toggle"])
     else if (kind === "memory") Quickshell.execDetached(["omarchy-launch-or-focus-tui", "btop"])
     else if (kind === "volume" && sink && sink.audio) sink.audio.muted = !sink.audio.muted
