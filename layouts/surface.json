@@ -1,0 +1,49 @@
+{
+  "note": "surface: the Arch glyph launcher and the workspace pill with window icons on the left; the song or the window title in the middle; tray, updates, battery and the date · time pill (opens the dashboard) on the right",
+  "note_ru": "surface: слева глиф Arch (лаунчер) и пилюля столов со значками окон; посередине песня или заголовок окна; справа трей, обновления, батарея и пилюля даты · времени (открывает дашборд)",
+  "position": "top",
+  "layout": {
+    "left": [
+      {
+        "id": "surf-launcher",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfLauncher.qml"
+      },
+      {
+        "id": "surf-workspaces",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfWorkspaces.qml"
+      }
+    ],
+    "center": [
+      {
+        "id": "surf-media",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfMedia.qml"
+      }
+    ],
+    "right": [
+      {
+        "id": "omarchy.tray"
+      },
+      {
+        "id": "surf-updates",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfStatus.qml",
+        "kind": "updates"
+      },
+      {
+        "id": "surf-battery",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfStatus.qml",
+        "kind": "battery"
+      },
+      {
+        "id": "surf-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfStatus.qml",
+        "kind": "clock"
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "note": "surface (after surface-dots by snes19xx, its README allows reuse with credit): a transparent 40 px bar across the top, every group in its own rounded pill of the card colour, the Manrope font",
+  "note_ru": "surface (по мотивам surface-dots, snes19xx; README разрешает брать со ссылкой): прозрачный бар 40 px по верху, каждая группа — в своей скруглённой пилюле цвета карточки, шрифт Manrope",
+  "shape": "full",
+  "gap": 0,
+  "margin": 0,
+  "width": 1.0,
+  "radius": 0,
+  "height": 40,
+  "padding": 12,
+  "background": "background",
+  "backgroundAlpha": 0,
+  "border": "background",
+  "borderWidth": 0,
+  "borderAlpha": 0,
+  "hardShadow": 0,
+  "shadow": false,
+  "text": "foreground",
+  "active": "accent",
+  "moduleStyle": "plain",
+  "spacing": 10,
+  "font": "Manrope"
+}
