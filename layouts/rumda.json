@@ -1,0 +1,73 @@
+{
+  "note": "Rumda: clock, volume and cpu / ram rings on top, slanted workspace marks in the middle, theme switch, weather, the cat-face network button and power at the bottom",
+  "note_ru": "Rumda: сверху часы, громкость и кольца cpu / ram, посередине наклонные метки столов, внизу смена темы, погода, «кошачья» кнопка сети и питание",
+  "position": "left",
+  "layout": {
+    "left": [
+      {
+        "id": "rumda-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RumdaClock.qml"
+      },
+      {
+        "id": "rumda-volume",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RumdaVolume.qml"
+      },
+      {
+        "id": "rumda-rings",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RumdaRings.qml"
+      },
+      {
+        "id": "rumda-art-top",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RumdaArt.qml",
+        "length": 70
+      }
+    ],
+    "center": [
+      {
+        "id": "rumda-workspaces",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RumdaWorkspaces.qml"
+      }
+    ],
+    "right": [
+      {
+        "id": "rumda-art-bottom",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RumdaArt.qml",
+        "length": 90,
+        "flip": true
+      },
+      {
+        "id": "omarchy.tray"
+      },
+      {
+        "id": "rumda-theme",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RumdaButton.qml",
+        "kind": "theme"
+      },
+      {
+        "id": "rumda-weather",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RumdaButton.qml",
+        "kind": "weather"
+      },
+      {
+        "id": "rumda-net",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RumdaButton.qml",
+        "kind": "net"
+      },
+      {
+        "id": "rumda-power",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RumdaButton.qml",
+        "kind": "power"
+      }
+    ]
+  }
+}

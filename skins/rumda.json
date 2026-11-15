@@ -1,0 +1,22 @@
+{
+  "note": "Rumda (after hexonide/rumda): a narrow pill on the left, 80 px off the top and bottom, a 3 px border, every module in its own rounded card, the pixel Dogica Pixel font",
+  "note_ru": "Rumda (по мотивам hexonide/rumda): узкая пилюля слева, на 80 px от верха и низа, рамка 3 px, каждый модуль — в своей скруглённой карточке, пиксельный шрифт Dogica Pixel",
+  "shape": "floating",
+  "gap": 18,
+  "margin": 80,
+  "width": 1.0,
+  "radius": 8,
+  "height": 48,
+  "padding": 8,
+  "background": "background",
+  "backgroundAlpha": 1,
+  "border": "lighter_background",
+  "borderWidth": 3,
+  "borderAlpha": 1,
+  "text": "foreground",
+  "active": "accent",
+  "moduleStyle": "plain",
+  "spacing": 4,
+  "font": "Dogica Pixel",
+  "shadow": false
+}
