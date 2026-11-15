@@ -4,7 +4,7 @@ import qs.Commons as Commons
 
 // Шкала yami (по мотивам Trendorin/yami, MIT; код свой) — модуль бара kamradsmeshnyavy.bar: «cpu ▮▮▮▮▮▮ 2%».
 // settings.kind: cpu (загрузка) · ram (занятая память) · temp (температура процессора, °C из 100). Подпись тусклая,
-// шесть ячеек — заполненные светлее, значение справа; выше 85 % — ячейки цветом тревоги. Данные — /proc и
+// шесть ячеек — заполненные акцентом, пустые в полтона, значение справа; выше 85 % — ярче. Данные — /proc и
 // /sys/class/thermal раз в 2 с.
 Item {
   id: root
@@ -15,6 +15,7 @@ Item {
   readonly property int across: bar && bar.barSize ? bar.barSize : 30
   readonly property color fg: bar && bar.barForeground ? bar.barForeground : Commons.Color.foreground
   readonly property color warn: Commons.Color.urgent
+  readonly property color acc: Commons.Color.accent
   readonly property string font: bar && bar.fontFamily ? bar.fontFamily : "Tiny5"
   readonly property string kind: String(settings && settings.kind || "cpu")
   readonly property int px: Math.max(9, Math.round(across * 0.42))
@@ -63,7 +64,7 @@ Item {
         required property int index
         readonly property bool full: index < Math.round(root.value * root.cells)
         width: Math.max(3, Math.round(root.px * 0.36)); height: Math.round(root.px * 0.95)
-        color: full ? (root.hot ? root.warn : Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.72)) : Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.16)
+        color: full ? (root.hot ? Qt.lighter(root.acc, 1.35) : root.acc) : Qt.rgba(root.acc.r, root.acc.g, root.acc.b, 0.22)
       }
     }
   }

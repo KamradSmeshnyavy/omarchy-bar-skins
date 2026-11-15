@@ -4,8 +4,8 @@ import Quickshell.Hyprland
 import qs.Commons as Commons
 
 // Столы yami (по мотивам Trendorin/yami, MIT; код свой) — модуль бара kamradsmeshnyavy.bar.
-// Квадратные ячейки с номером: занятые и текущий; текущий — светлая заливка, остальные — только рамка. Стол, где окно
-// просит внимания, — ячейка цветом акцента. Клик — перейти, колесо — соседний.
+// Квадратные ячейки с номером: занятые и текущий; текущий залит акцентом, остальные — тёмные с рамкой. Стол, где окно
+// просит внимания, — ячейка в полтона акцента. Клик — перейти, колесо — соседний.
 Item {
   id: root
   property var bar: null
@@ -48,13 +48,13 @@ Item {
         readonly property bool on: n === root.active
         readonly property bool urg: !on && root.urgentOf(n)
         width: root.cell; height: root.cell
-        color: on ? Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.42) : urg ? root.acc : hov.hovered ? Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.12) : "transparent"
+        color: on ? root.acc : urg ? Qt.rgba(root.acc.r, root.acc.g, root.acc.b, 0.35) : hov.hovered ? Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.12) : Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.05)
         border.width: 1
-        border.color: Qt.rgba(root.fg.r, root.fg.g, root.fg.b, on ? 0.6 : 0.22)
+        border.color: on ? Qt.lighter(root.acc, 1.25) : Qt.rgba(root.fg.r, root.fg.g, root.fg.b, 0.16)
         Text {
           anchors.centerIn: parent
           text: c.n === 10 ? "0" : String(c.n)
-          color: c.on ? Commons.Color.background : root.fg
+          color: c.on ? "white" : root.fg
           opacity: c.on || c.urg ? 1 : 0.75
           font.family: root.font
           font.pixelSize: Math.round(root.cell * 0.62)

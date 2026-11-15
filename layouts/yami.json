@@ -1,6 +1,6 @@
 {
-  "note": "yami: launcher grid and square workspace cells on the left; tray, network, Bluetooth, sound, cpu / ram scales, temperature, clock, Customizer and power on the right",
-  "note_ru": "yami: слева кнопка лаунчера и квадратные ячейки столов; справа трей, сеть, Bluetooth, звук, шкалы cpu / ram, температура, часы, Customizer и питание",
+  "note": "yami: launcher grid, square workspace cells and the focused window as an accent button on the left; tray, network, Bluetooth, sound, cpu / ram scales, temperature, clock, Customizer and power on the right",
+  "note_ru": "yami: слева кнопка лаунчера, квадратные ячейки столов и активное окно кнопкой цвета акцента; справа трей, сеть, Bluetooth, звук, шкалы cpu / ram, температура, часы, Customizer и питание",
   "position": "top",
   "layout": {
     "left": [
@@ -14,6 +14,12 @@
         "id": "yami-workspaces",
         "type": "qml",
         "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/YamiWorkspaces.qml"
+      },
+      {
+        "id": "yami-task",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/YamiTask.qml",
+        "width": 190
       }
     ],
     "center": [],
