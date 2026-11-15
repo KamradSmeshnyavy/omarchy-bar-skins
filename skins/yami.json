@@ -1,0 +1,23 @@
+{
+  "note": "yami (after Trendorin/yami, MIT): a thin graphite panel across the top, inset 6 px from the edges, a one-pixel border and a hard pixel shadow, the pixel Tiny5 font",
+  "note_ru": "yami (по мотивам Trendorin/yami, MIT): тонкая графитовая панель вдоль верха с отступом 6 px от краёв, рамка в один пиксель, жёсткая пиксельная тень, пиксельный шрифт Tiny5",
+  "shape": "floating",
+  "gap": 6,
+  "margin": 6,
+  "width": 1.0,
+  "radius": 0,
+  "height": 30,
+  "padding": 8,
+  "background": "dark_background",
+  "backgroundAlpha": 1,
+  "border": "foreground",
+  "borderWidth": 1,
+  "borderAlpha": 0.16,
+  "hardShadow": 3,
+  "shadow": false,
+  "text": "foreground",
+  "active": "foreground",
+  "moduleStyle": "plain",
+  "spacing": 8,
+  "font": "Tiny5"
+}

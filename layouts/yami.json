@@ -1,0 +1,70 @@
+{
+  "note": "yami: launcher grid and square workspace cells on the left; tray, network, Bluetooth, sound, cpu / ram scales, temperature, clock, Customizer and power on the right",
+  "note_ru": "yami: слева кнопка лаунчера и квадратные ячейки столов; справа трей, сеть, Bluetooth, звук, шкалы cpu / ram, температура, часы, Customizer и питание",
+  "position": "top",
+  "layout": {
+    "left": [
+      {
+        "id": "yami-launcher",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/YamiButton.qml",
+        "icon": "grid"
+      },
+      {
+        "id": "yami-workspaces",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/YamiWorkspaces.qml"
+      }
+    ],
+    "center": [],
+    "right": [
+      {
+        "id": "omarchy.tray"
+      },
+      {
+        "id": "omarchy.network"
+      },
+      {
+        "id": "omarchy.bluetooth"
+      },
+      {
+        "id": "omarchy.audio"
+      },
+      {
+        "id": "yami-cpu",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/YamiMeter.qml",
+        "kind": "cpu"
+      },
+      {
+        "id": "yami-ram",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/YamiMeter.qml",
+        "kind": "ram"
+      },
+      {
+        "id": "yami-temp",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/YamiMeter.qml",
+        "kind": "temp"
+      },
+      {
+        "id": "yami-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/YamiClock.qml"
+      },
+      {
+        "id": "yami-settings",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/YamiButton.qml",
+        "icon": "gear"
+      },
+      {
+        "id": "yami-power",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/YamiButton.qml",
+        "icon": "power"
+      }
+    ]
+  }
+}
