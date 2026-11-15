@@ -1,0 +1,75 @@
+{
+  "note": "Cozytile: the diamond launcher in a dark tab, workspace dots, the layout, Search in a dark tab and the window title on the left; tray, memory, battery, volume and the clock in a dark tab on the right — pair with the cozytile skin",
+  "note_ru": "Cozytile: слева значок-ромбы в тёмном язычке, точки столов, раскладка, Search в тёмном язычке и заголовок окна; справа трей, память, батарея, громкость и часы в тёмном язычке — в паре со скином cozytile",
+  "position": "top",
+  "layout": {
+    "left": [
+      {
+        "id": "cozy-launcher",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CozyModule.qml",
+        "kind": "launcher",
+        "tab": "start"
+      },
+      {
+        "id": "cozy-groups",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CozyModule.qml",
+        "kind": "groups",
+        "slash": true
+      },
+      {
+        "id": "cozy-layout",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CozyModule.qml",
+        "kind": "layout"
+      },
+      {
+        "id": "cozy-search",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CozyModule.qml",
+        "kind": "search",
+        "tab": "mid"
+      },
+      {
+        "id": "cozy-title",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CozyModule.qml",
+        "kind": "title"
+      }
+    ],
+    "center": [],
+    "right": [
+      {
+        "id": "omarchy.tray"
+      },
+      {
+        "id": "cozy-memory",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CozyModule.qml",
+        "kind": "memory",
+        "slash": true
+      },
+      {
+        "id": "cozy-battery",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CozyModule.qml",
+        "kind": "battery",
+        "slash": true
+      },
+      {
+        "id": "cozy-volume",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CozyModule.qml",
+        "kind": "volume"
+      },
+      {
+        "id": "cozy-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CozyModule.qml",
+        "kind": "clock",
+        "tab": "end"
+      }
+    ]
+  }
+}

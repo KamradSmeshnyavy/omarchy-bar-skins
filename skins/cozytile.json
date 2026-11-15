@@ -1,0 +1,23 @@
+{
+  "note": "Cozytile (after the qtile bar of Darkkal44/Cozytile — look only, own code): a floating 30 px pill 15 px from the top and 60 px from the sides, the lighter fill of the theme with dark tabs that have S-shaped slanted sides, JetBrains Mono",
+  "note_ru": "Cozytile (по мотивам qtile-бара Darkkal44/Cozytile — только облик, код свой): плавающая пилюля 30 px в 15 px от верха и 60 px от боков, светлая заливка темы с тёмными язычками с S-образными косыми боками, JetBrains Mono",
+  "shape": "floating",
+  "gap": 15,
+  "margin": 60,
+  "width": 1.0,
+  "radius": 8,
+  "height": 30,
+  "padding": 0,
+  "background": "dark_background",
+  "backgroundAlpha": 1,
+  "border": "background",
+  "borderWidth": 0,
+  "borderAlpha": 0,
+  "hardShadow": 0,
+  "shadow": true,
+  "text": "accent",
+  "active": "accent",
+  "moduleStyle": "plain",
+  "spacing": 0,
+  "font": "JetBrainsMono Nerd Font"
+}
