@@ -7,7 +7,7 @@ import qs.Commons as Commons
 // Часы Vitreus (по мотивам natepayn3/Vitreus, MIT; код свой) — модуль бара kamradsmeshnyavy.bar. k — масштаб от полосы
 // Vitreus (62 px) к толщине бара.
 // Сбоку — столбиком: час крупно (30) градиентом акцента (светлый → акцент → тёмный), карандашная черта, минуты (17),
-// день недели и дата мелко. Сверху / снизу — строкой: час градиентом, минуты, справа день и дата в две строки.
+// день недели и дата мелко. Сверху / снизу — строкой, как у Vitreus: час чернилами, «:минуты» акцентом, справа день и дата.
 // Шрифт цифр — заголовочный из профиля шрифтов (~/.config/omarchy/fonts.json "title"), иначе шрифт бара.
 // settings.hour12: true — 12-часовой формат с am / pm. Клик — дашборд.
 Item {
@@ -116,26 +116,24 @@ Item {
     Small { anchors.horizontalCenter: parent.horizontalCenter; text: root.day }
     Small { anchors.horizontalCenter: parent.horizontalCenter; text: root.date; opacity: 0.5 }
   }
+  // строкой (бар сверху / снизу) — как у Vitreus: час крупно чернилами, «:минуты» — акцентом, справа день и am / pm
   Row {
     id: row
     visible: !root.vertical
     anchors.centerIn: parent
     spacing: 6 * root.k
-    GradNum { anchors.verticalCenter: parent.verticalCenter; text: root.hh; px: Math.min(30 * root.k, root.across * 0.62) }
-    Pencil { anchors.verticalCenter: parent.verticalCenter; len: 4 * root.k; rotation: 90 }
-    Text {
+    Row {
       anchors.verticalCenter: parent.verticalCenter
-      text: root.mm + (root.h12 ? " " + root.ap : "")
-      font.family: root.numFont
-      font.pixelSize: Math.round(Math.min(17 * root.k, root.across * 0.4))
-      font.weight: Font.Medium
-      color: root.fg
+      Text { anchors.baseline: mm.baseline; text: root.hh; color: root.fg; font.family: root.numFont; font.weight: Font.Bold
+        font.pixelSize: Math.round(Math.min(30 * root.k, root.across * 0.66)) }
+      Text { id: mm; text: ":" + root.mm; color: root.acc; font.family: root.numFont; font.weight: Font.DemiBold
+        font.pixelSize: Math.round(Math.min(30 * root.k, root.across * 0.66)) }
     }
     Column {
       anchors.verticalCenter: parent.verticalCenter
-      leftPadding: 4 * root.k
+      leftPadding: 2 * root.k
       Small { text: root.day }
-      Small { text: root.date; opacity: 0.5 }
+      Small { text: root.h12 ? root.ap : root.date; opacity: 0.5 }
     }
   }
   HoverHandler { cursorShape: Qt.PointingHandCursor }
