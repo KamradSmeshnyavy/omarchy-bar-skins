@@ -1,0 +1,57 @@
+{
+  "note": "surface taskbar: on an empty workspace — the dock (launcher, pinned apps, time) and the battery; with windows — the Arch glyph and the workspace pill on the left, the song or window title, tray, updates, battery and the date · time pill on the right. Pair with the surface-task skin.",
+  "note_ru": "Таскбар surface: на пустом столе — док (лаунчер, закреплённые приложения, время) и батарея; с окнами — слева глиф Arch и пилюля столов, справа песня или заголовок окна, трей, обновления, батарея и пилюля даты · времени. В паре со скином surface-task.",
+  "position": "bottom",
+  "layout": {
+    "left": [
+      {
+        "id": "surf-launcher",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfLauncher.qml",
+        "command": "omarchy-shell shell summon omarchy.menu '{\"menu\":\"apps\",\"browse\":true,\"skin\":\"surface-wide\"}'"
+      },
+      {
+        "id": "surf-workspaces",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfWorkspaces.qml"
+      }
+    ],
+    "center": [
+      {
+        "id": "surf-dock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfDock.qml",
+        "command": "omarchy-shell shell summon omarchy.menu '{\"menu\":\"apps\",\"browse\":true,\"skin\":\"surface-wide\"}'"
+      }
+    ],
+    "right": [
+      {
+        "id": "surf-media",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfMedia.qml",
+        "width": 260
+      },
+      {
+        "id": "omarchy.tray"
+      },
+      {
+        "id": "surf-updates",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfStatus.qml",
+        "kind": "updates"
+      },
+      {
+        "id": "surf-battery",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfStatus.qml",
+        "kind": "battery"
+      },
+      {
+        "id": "surf-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SurfStatus.qml",
+        "kind": "clock"
+      }
+    ]
+  }
+}

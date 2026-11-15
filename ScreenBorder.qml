@@ -17,6 +17,11 @@ Scope {
   required property int barSize
   required property string position
   property bool shown: true
+  // reserve — держать место под рамкой (exclusiveZone); frameShown — рисовать рамку (плавно гаснет)
+  property bool reserve: true
+  property bool frameShown: true
+  property real frameFade: frameShown ? 1 : 0
+  Behavior on frameFade { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
   readonly property int frameWidth: skin.frameWidth
   readonly property int radius: skin.frameRadius
@@ -58,7 +63,7 @@ Scope {
         readonly property bool vertical: modelData === "left" || modelData === "right"
 
         screen: border.screen
-        visible: border.shown
+        visible: border.shown && border.reserve
         anchors {
           top: modelData !== "bottom"
           bottom: modelData !== "top"
@@ -120,7 +125,8 @@ Scope {
     }
 
     Shape {
-      visible: !border.skin.vitreus
+      visible: !border.skin.vitreus && border.frameFade > 0
+      opacity: border.frameFade
       anchors.fill: parent
       preferredRendererType: Shape.CurveRenderer
 

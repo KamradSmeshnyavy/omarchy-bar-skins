@@ -1836,6 +1836,14 @@ Item {
         barSize: root.barSize
         position: root.position
         shown: !root.barHidden && !root.transparent
+        // skin.frameEmptyOnly (surface): рамка — только на пустом столе этого монитора, без резерва места
+        reserve: !root.skin.frameEmptyOnly
+        frameShown: {
+          if (!root.skin.frameEmptyOnly) return true
+          root.skinCompactRevision
+          var m = Hyprland.monitorFor(modelData)
+          return !!(m && m.activeWorkspace) && m.activeWorkspace.toplevels.values.length === 0
+        }
         extraSpots: root.deskSpots[String(modelData.name)] || []
       }
     }

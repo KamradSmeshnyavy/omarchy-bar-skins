@@ -64,6 +64,7 @@ QtObject {
     liquid: false,          // жидкое стекло: блик вдоль бара, двойной светлый ободок, подсветка акцентом
     vitreus: false,         // настоящее стекло Vitreus (LiquidGlass: преломление обоев); рамка — одним куском с полосой,
                             // вырезы вливаются в край экрана вогнутыми изгибами
+    frameEmptyOnly: false,  // frame: рамка (верх и бока) видна только на пустом столе, место под неё не держится (surface)
     tabs: false             // frame: язычки посередине верхней и нижней кромок (наведение — вырастает; лаунчер / Prefs)
   })
 
@@ -115,7 +116,7 @@ QtObject {
   // empty — на пустом столе (вместе с compactModules "taskbar" бар становится доком, модуль Taskbar).
   readonly property string compactMode: ["single", "fullscreen", "always", "empty"].indexOf(String(value("compact"))) !== -1 ? String(value("compact")) : "off"
   readonly property int compactHeight: Math.max(0, Math.round(num("compactHeight")))
-  readonly property string compactModules: ["all", "essentials", "center", "minimal", "taskbar"].indexOf(String(value("compactModules"))) !== -1 ? String(value("compactModules")) : "essentials"
+  readonly property string compactModules: ["all", "essentials", "center", "minimal", "taskbar", "surface"].indexOf(String(value("compactModules"))) !== -1 ? String(value("compactModules")) : "essentials"
   readonly property string compactShape: String(value("compactShape")) === "same" ? "same" : normalizeShape(value("compactShape"))
   readonly property real compactAlpha: num("compactAlpha")
   readonly property bool compactShrink: String(value("compactReserve")) === "shrink"
@@ -129,6 +130,8 @@ QtObject {
     if (compactModules === "center") return region !== "center"
     if (compactModules === "minimal") return name !== "omarchy.workspaces" && name !== "omarchy.clock"
     if (compactModules === "taskbar") return name !== "taskbar"
+    // surface: в режиме дока — сам док и батарея
+    if (compactModules === "surface") return ["surf-dock", "surf-battery"].indexOf(name) === -1
     return compactEssentials.indexOf(name) === -1
   }
   // hug: вогнутые углы под баром, радиус из radius (минимум 8, иначе их не видно).
@@ -137,6 +140,7 @@ QtObject {
   readonly property bool framed: shape === "frame"
   readonly property int frameWidth: Math.max(1, Math.round(num("frameWidth")))
   readonly property int frameRadius: Math.max(8, Math.round(num("radius")))
+  readonly property bool frameEmptyOnly: value("frameEmptyOnly") === true
   readonly property string font: String(value("font") || "")
   readonly property string texture: String(value("texture") || "").replace(/^~\//, home + "/")
   readonly property real textureAlpha: Math.max(0, Math.min(1, num("textureAlpha")))
