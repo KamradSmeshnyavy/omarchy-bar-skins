@@ -1,0 +1,23 @@
+{
+  "note": "Bruteon (after the neo-brutalism rice of Darkkal44, look from its screenshots, own code): three cream islands 44 px high, 10 px from the top and 20 px from the sides, a 3 px dark outline and a hard shadow without blur, JetBrains Mono",
+  "note_ru": "Bruteon (по мотивам райса-необрутализма Darkkal44, облик с его скриншотов, код свой): три кремовых острова высотой 44 px в 10 px от верха и 20 px от боков, тёмный контур 3 px и жёсткая тень без размытия, JetBrains Mono",
+  "shape": "islands",
+  "gap": 10,
+  "margin": 20,
+  "radius": 12,
+  "height": 44,
+  "padding": 10,
+  "islandGap": 0,
+  "background": "background",
+  "backgroundAlpha": 1,
+  "border": "foreground",
+  "borderWidth": 3,
+  "borderAlpha": 1,
+  "hardShadow": 5,
+  "shadow": false,
+  "text": "foreground",
+  "active": "foreground",
+  "moduleStyle": "plain",
+  "spacing": 6,
+  "font": "JetBrainsMono Nerd Font"
+}
