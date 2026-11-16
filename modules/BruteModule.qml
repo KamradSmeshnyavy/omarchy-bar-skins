@@ -32,6 +32,8 @@ Item {
   readonly property string kind: String(settings && settings.kind || "power")
   readonly property color ink: Commons.Color.foreground
   readonly property color paper: Commons.Color.background
+  // текст и значки на пастельных плитках — всегда тёмные (и на тёмной теме, где чернила светлые)
+  readonly property color pastelInk: "#161110"
   readonly property string font: Qt.fontFamilies().indexOf("JetBrainsMono Nerd Font") !== -1 ? "JetBrainsMono Nerd Font" : "monospace"
   // его пастель
   readonly property color peach: "#ffb77a"
@@ -100,7 +102,7 @@ Item {
       anchors.verticalCenter: parent.verticalCenter
       fill: root.peach; ink: root.ink
       hovered: ph.hovered
-      Text { anchors.centerIn: parent; text: ""; color: root.ink; font.family: root.font; font.pixelSize: 13 }
+      Text { anchors.centerIn: parent; text: ""; color: root.pastelInk; font.family: root.font; font.pixelSize: 13 }
       HoverHandler { id: ph; cursorShape: Qt.PointingHandCursor }
       function triggerPress(button) { root.run(["omarchy-shell", "widgets", "togglePower"]) }
       property BarClick click: BarClick { bar: root.bar; target: pw }
@@ -135,7 +137,7 @@ Item {
               Text {
                 anchors.centerIn: parent
                 text: wsSlot.icons[wsSlot.index % wsSlot.icons.length]
-                color: root.ink
+                color: wsSlot.on ? root.pastelInk : root.ink
                 opacity: wsSlot.on || wsSlot.busy ? 1 : wh.hovered ? 0.6 : 0.3
                 font.family: root.font
                 font.pixelSize: 14
@@ -183,7 +185,7 @@ Item {
                 visible: appSlot.modelData.glyph !== ""
                 anchors.centerIn: parent
                 text: appSlot.modelData.glyph
-                color: root.ink
+                color: appSlot.modelData.active ? root.pastelInk : root.ink
                 opacity: appSlot.modelData.run ? 1 : 0.3
                 font.family: root.font
                 font.pixelSize: 15
@@ -242,8 +244,8 @@ Item {
         id: tkRow
         anchors.centerIn: parent
         spacing: 6
-        Text { anchors.verticalCenter: parent.verticalCenter; text: ""; color: root.ink; font.family: root.font; font.pixelSize: 13 }
-        Text { anchors.verticalCenter: parent.verticalCenter; text: "Tasks"; color: root.ink; font.family: root.font; font.pixelSize: 13; font.bold: true }
+        Text { anchors.verticalCenter: parent.verticalCenter; text: ""; color: root.pastelInk; font.family: root.font; font.pixelSize: 13 }
+        Text { anchors.verticalCenter: parent.verticalCenter; text: "Tasks"; color: root.pastelInk; font.family: root.font; font.pixelSize: 13; font.bold: true }
       }
       HoverHandler { id: th; cursorShape: Qt.PointingHandCursor }
       // панель задач и помодоро поверх окон (TasksBrute.qml в kamradsmeshnyavy.widgets), как у него
@@ -260,7 +262,7 @@ Item {
       fill: root.dashOpen ? root.salmon : root.paper; ink: root.ink
       flat: !root.dashOpen
       hovered: dh.hovered
-      Text { anchors.centerIn: parent; text: root.dashOpen ? "" : "\u{F0570}"; color: root.ink; font.family: root.font; font.pixelSize: 14 }
+      Text { anchors.centerIn: parent; text: root.dashOpen ? "" : "\u{F0570}"; color: root.dashOpen ? root.pastelInk : root.ink; font.family: root.font; font.pixelSize: 14 }
       HoverHandler { id: dh; cursorShape: Qt.PointingHandCursor }
       function triggerPress(button) { root.dashOpen = !root.dashOpen; root.run(["omarchy-shell", "widgets", "toggleDashboard"]) }
       property BarClick click: BarClick { bar: root.bar; target: db }
@@ -306,7 +308,7 @@ Item {
             id: sb
             required property var modelData
             width: 16; height: 22
-            Text { anchors.centerIn: parent; text: sb.modelData[0]; color: root.ink; font.family: root.font; font.pixelSize: 13; scale: sh2.hovered ? 1.15 : 1 }
+            Text { anchors.centerIn: parent; text: sb.modelData[0]; color: root.pastelInk; font.family: root.font; font.pixelSize: 13; scale: sh2.hovered ? 1.15 : 1 }
             HoverHandler { id: sh2; cursorShape: Qt.PointingHandCursor }
             function triggerPress(button) { root.run(["omarchy-shell", "widgets", "openSettingsSection", sb.modelData[1]]) }
             property BarClick click: BarClick { bar: root.bar; target: sb }
@@ -327,14 +329,14 @@ Item {
         id: ckRow
         anchors.centerIn: parent
         spacing: 6
-        Text { anchors.verticalCenter: parent.verticalCenter; text: ""; color: root.ink; font.family: root.font; font.pixelSize: 12 }
-        Text { anchors.verticalCenter: parent.verticalCenter; text: root.h12 ? Qt.formatTime(root.now, "h:mm AP").split(" ")[0] : Qt.formatTime(root.now, "HH:mm"); color: root.ink; font.family: root.font; font.pixelSize: 14; font.bold: true }
+        Text { anchors.verticalCenter: parent.verticalCenter; text: ""; color: root.pastelInk; font.family: root.font; font.pixelSize: 12 }
+        Text { anchors.verticalCenter: parent.verticalCenter; text: root.h12 ? Qt.formatTime(root.now, "h:mm AP").split(" ")[0] : Qt.formatTime(root.now, "HH:mm"); color: root.pastelInk; font.family: root.font; font.pixelSize: 14; font.bold: true }
         Rectangle {
           visible: root.h12
           anchors.verticalCenter: parent.verticalCenter
           width: ap.implicitWidth + 4; height: 12; radius: 2
-          color: "transparent"; border.width: 1.2; border.color: root.ink
-          Text { id: ap; anchors.centerIn: parent; text: Qt.formatTime(root.now, "AP"); color: root.ink; font.family: root.font; font.pixelSize: 7; font.bold: true }
+          color: "transparent"; border.width: 1.2; border.color: root.pastelInk
+          Text { id: ap; anchors.centerIn: parent; text: Qt.formatTime(root.now, "AP"); color: root.pastelInk; font.family: root.font; font.pixelSize: 7; font.bold: true }
         }
       }
       HoverHandler { id: kh; cursorShape: Qt.PointingHandCursor }
@@ -350,7 +352,7 @@ Item {
       anchors.verticalCenter: parent.verticalCenter
       fill: root.pink; ink: root.ink
       hovered: bh.hovered
-      Text { anchors.centerIn: parent; text: ""; color: root.ink; font.family: root.font; font.pixelSize: 13 }
+      Text { anchors.centerIn: parent; text: ""; color: root.pastelInk; font.family: root.font; font.pixelSize: 13 }
       HoverHandler { id: bh; cursorShape: Qt.PointingHandCursor }
       function triggerPress(button) {
         if (button === Qt.RightButton) root.run(["omarchy-shell", "notifications", "toggleDnd"])
