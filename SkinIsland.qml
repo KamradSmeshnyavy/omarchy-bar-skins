@@ -54,6 +54,17 @@ Rectangle {
     joinRadius: 1
     joinK: island.notch ? 26 : 0
   }
+  // жёсткая тень острова (скин hardShadow или общая тень панелей — BarSkin.hardShadow): плашка под островом
+  Rectangle {
+    visible: island.skin.hardShadow > 0 && !island.transparent && !island.skin.vitreus && !island.notch
+    z: -1
+    x: island.skin.hardShadow
+    y: island.skin.hardShadow
+    width: island.width
+    height: island.height
+    radius: island.radius
+    color: Qt.rgba(island.skin.hardShadowColor.r, island.skin.hardShadowColor.g, island.skin.hardShadowColor.b, 1)
+  }
   Gradient {
     id: islandGradient
     orientation: island.vertical ? Gradient.Vertical : Gradient.Horizontal

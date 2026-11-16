@@ -101,7 +101,7 @@ overlay with live preview — skins, layouts and every setting below:
   "font": "",                 // empty = system font
   "texture": "",              // PNG tile over the plate (~ expands); on a dark plate <name>-dark.png is used
   "textureAlpha": 0.9,
-  "hardShadow": 0,            // hard offset shadow in px, border colour (brutalism)
+  "hardShadow": 0,            // hard offset shadow in px, border colour (brutalism; islands too); Customizer → Widgets → Shadows overrides it
   "bevel": false,             // retro 3D bevel: light top-left, dark bottom-right
   "transparent": false        // stock transparent mode (written to shell.json)
 }

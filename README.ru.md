@@ -97,7 +97,7 @@ jq --slurpfile l plugins/kamradsmeshnyavy.bar/layouts/centered.json '.bar += $l[
   "font": "",                 // пусто = системный шрифт
   "texture": "",              // PNG-тайл поверх подложки (~ раскрывается); на тёмной — <имя>-dark.png
   "textureAlpha": 0.9,
-  "hardShadow": 0,            // жёсткая смещённая тень в px цветом рамки (брутализм)
+  "hardShadow": 0,            // жёсткая смещённая тень в px цветом рамки (брутализм; и у островов); Customizer → Виджеты → Тени сильнее
   "bevel": false,             // ретро-кант: светлый сверху-слева, тёмный снизу-справа
   "transparent": false        // стоковый прозрачный режим (пишется в shell.json)
 }

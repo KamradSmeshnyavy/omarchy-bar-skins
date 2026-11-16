@@ -107,7 +107,7 @@ QtObject {
   readonly property int padding: Math.round(num("padding"))
   readonly property int islandGap: Math.max(0, Math.round(num("islandGap")))
   readonly property int borderWidth: Math.max(0, Math.round(num("borderWidth")))
-  readonly property bool shadow: value("shadow") === true
+  readonly property bool shadow: value("shadow") === true && shadeMode === "style"
   readonly property bool glow: value("glow") === true
   readonly property bool autoHide: value("autoHide") === true
   readonly property string moduleStyle: ["pills", "hover"].indexOf(String(value("moduleStyle"))) !== -1 ? String(value("moduleStyle")) : "plain"
@@ -144,7 +144,13 @@ QtObject {
   readonly property string font: String(value("font") || "")
   readonly property string texture: String(value("texture") || "").replace(/^~\//, home + "/")
   readonly property real textureAlpha: Math.max(0, Math.min(1, num("textureAlpha")))
-  readonly property int hardShadow: Math.max(0, Math.round(num("hardShadow")))
+  // Общая тень панелей (Customizer → Виджеты → Тени, ~/.config/omarchy/panel-shadow.json) сильнее скина:
+  // hard — жёсткая тень своим смещением и цветом, off — без тени (и без мягкой), style — как в скине.
+  property var shade: ({})
+  readonly property string shadeMode: ["hard", "off"].indexOf(String(shade.panelShadow)) !== -1 ? String(shade.panelShadow) : "style"
+  readonly property int hardShadow: shadeMode === "hard" ? Math.max(1, Math.min(24, Math.round(Number(shade.panelShadowOffset) || 6)))
+    : shadeMode === "off" ? 0 : Math.max(0, Math.round(num("hardShadow")))
+  readonly property color hardShadowColor: shadeMode === "hard" && shade.panelShadowColor ? resolve(shade.panelShadowColor, borderColor) : borderColor
   readonly property bool bevel: value("bevel") === true
   readonly property bool liquid: value("liquid") === true
   readonly property bool vitreus: value("vitreus") === true
@@ -220,6 +226,14 @@ QtObject {
     onFileChanged: reload()
   }
 
+  property FileView shadeFile: FileView {
+    path: root.home + "/.config/omarchy/panel-shadow.json"
+    watchChanges: true
+    printErrors: false
+    onLoaded: { try { root.shade = JSON.parse(text() || "{}") || {} } catch (e) { root.shade = {} } }
+    onLoadFailed: root.shade = {}
+    onFileChanged: reload()
+  }
   property FileView paletteFile: FileView {
     id: paletteFile
     path: root.home + "/.local/state/omarchy/current/theme/colors.toml"

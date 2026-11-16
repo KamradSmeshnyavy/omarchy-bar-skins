@@ -47,10 +47,12 @@ Item {
     ? skin.withAlpha(skin.backgroundColor, skin.compactAlpha) : skin.backgroundColor
   readonly property color fill2: skin.withAlpha(skin.gradientColor, fill.a)
 
-  readonly property int shadowPad: (skin.shadow || skin.glow) && shape !== "full" && shape !== "hug" && shape !== "frame" ? 10 : 0
+  // место под тень у отдельных от края форм: мягкая тень / свечение — 10 px, жёсткая — её сдвиг + 2
+  readonly property int hardPad: skin.hardShadow > 0 ? skin.hardShadow + 2 : 0
+  readonly property int shadowPad: shape !== "full" && shape !== "hug" && shape !== "frame" ? Math.max((skin.shadow || skin.glow) ? 10 : 0, hardPad) : 0
   // Толщина окна: обычная геометрия (чтобы compact не менял размер поверхности),
   // а с compactReserve = shrink — по текущей.
-  readonly property int normalExtent: barSize + skin.gap + Math.max((skin.shadow || skin.glow) && skin.shape !== "full" && skin.shape !== "hug" && skin.shape !== "frame" ? 10 : 0, skin.hugRadius)
+  readonly property int normalExtent: barSize + skin.gap + Math.max(skin.shape !== "full" && skin.shape !== "hug" && skin.shape !== "frame" ? Math.max((skin.shadow || skin.glow) ? 10 : 0, hardPad) : 0, skin.hugRadius)
   readonly property int currentExtent: thickness + gap + Math.max(shadowPad, hugRadius)
   readonly property int extent: compact && skin.compactShrink ? currentExtent : Math.max(normalExtent, currentExtent)
   // Сколько места бар резервирует у Hyprland: без тени и углов; авто-скрытие — ничего.
@@ -140,7 +142,7 @@ Item {
     width: plate.width
     height: plate.height
     radius: plate.radius
-    color: Qt.rgba(frame.skin.borderColor.r, frame.skin.borderColor.g, frame.skin.borderColor.b, 1)
+    color: Qt.rgba(frame.skin.hardShadowColor.r, frame.skin.hardShadowColor.g, frame.skin.hardShadowColor.b, 1)
   }
 
   Rectangle {
