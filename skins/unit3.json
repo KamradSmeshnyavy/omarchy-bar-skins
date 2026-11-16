@@ -1,0 +1,23 @@
+{
+  "note": "Unit-3 (after samyns/Unit-3, MIT — its waybar style.css): a thin 28 px bar across the whole top, the background at 92 % with a 1 px line of the text colour at 15 % under it, square corners, Share Tech Mono 11 px",
+  "note_ru": "Unit-3 (по мотивам samyns/Unit-3, MIT — его waybar style.css): тонкий бар 28 px во всю ширину верха, фон на 92 % с чертой 1 px цветом текста на 15 % снизу, прямые углы, Share Tech Mono 11 px",
+  "shape": "full",
+  "gap": 0,
+  "margin": 0,
+  "width": 1.0,
+  "radius": 0,
+  "height": 28,
+  "padding": 0,
+  "background": "background",
+  "backgroundAlpha": 0.92,
+  "border": "foreground",
+  "borderWidth": 1,
+  "borderAlpha": 0.15,
+  "hardShadow": 0,
+  "shadow": false,
+  "text": "foreground",
+  "active": "foreground",
+  "moduleStyle": "plain",
+  "spacing": 0,
+  "font": "Share Tech Mono"
+}

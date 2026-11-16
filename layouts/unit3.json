@@ -1,0 +1,73 @@
+{
+  "note": "Unit-3: workspace numbers and «// window title» on the left, the pale Japanese ticker in the middle, POMO / CPU / MEM / NET / VOL / clock / ⏻ on the right, split by thin lines — pair with the unit3 skin",
+  "note_ru": "Unit-3: слева номера столов и «// заголовок окна», посередине бледная японская бегущая строка, справа POMO / CPU / MEM / NET / VOL / часы / ⏻ через тонкие черты — в паре со скином unit3",
+  "position": "top",
+  "layout": {
+    "left": [
+      {
+        "id": "u3-workspaces",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/Unit3Module.qml",
+        "kind": "workspaces"
+      },
+      {
+        "id": "u3-title",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/Unit3Module.qml",
+        "kind": "title"
+      }
+    ],
+    "center": [
+      {
+        "id": "u3-ticker",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/Unit3Module.qml",
+        "kind": "ticker"
+      }
+    ],
+    "right": [
+      {
+        "id": "u3-pomodoro",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/Unit3Module.qml",
+        "kind": "pomodoro"
+      },
+      {
+        "id": "u3-cpu",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/Unit3Module.qml",
+        "kind": "cpu"
+      },
+      {
+        "id": "u3-mem",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/Unit3Module.qml",
+        "kind": "mem"
+      },
+      {
+        "id": "u3-net",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/Unit3Module.qml",
+        "kind": "net"
+      },
+      {
+        "id": "u3-vol",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/Unit3Module.qml",
+        "kind": "vol"
+      },
+      {
+        "id": "u3-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/Unit3Module.qml",
+        "kind": "clock"
+      },
+      {
+        "id": "u3-power",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/Unit3Module.qml",
+        "kind": "power"
+      }
+    ]
+  }
+}
