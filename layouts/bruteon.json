@@ -1,6 +1,6 @@
 {
-  "note": "Bruteon: the power tile, pinned apps and the green Tasks button on the left; the dashboard tile and the song in the middle; sound / Bluetooth / Wi-Fi, the lavender clock and the pink bell on the right — pair with the bruteon skin",
-  "note_ru": "Bruteon: слева плитка питания, закреплённые приложения и зелёная кнопка Tasks; посередине плитка дашборда и песня; справа звук / Bluetooth / Wi-Fi, лавандовые часы и розовый колокольчик — в паре со скином bruteon",
+  "note": "Bruteon: the power tile, workspaces with their own icons and the green Tasks button on the left; the dashboard tile and the song in the middle; sound / Bluetooth / Wi-Fi, the lavender clock and the pink bell on the right — pair with the bruteon skin",
+  "note_ru": "Bruteon: слева плитка питания, столы со своими значками и зелёная кнопка Tasks; посередине плитка дашборда и песня; справа звук / Bluetooth / Wi-Fi, лавандовые часы и розовый колокольчик — в паре со скином bruteon",
   "position": "top",
   "layout": {
     "left": [
@@ -11,10 +11,10 @@
         "kind": "power"
       },
       {
-        "id": "brute-apps",
+        "id": "brute-workspaces",
         "type": "qml",
         "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/BruteModule.qml",
-        "kind": "apps"
+        "kind": "workspaces"
       },
       {
         "id": "brute-tasks",

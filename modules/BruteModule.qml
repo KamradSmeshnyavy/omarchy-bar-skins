@@ -15,9 +15,12 @@ import "SurfIcons.js" as Icons
 //   apps   — закреплённые приложения дока Omarchy (`omarchy dock pin`) значками-глифами: запущенное — с чертой снизу,
 //            в фокусе — на персиковой плитке, не запущенное — бледное; между значками — тонкие черты; клик — запустить /
 //            перейти к окну;
-//   tasks  — зелёная кнопка «☑ Tasks» (клик — показать / спрятать виджет задач на столе);
+//   tasks  — зелёная кнопка «☑ Tasks» (клик — панель задач и помодоро поверх окон, toggleTasks);
 //   media  — плитка дашборда (сетка; клик — дашборд), черта и название песни с назад / пауза / вперёд;
-//   status — белая плашка со звуком, Bluetooth и Wi-Fi (клик — их панели);
+//   workspaces — столы 1–6 (settings.count) своими значками (settings.icons: терминал, браузер, чат, файлы, музыка,
+//            настройки, как у него): занятый — с чертой снизу, пустой — бледный, текущий — на персиковой плитке; между
+//            значками — тонкие черты; клик — стол, колесо — соседний;
+//   status — белая плашка со звуком, Bluetooth и Wi-Fi (клик — их разделы в меню Super+M);
 //   clock  — лавандовая пилюля «🕒 7:47 [PM]» (клик — дашборд; settings.hour12 false — 24 ч);
 //   bell   — розовая плитка с колокольчиком (клик — история уведомлений, правый — не беспокоить).
 Item {
@@ -101,6 +104,56 @@ Item {
       HoverHandler { id: ph; cursorShape: Qt.PointingHandCursor }
       function triggerPress(button) { root.run(["omarchy-shell", "widgets", "togglePower"]) }
       property BarClick click: BarClick { bar: root.bar; target: pw }
+    }
+
+    // столы
+    Row {
+      visible: root.kind === "workspaces"
+      spacing: 6
+      anchors.verticalCenter: parent.verticalCenter
+      Repeater {
+        model: root.kind === "workspaces" ? (Number(root.settings && root.settings.count) || 6) : 0
+        Row {
+          id: wsSlot
+          required property int index
+          readonly property int wid: index + 1
+          readonly property var icons: root.settings && root.settings.icons || ["\uf120", "\uf268", "\uf232", "\uf07b", "\uf1bc", "\uf013"]
+          readonly property bool on: !!Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.id === wid
+          readonly property bool busy: { var w = Hyprland.workspaces.values.find(function(x) { return x.id === wsSlot.wid }); return !!w && w.toplevels.values.length > 0 }
+          spacing: 6
+          Rectangle { visible: wsSlot.index > 0; width: 1.5; height: 14; anchors.verticalCenter: parent.verticalCenter; color: Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.25) }
+          Item {
+            id: ws
+            width: 30; height: 32
+            BruteTile {
+              anchors.centerIn: parent
+              width: 28; height: 28
+              flat: !wsSlot.on
+              fill: wsSlot.on ? root.peach : "transparent"
+              ink: root.ink
+              hovered: wh.hovered
+              Text {
+                anchors.centerIn: parent
+                text: wsSlot.icons[wsSlot.index % wsSlot.icons.length]
+                color: root.ink
+                opacity: wsSlot.on || wsSlot.busy ? 1 : wh.hovered ? 0.6 : 0.3
+                font.family: root.font
+                font.pixelSize: 14
+              }
+            }
+            Rectangle {
+              visible: wsSlot.busy && !wsSlot.on
+              anchors.horizontalCenter: parent.horizontalCenter
+              anchors.bottom: parent.bottom
+              width: 9; height: 3; radius: 1.5
+              color: root.ink
+            }
+            HoverHandler { id: wh; cursorShape: Qt.PointingHandCursor }
+            function triggerPress(button) { root.run(["hyprctl", "eval", "hl.dispatch(hl.dsp.focus({ workspace = '" + wsSlot.wid + "' }))"]) }
+            property BarClick click: BarClick { bar: root.bar; target: ws }
+          }
+        }
+      }
     }
 
     // приложения
@@ -193,9 +246,8 @@ Item {
         Text { anchors.verticalCenter: parent.verticalCenter; text: "Tasks"; color: root.ink; font.family: root.font; font.pixelSize: 13; font.bold: true }
       }
       HoverHandler { id: th; cursorShape: Qt.PointingHandCursor }
-      function triggerPress(button) {
-        root.run(["python3", "-c", "import json, os\np = os.path.expanduser('~/.config/omarchy/widgets.json')\nd = json.load(open(p))\nd['todo'] = not d.get('todo', False)\njson.dump(d, open(p, 'w'), indent=2)"])
-      }
+      // панель задач и помодоро поверх окон (TasksBrute.qml в kamradsmeshnyavy.widgets), как у него
+      function triggerPress(button) { root.run(["omarchy-shell", "widgets", "toggleTasks"]) }
       property BarClick click: BarClick { bar: root.bar; target: tk }
     }
 
@@ -248,14 +300,15 @@ Item {
         anchors.centerIn: parent
         spacing: 16
         Repeater {
-          model: root.kind === "status" ? [["", "omarchy.audio"], ["", "omarchy.bluetooth"], ["", "omarchy.network"]] : []
+          // панели звука / Bluetooth / сети — разделы меню Super+M (стоковых IPC без их модулей на баре нет)
+          model: root.kind === "status" ? [["\uf028", "audio"], ["\uf293", "bt"], ["\uf1eb", "wifi"]] : []
           Item {
             id: sb
             required property var modelData
             width: 16; height: 22
             Text { anchors.centerIn: parent; text: sb.modelData[0]; color: root.ink; font.family: root.font; font.pixelSize: 13; scale: sh2.hovered ? 1.15 : 1 }
             HoverHandler { id: sh2; cursorShape: Qt.PointingHandCursor }
-            function triggerPress(button) { root.run(["omarchy-shell", sb.modelData[1], "toggle"]) }
+            function triggerPress(button) { root.run(["omarchy-shell", "widgets", "openSettingsSection", sb.modelData[1]]) }
             property BarClick click: BarClick { bar: root.bar; target: sb }
           }
         }
