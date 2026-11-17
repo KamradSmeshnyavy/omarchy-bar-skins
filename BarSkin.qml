@@ -45,6 +45,7 @@ QtObject {
     glow: false,            // свечение цветом рамки вместо тени
     autoHide: false,        // прятать за край, показывать по наведению
     moduleStyle: "plain",   // plain pills hover — подложка у каждого модуля
+    riceModules: true,      // чужие модули (стоковые, плагины, общие свои) надевают облик райса — RiceLook.qml, RiceDress.qml
     moduleBackground: "foreground",
     moduleAlpha: 0.08,
     spacing: 0,             // зазор между модулями

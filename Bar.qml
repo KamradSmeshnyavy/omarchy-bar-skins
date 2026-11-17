@@ -90,6 +90,9 @@ Item {
     position: root.position
   }
   readonly property var skin: barSkin
+  // skin: активный райс — чужие модули надевают его облик (RiceLook.qml, RiceDress.qml в ModuleSlot).
+  RiceLook { id: riceLookObj }
+  readonly property var riceLook: riceLookObj
 
   // skin: compact — бар сжимается, когда на workspace одно окно / полноэкранное /
   // всегда (skin.compactMode). Решается на каждый монитор в BarPanel.
@@ -2217,10 +2220,19 @@ Item {
         onActiveItemChanged: Qt.callLater(injectProps)
 
         readonly property real pad: 8
+        // skin: облик райса и на столе (RiceLook.dresses) — подложка riceDress в карточке и поля вдоль модуля под неё
+        readonly property string dressSource: qmlCustom && entry && typeof entry === "object" ? String(entry.source || "") : ""
+        readonly property bool riceDressed: root.skin.value("riceModules") !== false
+          && root.riceLook.dresses(moduleName, dressSource, moduleSettings)
+        readonly property real dressStart: riceDressed ? deskDress.padStart : 0
+        readonly property real dressEnd: riceDressed ? deskDress.padEnd : 0
+        readonly property bool dressTint: riceDressed && deskDress.colorize && !root.riceLook.riceFile(dressSource)
         readonly property real mw: activeItem ? Math.max(1, root.vertical ? root.barSize : activeItem.implicitWidth) : 40
         readonly property real mh: activeItem ? Math.max(1, root.vertical ? activeItem.implicitHeight : root.barSize) : 40
-        width: mw + 2 * pad
-        height: mh + 2 * pad
+        readonly property real dw: mw + (root.vertical ? 0 : dressStart + dressEnd)
+        readonly property real dh: mh + (root.vertical ? dressStart + dressEnd : 0)
+        width: dw + 2 * pad
+        height: dh + 2 * pad
         // позиция: сохранённая или та, куда тянут; в пределах рабочей области, у сливающейся кромки — вплотную
         property point drag: Qt.point(NaN, NaN)
         function fit(px, py) {
@@ -2277,10 +2289,33 @@ Item {
           }
         }
 
+        RiceDress {
+          id: deskDress
+          separators: false
+          x: card.pad; y: card.pad
+          width: card.dw; height: card.dh
+          visible: card.riceDressed
+          rice: root.riceLook.rice
+          cozy: root.riceLook.cozy
+          vertical: root.vertical
+          across: root.barSize
+          hovered: deskHover.hovered
+          name: card.moduleName
+          tray: card.moduleName === "omarchy.tray" || card.moduleName === "kamradsmeshnyavy.tray"
+          fg: root.barForeground
+          bg: root.background.a > 0 ? Qt.rgba(root.background.r, root.background.g, root.background.b, 1) : Commons.Color.background
+        }
         Item {
           id: holder
-          x: card.pad; y: card.pad
+          x: card.pad + (root.vertical ? 0 : card.dressStart)
+          y: card.pad + (root.vertical ? card.dressStart : 0)
           width: card.mw; height: card.mh
+          // skin: перекраска модуля в цвет райса (shaders/ricetint.frag), как на баре
+          layer.enabled: card.dressTint
+          layer.effect: ShaderEffect {
+            property color ink: deskDress.ink
+            fragmentShader: Qt.resolvedUrl("shaders/ricetint.frag.qsb")
+          }
           Loader {
             id: deskReg
             active: card.registered
@@ -2327,7 +2362,7 @@ Item {
             }
             onTranslationChanged: if (active) card.drag = Qt.point(Number(base.x) + translation.x, Number(base.y) + translation.y)
           }
-          HoverHandler { cursorShape: cardDrag.active ? Qt.ClosedHandCursor : Qt.ArrowCursor }
+          HoverHandler { id: deskHover; cursorShape: cardDrag.active ? Qt.ClosedHandCursor : Qt.ArrowCursor }
         }
         // пока тянут — без привязки к кромкам, чтобы до бара можно было дотянуть
         states: State {
@@ -2803,9 +2838,16 @@ Item {
     readonly property Item skinHostItem: root.skinHostOf(slot.parent)
     readonly property bool compactHidden: skinHostItem !== null && skinHostItem.skinCompact
       && root.skin.compactHides(root.canonicalWidgetId(moduleName), region)
+    // skin: облик райса у чужого модуля (RiceLook.dresses) — подложка riceDress и поля вдоль бара под неё.
+    readonly property string dressSource: qmlCustom && entry && typeof entry === "object" ? String(entry.source || "") : ""
+    readonly property bool riceDressed: root.skin.value("riceModules") !== false
+      && root.riceLook.dresses(moduleName, dressSource, moduleSettings)
+    readonly property real dressStart: riceDressed ? riceDress.padStart : 0
+    readonly property real dressEnd: riceDressed ? riceDress.padEnd : 0
+    readonly property bool dressTint: riceDressed && riceDress.colorize && !root.riceLook.riceFile(dressSource)
     visible: !compactHidden
-    implicitWidth: !compactHidden && activeItem && activeItem.visible ? (root.vertical ? root.barSize : activeItem.implicitWidth) : 0
-    implicitHeight: !compactHidden && activeItem && activeItem.visible ? activeItem.implicitHeight : 0
+    implicitWidth: !compactHidden && activeItem && activeItem.visible ? (root.vertical ? root.barSize : activeItem.implicitWidth + dressStart + dressEnd) : 0
+    implicitHeight: !compactHidden && activeItem && activeItem.visible ? activeItem.implicitHeight + (root.vertical ? dressStart + dressEnd : 0) : 0
     width: implicitWidth
     height: implicitHeight
     z: modulePointer.dragging ? 100 : 0
@@ -2825,7 +2867,7 @@ Item {
       // В compact подложка бара тоньше модуля — капсула не должна вылезать за неё.
       readonly property real across: Math.min(root.vertical ? slot.width : slot.height,
         slot.skinHostItem ? (root.vertical ? slot.skinHostItem.width : slot.skinHostItem.height) : 9999)
-      visible: style !== "plain" && slot.width > 0 && !slot.dragSource
+      visible: style !== "plain" && slot.width > 0 && !slot.dragSource && !slot.riceDressed
         && slot.moduleName !== "omarchy.spacer" && (style === "pills" || slot.hovered || slot.panelOpen)
       anchors.centerIn: parent
       width: root.vertical ? across - 2 * inset : slot.width
@@ -2846,11 +2888,38 @@ Item {
       opacity: root.transparent ? 0.22 : 0.32
     }
 
+    // skin: облик райса (RiceDress.qml) — под модулем, поверх подложки pills.
+    RiceDress {
+      id: riceDress
+      anchors.fill: parent
+      visible: slot.riceDressed && slot.width > 0 && !slot.dragSource
+      rice: root.riceLook.rice
+      cozy: root.riceLook.cozy
+      vertical: root.vertical
+      across: root.barSize
+      hovered: slot.hovered
+      active: slot.panelOpen
+      name: slot.moduleName
+      tray: slot.moduleName === "omarchy.tray" || slot.moduleName === "kamradsmeshnyavy.tray"
+      fg: root.barForeground
+      bg: root.background.a > 0 ? Qt.rgba(root.background.r, root.background.g, root.background.b, 1) : Commons.Color.background
+    }
+
     Loader {
       id: componentLoader
       active: !slot.qmlCustom && !slot.registered
       sourceComponent: slot.commandCustom ? customCommandModuleComponent : emptyModuleComponent
       anchors.fill: parent
+      // skin: поля под облик райса и перекраска модуля в его цвет (shaders/ricetint.frag)
+      anchors.leftMargin: root.vertical ? 0 : slot.dressStart
+      anchors.rightMargin: root.vertical ? 0 : slot.dressEnd
+      anchors.topMargin: root.vertical ? slot.dressStart : 0
+      anchors.bottomMargin: root.vertical ? slot.dressEnd : 0
+      layer.enabled: slot.dressTint
+      layer.effect: ShaderEffect {
+        property color ink: riceDress.ink
+        fragmentShader: Qt.resolvedUrl("shaders/ricetint.frag.qsb")
+      }
       opacity: slot.dragSource ? 0.22 : 1.0
       onLoaded: {
         slot.injectProps()
@@ -2863,6 +2932,16 @@ Item {
       active: slot.registered
       sourceComponent: slot.registered ? slot.registryComponent : null
       anchors.fill: parent
+      // skin: поля под облик райса и перекраска модуля в его цвет (shaders/ricetint.frag)
+      anchors.leftMargin: root.vertical ? 0 : slot.dressStart
+      anchors.rightMargin: root.vertical ? 0 : slot.dressEnd
+      anchors.topMargin: root.vertical ? slot.dressStart : 0
+      anchors.bottomMargin: root.vertical ? slot.dressEnd : 0
+      layer.enabled: slot.dressTint
+      layer.effect: ShaderEffect {
+        property color ink: riceDress.ink
+        fragmentShader: Qt.resolvedUrl("shaders/ricetint.frag.qsb")
+      }
       opacity: slot.dragSource ? 0.22 : 1.0
       onLoaded: {
         slot.injectProps()
@@ -2875,6 +2954,16 @@ Item {
       active: slot.qmlCustom
       source: slot.qmlCustom ? root.customModuleSource(slot.entry) : ""
       anchors.fill: parent
+      // skin: поля под облик райса и перекраска модуля в его цвет (shaders/ricetint.frag)
+      anchors.leftMargin: root.vertical ? 0 : slot.dressStart
+      anchors.rightMargin: root.vertical ? 0 : slot.dressEnd
+      anchors.topMargin: root.vertical ? slot.dressStart : 0
+      anchors.bottomMargin: root.vertical ? slot.dressEnd : 0
+      layer.enabled: slot.dressTint
+      layer.effect: ShaderEffect {
+        property color ink: riceDress.ink
+        fragmentShader: Qt.resolvedUrl("shaders/ricetint.frag.qsb")
+      }
       opacity: slot.dragSource ? 0.22 : 1.0
       onLoaded: {
         slot.injectProps()
