@@ -28,7 +28,8 @@
         "id": "rumda-art-top",
         "type": "qml",
         "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RumdaArt.qml",
-        "length": 70
+        "length": 70,
+        "flex": true
       }
     ],
     "center": [
@@ -44,7 +45,8 @@
         "type": "qml",
         "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/RumdaArt.qml",
         "length": 90,
-        "flip": true
+        "flip": true,
+        "flex": true
       },
       {
         "id": "omarchy.tray"

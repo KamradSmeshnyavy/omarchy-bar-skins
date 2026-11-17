@@ -425,11 +425,50 @@ Item {
     var next = moduleSlots.slice()
     next.push(slot)
     moduleSlots = next
+    requestFlexRefit(slot.skinHostItem)
   }
 
   function unregisterModuleSlot(slot) {
     var next = moduleSlots.filter(function(item) { return item !== slot })
     moduleSlots = next
+    if (slot) requestFlexRefit(slot.skinHostItem)
+  }
+
+  // skin: гибкие модули ("flex": true в записи раскладки — например, волны Rumda) сжимаются, когда модулям не хватает
+  // длины бара: иначе центр налезает на соседние секции (centerOffset только сдвигает его). Доля flexScale — на
+  // каждое окно бара (skinHost); считается не привязкой, а по изменению размеров (Qt.callLater), — без цикла привязок:
+  // место под гибкие = длина бара − всё негибкое, и от их собственного размера оно не зависит.
+  property var flexHosts: []
+  function requestFlexRefit(host) {
+    if (!host || flexHosts.indexOf(host) !== -1) return
+    flexHosts = flexHosts.concat([host])
+    Qt.callLater(root.refitFlex)
+  }
+  function refitFlex() {
+    var hosts = flexHosts
+    flexHosts = []
+    for (var h = 0; h < hosts.length; h++) {
+      var host = hosts[h]
+      if (!host) continue
+      var lens = { left: 0, center: 0, right: 0 }, counts = { left: 0, center: 0, right: 0 }
+      var flexNow = 0, flexNom = 0
+      for (var i = 0; i < moduleSlots.length; i++) {
+        var s = moduleSlots[i]
+        if (!s || s.skinHostItem !== host || !s.visible || lens[s.region] === undefined) continue
+        var len = root.vertical ? s.height : s.width
+        // гибкий слот, ужатый до нуля, всё равно в счёте — иначе доля прыгает обратно к 1
+        if (s.flexible) { flexNow += len; flexNom += s.flexNominal }
+        if (len <= 0) continue
+        lens[s.region] += len
+        counts[s.region] += 1
+      }
+      if (flexNom <= 0) { if (host.flexScale !== 1) host.flexScale = 1; continue }
+      var used = 4 * root.sectionPadding
+      for (var r in lens) if (counts[r] > 0) used += lens[r] + root.skin.spacing * (counts[r] - 1)
+      var room = (root.vertical ? host.height : host.width) - (used - flexNow)
+      var scale = Math.max(0, Math.min(1, room / flexNom))
+      if (Math.abs(scale - host.flexScale) > 0.002) host.flexScale = scale
+    }
   }
 
   function debugBarGeometry() {
@@ -1945,11 +1984,16 @@ Item {
     }
 
     Loader {
+      id: sectionsHost
       // skin: секции живут внутри видимой подложки; модули и острова находят
       // здесь compact и форму своего окна (root.skinHostOf).
       readonly property bool skinHost: true
       readonly property bool skinCompact: barWindow.skinCompact
       readonly property string skinShape: skinFrame.shape
+      // доля длины гибких модулей (root.refitFlex)
+      property real flexScale: 1
+      onWidthChanged: root.requestFlexRefit(sectionsHost)
+      onHeightChanged: root.requestFlexRefit(sectionsHost)
       x: skinFrame.body.x
       y: skinFrame.body.y
       width: skinFrame.body.width
@@ -2846,8 +2890,18 @@ Item {
     readonly property real dressEnd: riceDressed ? riceDress.padEnd : 0
     readonly property bool dressTint: riceDressed && riceDress.colorize && !root.riceLook.riceFile(dressSource)
     visible: !compactHidden
-    implicitWidth: !compactHidden && activeItem && activeItem.visible ? (root.vertical ? root.barSize : activeItem.implicitWidth + dressStart + dressEnd) : 0
-    implicitHeight: !compactHidden && activeItem && activeItem.visible ? activeItem.implicitHeight + (root.vertical ? dressStart + dressEnd : 0) : 0
+    // skin: гибкий модуль ("flex": true) — его длина вдоль бара ужимается долей flexScale своего окна (root.refitFlex)
+    readonly property bool flexible: !!(moduleSettings && moduleSettings.flex === true)
+    readonly property real flexNominal: activeItem ? (root.vertical ? activeItem.implicitHeight : activeItem.implicitWidth) : 0
+    readonly property real flexScale: flexible && skinHostItem && skinHostItem.flexScale !== undefined ? skinHostItem.flexScale : 1
+    readonly property real alongLen: flexible ? Math.round(flexNominal * flexScale) : flexNominal
+    implicitWidth: !compactHidden && activeItem && activeItem.visible ? (root.vertical ? root.barSize : alongLen + dressStart + dressEnd) : 0
+    implicitHeight: !compactHidden && activeItem && activeItem.visible ? (root.vertical ? alongLen + dressStart + dressEnd : activeItem.implicitHeight) : 0
+    onWidthChanged: if (!root.vertical) root.requestFlexRefit(skinHostItem)
+    onHeightChanged: if (root.vertical) root.requestFlexRefit(skinHostItem)
+    onVisibleChanged: root.requestFlexRefit(skinHostItem)
+    onSkinHostItemChanged: root.requestFlexRefit(skinHostItem)
+    onFlexNominalChanged: root.requestFlexRefit(skinHostItem)
     width: implicitWidth
     height: implicitHeight
     z: modulePointer.dragging ? 100 : 0
