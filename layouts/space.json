@@ -1,0 +1,69 @@
+{
+  "note": "Space: user and the workspace stars on the left; music, network, sound with a 12-cell scale, battery, tray, notifications, clock and power on the right — pair with the space skin",
+  "note_ru": "Space: слева пользователь и звёзды-столы; справа музыка, сеть, звук со шкалой из 12 клеток, батарея, трей, уведомления, часы и питание — в паре со скином space",
+  "position": "top",
+  "layout": {
+    "left": [
+      {
+        "id": "space-user",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SpaceModule.qml",
+        "kind": "user"
+      },
+      {
+        "id": "space-stars",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SpaceModule.qml",
+        "kind": "stars"
+      }
+    ],
+    "center": [],
+    "right": [
+      {
+        "id": "space-media",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SpaceModule.qml",
+        "kind": "media"
+      },
+      {
+        "id": "space-net",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SpaceModule.qml",
+        "kind": "net"
+      },
+      {
+        "id": "space-audio",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SpaceModule.qml",
+        "kind": "audio"
+      },
+      {
+        "id": "space-battery",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SpaceModule.qml",
+        "kind": "battery"
+      },
+      {
+        "id": "omarchy.tray"
+      },
+      {
+        "id": "space-notifs",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SpaceModule.qml",
+        "kind": "notifs"
+      },
+      {
+        "id": "space-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SpaceModule.qml",
+        "kind": "clock"
+      },
+      {
+        "id": "space-power",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/SpaceModule.qml",
+        "kind": "power"
+      }
+    ]
+  }
+}

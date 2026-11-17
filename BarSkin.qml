@@ -36,6 +36,10 @@ QtObject {
     background: "bar",
     backgroundAlpha: -1,    // -1 = альфа из shell.toml [bar]
     gradient: "",           // второй цвет горизонтального градиента
+    gradientAlpha: -1,      // альфа второго цвета; -1 = как у фона
+    gradientVertical: false, // градиент сверху вниз (Space: фон 0.72 → 0.42)
+    brackets: 0,            // islands: уголки-скобки на углах острова, px (Space — 7); 0 = нет
+    bracketAlpha: 0.9,      // альфа уголков (цвет — border)
     border: "accent",
     borderWidth: 0,
     borderAlpha: 1.0,
@@ -193,8 +197,12 @@ QtObject {
   readonly property bool hasGradient: String(value("gradient") || "") !== ""
   readonly property color gradientColor: {
     var c = resolve(value("gradient"), backgroundColor)
-    return withAlpha(c, backgroundColor.a)
+    var a = num("gradientAlpha")
+    return withAlpha(c, a < 0 ? backgroundColor.a : a)
   }
+  readonly property bool gradientVertical: value("gradientVertical") === true
+  readonly property int brackets: Math.max(0, Math.round(num("brackets")))
+  readonly property color bracketColor: withAlpha(resolve(value("border"), Commons.Color.accent), num("bracketAlpha"))
   readonly property color borderColor: withAlpha(resolve(value("border"), Commons.Color.accent), num("borderAlpha"))
   readonly property color moduleColor: withAlpha(resolve(value("moduleBackground"), Commons.Color.foreground), num("moduleAlpha"))
 

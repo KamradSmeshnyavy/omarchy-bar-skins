@@ -11,6 +11,7 @@ import "modules" as Mods
 //   surface   — пилюля цвета карточки (78 %), при наведении подсветка;
 //   cozytile  — значки и текст акцентом, справа — косая черта цвета язычков;
 //   unit3     — тонкая черта слева (текст 8 %), как между его модулями справа, при наведении — лёгкая подложка;
+//   space     — черта 2 px акцентом снизу при наведении и открытой панели (его Module.qml);
 //   yami      — квадратная ячейка, при наведении — текст 14 %;
 //   vitreus   — скруглённая подложка (текст 10 %) при наведении, как у иконок Vitreus;
 //   glyph     — круглая подложка (текст 8 %) при наведении;
@@ -38,7 +39,7 @@ Item {
 
   // ── поля и перекраска ──
   readonly property var pads: ({
-    bruteon: [9, 12], rumda: [8, 8], surface: [12, 12], cozytile: [8, 30], unit3: [9, 8],
+    bruteon: [9, 12], rumda: [8, 8], surface: [12, 12], cozytile: [8, 30], unit3: [9, 8], space: [5, 5],
     yami: [6, 6], vitreus: [6, 6], glyph: [6, 6], dotmatrix: [6, 6]
   })
   readonly property real padStart: !pads[rice] ? 0 : separators ? pads[rice][0] : 8
@@ -126,6 +127,18 @@ Item {
     color: dress.a(dress.fg, 0.06)
     opacity: dress.hot ? 1 : 0
     Behavior on opacity { NumberAnimation { duration: 120 } }
+  }
+
+  // Space: черта акцентом снизу, вырастает из середины
+  Rectangle {
+    visible: dress.rice === "space"
+    property real len: dress.hot ? dress.along - 6 : 0
+    x: dress.vertical ? dress.width - 2 : (dress.width - len) / 2
+    y: dress.vertical ? (dress.height - len) / 2 : dress.height - 2
+    width: dress.vertical ? 2 : len
+    height: dress.vertical ? len : 2
+    color: dress.accent
+    Behavior on len { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
   }
 
   // yami: квадратная ячейка

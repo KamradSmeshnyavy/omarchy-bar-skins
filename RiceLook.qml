@@ -13,7 +13,7 @@ QtObject {
 
   readonly property string path: Quickshell.env("HOME") + "/.config/omarchy/style.json"
   property var raw: ({})
-  readonly property var rices: ["vitreus", "glyph", "yami", "rumda", "surface", "cozytile", "bruteon", "unit3", "dotmatrix"]
+  readonly property var rices: ["vitreus", "glyph", "yami", "rumda", "surface", "cozytile", "bruteon", "unit3", "space", "dotmatrix"]
   readonly property string rice: {
     var r = String(raw.rice || "")
     if (rices.indexOf(r) !== -1) return r
@@ -24,7 +24,7 @@ QtObject {
 
   // Свои модули райса: префиксы имён файлов в modules/ и id плагинов, которые райс рисует сам.
   readonly property var ownFiles: ({
-    bruteon: ["Brute"], unit3: ["Unit3"], cozytile: ["Cozy"], rumda: ["Rumda"], surface: ["Surf", "Taskbar"],
+    bruteon: ["Brute"], unit3: ["Unit3"], space: ["Space"], cozytile: ["Cozy"], rumda: ["Rumda"], surface: ["Surf", "Taskbar"],
     yami: ["Yami"], vitreus: ["Vit"], glyph: ["Glyph"],
     dotmatrix: ["DotMatrix", "DotClock", "ActiveAppIcon", "BatteryGauge", "PrivacyLed", "CavaDots", "CpuRamRings"]
   })

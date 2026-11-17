@@ -19,3 +19,10 @@ Third-party attributions for kamradsmeshnyavy.bar:
   Adapted from glyph-rice (`bar/Bar.qml`, `components/*`, https://github.com/Nebelung-cloud/glyph-rice)
   Copyright (c) Nebelung-cloud
   Licensed under the GNU General Public License v3.0.
+
+- Space bar (`modules/SpaceModule.qml`, `modules/SpaceDecode.qml`, `skins/space.json`, `layouts/space.json`,
+  the `brackets` / `gradientVertical` skin keys in `SkinIsland.qml`):
+  Adapted from elifouts/Dotfiles (`.config/hypr/quickshell/Space/bar/*`, `Space/common/DecodeText.qml`,
+  https://github.com/elifouts/Dotfiles)
+  Copyright (c) Eli Fouts
+  Licensed under the GNU General Public License v3.0.

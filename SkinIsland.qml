@@ -65,9 +65,24 @@ Rectangle {
     radius: island.radius
     color: Qt.rgba(island.skin.hardShadowColor.r, island.skin.hardShadowColor.g, island.skin.hardShadowColor.b, 1)
   }
+  // brackets: уголки-скобки HUD на углах острова (Space, elifouts/Dotfiles — его Pill.qml Bracket)
+  Repeater {
+    model: island.skin.brackets > 0 && !island.transparent ? 4 : 0
+    Item {
+      required property int index
+      readonly property int s: island.skin.brackets
+      readonly property bool atRight: index % 2 === 1
+      readonly property bool atBottom: index > 1
+      x: atRight ? island.width - s : 0
+      y: atBottom ? island.height - s : 0
+      width: s; height: s
+      Rectangle { width: parent.s; height: 1; y: parent.atBottom ? parent.s - 1 : 0; color: island.skin.bracketColor }
+      Rectangle { width: 1; height: parent.s; x: parent.atRight ? parent.s - 1 : 0; color: island.skin.bracketColor }
+    }
+  }
   Gradient {
     id: islandGradient
-    orientation: island.vertical ? Gradient.Vertical : Gradient.Horizontal
+    orientation: island.vertical || island.skin.gradientVertical ? Gradient.Vertical : Gradient.Horizontal
     GradientStop { position: 0; color: island.skin.backgroundColor }
     GradientStop { position: 1; color: island.skin.gradientColor }
   }
