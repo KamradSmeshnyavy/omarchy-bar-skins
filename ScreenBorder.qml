@@ -83,119 +83,128 @@ Scope {
     }
   }
 
-  PanelWindow {
-    id: overlay
+  // Слой окна задаётся только при создании: Variants пересоздаёт его при смене стекла (vitreus — Bottom, иначе Top),
+  // иначе после живого переключения райса на Vitreus рамка оставалась в Top и закрывала модули бара.
+  Variants {
+    model: [border.skin.vitreus]
 
-    screen: border.screen
-    visible: border.shown
-    anchors {
-      top: true
-      bottom: true
-      left: true
-      right: true
-    }
-    exclusionMode: ExclusionMode.Ignore
-    color: "transparent"
-    surfaceFormat.opaque: false
-    mask: Region {}
-    WlrLayershell.namespace: "omarchy-bar-frame"
-    // vitreus: стекло рамки — под окнами (они в рамку не заходят: её место зарезервировано), бар (Top) — над ним
-    WlrLayershell.layer: border.skin.vitreus ? WlrLayer.Bottom : WlrLayer.Top
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+    delegate: Component {
+      PanelWindow {
+        id: overlay
+        required property bool modelData
 
-    // vitreus: полоса бара и рамка — один кусок стекла (LiquidGlass): поле окна минус рабочая область со скруглёнными
-    // углами; главная фигура — полоса бара. Окно рамки — на весь экран монитора, его угол и есть начало координат.
-    LiquidGlass {
-      visible: border.skin.vitreus
-      active: visible
-      anchors.fill: parent
-      screenOrigin: Qt.point(0, 0)
-      belowWindows: true
-      tintColor: Qt.rgba(border.skin.backgroundColor.r, border.skin.backgroundColor.g, border.skin.backgroundColor.b, 1)
-      radius: 0
-      panelRect: border.position === "left" ? Qt.rect(0, 0, border.barSize, overlay.height)
-        : border.position === "right" ? Qt.rect(overlay.width - border.barSize, 0, border.barSize, overlay.height)
-        : border.position === "top" ? Qt.rect(0, 0, overlay.width, border.barSize)
-        : Qt.rect(0, overlay.height - border.barSize, overlay.width, border.barSize)
-      frameOn: true
-      frameHole: Qt.rect(border.inset("left"), border.inset("top"), overlay.width - border.inset("left") - border.inset("right"),
-                         overlay.height - border.inset("top") - border.inset("bottom"))
-      frameHoleRadius: border.radius
-      frameK: 0
-    }
-
-    Shape {
-      visible: !border.skin.vitreus && border.frameFade > 0
-      opacity: border.frameFade
-      anchors.fill: parent
-      preferredRendererType: Shape.CurveRenderer
-
-      ShapePath {
-        id: path
-
-        fillColor: border.skin.backgroundColor
-        fillRule: ShapePath.OddEvenFill
-        strokeWidth: -1
-
-        Behavior on fillColor { ColorAnimation { duration: 280; easing.type: Easing.InOutCubic } }
-
-        // Внешний контур — экран без полосы бара (её рисует сам бар).
-        PathRectangle {
-          x: border.position === "left" ? border.barSize : 0
-          y: border.position === "top" ? border.barSize : 0
-          width: overlay.width - (border.position === "left" || border.position === "right" ? border.barSize : 0)
-          height: overlay.height - (border.position === "top" || border.position === "bottom" ? border.barSize : 0)
+        screen: border.screen
+        visible: border.shown
+        anchors {
+          top: true
+          bottom: true
+          left: true
+          right: true
         }
-        // Внутренний — рабочая область со скруглёнными углами; even-odd вырезает её.
-        PathRectangle {
-          x: border.inset("left")
-          y: border.inset("top")
-          width: overlay.width - border.inset("left") - border.inset("right")
-          height: overlay.height - border.inset("top") - border.inset("bottom")
-          radius: border.radius
+        exclusionMode: ExclusionMode.Ignore
+        color: "transparent"
+        surfaceFormat.opaque: false
+        mask: Region {}
+        WlrLayershell.namespace: "omarchy-bar-frame"
+        // vitreus: стекло рамки — под окнами (они в рамку не заходят: её место зарезервировано), бар (Top) — над ним
+        WlrLayershell.layer: modelData ? WlrLayer.Bottom : WlrLayer.Top
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+
+        // vitreus: полоса бара и рамка — один кусок стекла (LiquidGlass): поле окна минус рабочая область со скруглёнными
+        // углами; главная фигура — полоса бара. Окно рамки — на весь экран монитора, его угол и есть начало координат.
+        LiquidGlass {
+          visible: border.skin.vitreus
+          active: visible
+          anchors.fill: parent
+          screenOrigin: Qt.point(0, 0)
+          belowWindows: true
+          tintColor: Qt.rgba(border.skin.backgroundColor.r, border.skin.backgroundColor.g, border.skin.backgroundColor.b, 1)
+          radius: 0
+          panelRect: border.position === "left" ? Qt.rect(0, 0, border.barSize, overlay.height)
+            : border.position === "right" ? Qt.rect(overlay.width - border.barSize, 0, border.barSize, overlay.height)
+            : border.position === "top" ? Qt.rect(0, 0, overlay.width, border.barSize)
+            : Qt.rect(0, overlay.height - border.barSize, overlay.width, border.barSize)
+          frameOn: true
+          frameHole: Qt.rect(border.inset("left"), border.inset("top"), overlay.width - border.inset("left") - border.inset("right"),
+                             overlay.height - border.inset("top") - border.inset("bottom"))
+          frameHoleRadius: border.radius
+          frameK: 0
         }
-      }
 
-      // Опциональный внутренний контур рамки (например, 1px #2a2a2a в скине dotmatrix).
-      ShapePath {
-        readonly property real bw: border.skin.borderWidth
-        fillColor: "transparent"
-        strokeColor: bw > 0 ? border.skin.borderColor : "transparent"
-        strokeWidth: bw > 0 ? bw : -1
+        Shape {
+          visible: !border.skin.vitreus && border.frameFade > 0
+          opacity: border.frameFade
+          anchors.fill: parent
+          preferredRendererType: Shape.CurveRenderer
 
-        Behavior on strokeColor { ColorAnimation { duration: 280; easing.type: Easing.InOutCubic } }
+          ShapePath {
+            id: path
 
-        PathRectangle {
-          x: border.inset("left") - border.skin.borderWidth * 0.5
-          y: border.inset("top") - border.skin.borderWidth * 0.5
-          width: overlay.width - border.inset("left") - border.inset("right") + border.skin.borderWidth
-          height: overlay.height - border.inset("top") - border.inset("bottom") + border.skin.borderWidth
-          radius: border.radius + border.skin.borderWidth * 0.5
+            fillColor: border.skin.backgroundColor
+            fillRule: ShapePath.OddEvenFill
+            strokeWidth: -1
+
+            Behavior on fillColor { ColorAnimation { duration: 280; easing.type: Easing.InOutCubic } }
+
+            // Внешний контур — экран без полосы бара (её рисует сам бар).
+            PathRectangle {
+              x: border.position === "left" ? border.barSize : 0
+              y: border.position === "top" ? border.barSize : 0
+              width: overlay.width - (border.position === "left" || border.position === "right" ? border.barSize : 0)
+              height: overlay.height - (border.position === "top" || border.position === "bottom" ? border.barSize : 0)
+            }
+            // Внутренний — рабочая область со скруглёнными углами; even-odd вырезает её.
+            PathRectangle {
+              x: border.inset("left")
+              y: border.inset("top")
+              width: overlay.width - border.inset("left") - border.inset("right")
+              height: overlay.height - border.inset("top") - border.inset("bottom")
+              radius: border.radius
+            }
+          }
+
+          // Опциональный внутренний контур рамки (например, 1px #2a2a2a в скине dotmatrix).
+          ShapePath {
+            readonly property real bw: border.skin.borderWidth
+            fillColor: "transparent"
+            strokeColor: bw > 0 ? border.skin.borderColor : "transparent"
+            strokeWidth: bw > 0 ? bw : -1
+
+            Behavior on strokeColor { ColorAnimation { duration: 280; easing.type: Easing.InOutCubic } }
+
+            PathRectangle {
+              x: border.inset("left") - border.skin.borderWidth * 0.5
+              y: border.inset("top") - border.skin.borderWidth * 0.5
+              width: overlay.width - border.inset("left") - border.inset("right") + border.skin.borderWidth
+              height: overlay.height - border.inset("top") - border.inset("bottom") + border.skin.borderWidth
+              radius: border.radius + border.skin.borderWidth * 0.5
+            }
+          }
         }
-      }
-    }
 
-    // разрывы контура на стыках (только у сплошной рамки с контуром; у стекла слияние рисует сама карточка)
-    Repeater {
-      model: !border.skin.vitreus && border.skin.borderWidth > 0 ? border.allSpots : []
-      // Item, не Rectangle: внутри Rectangle имя border — его собственный контур, а не ScreenBorder
-      Item {
-        id: gapItem
-        required property var modelData
-        readonly property color col: border.skin.backgroundColor
-        Rectangle { anchors.fill: parent; color: gapItem.col }
-        readonly property string e: String(modelData.edge)
-        readonly property bool horiz: e === "top" || e === "bottom"
-        readonly property real bw: border.skin.borderWidth
-        readonly property real f: Number(modelData.f) || 14
-        readonly property real a0: Number(modelData.a0) - f * 0.5
-        readonly property real a1: Number(modelData.a1) + f * 0.5
-        x: horiz ? border.inset("left") + a0
-          : e === "left" ? border.inset("left") - bw - 0.5 : overlay.width - border.inset("right") - 0.5
-        y: !horiz ? border.inset("top") + a0
-          : e === "top" ? border.inset("top") - bw - 0.5 : overlay.height - border.inset("bottom") - 0.5
-        width: horiz ? a1 - a0 : bw + 1
-        height: horiz ? bw + 1 : a1 - a0
+        // разрывы контура на стыках (только у сплошной рамки с контуром; у стекла слияние рисует сама карточка)
+        Repeater {
+          model: !border.skin.vitreus && border.skin.borderWidth > 0 ? border.allSpots : []
+          // Item, не Rectangle: внутри Rectangle имя border — его собственный контур, а не ScreenBorder
+          Item {
+            id: gapItem
+            required property var modelData
+            readonly property color col: border.skin.backgroundColor
+            Rectangle { anchors.fill: parent; color: gapItem.col }
+            readonly property string e: String(modelData.edge)
+            readonly property bool horiz: e === "top" || e === "bottom"
+            readonly property real bw: border.skin.borderWidth
+            readonly property real f: Number(modelData.f) || 14
+            readonly property real a0: Number(modelData.a0) - f * 0.5
+            readonly property real a1: Number(modelData.a1) + f * 0.5
+            x: horiz ? border.inset("left") + a0
+              : e === "left" ? border.inset("left") - bw - 0.5 : overlay.width - border.inset("right") - 0.5
+            y: !horiz ? border.inset("top") + a0
+              : e === "top" ? border.inset("top") - bw - 0.5 : overlay.height - border.inset("bottom") - 0.5
+            width: horiz ? a1 - a0 : bw + 1
+            height: horiz ? bw + 1 : a1 - a0
+          }
+        }
       }
     }
   }
