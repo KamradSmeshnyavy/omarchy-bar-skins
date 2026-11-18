@@ -242,7 +242,9 @@ Item {
           visible: moons > 0
           anchors.centerIn: parent
           width: 14; height: 14
-          RotationAnimation on rotation { running: orbit.visible; from: 0; to: 360; duration: 6000; loops: Animation.Infinite }
+          // луны кружат, только пока на звезду навели: вечная анимация перерисовывала бы бар (и его размытие) 120 раз в
+          // секунду всё время, пока на соседнем столе больше одного окна
+          RotationAnimation on rotation { running: orbit.visible && area.containsMouse; from: 0; to: 360; duration: 6000; loops: Animation.Infinite }
           Repeater {
             model: Math.max(0, orbit.moons)
             Rectangle {
