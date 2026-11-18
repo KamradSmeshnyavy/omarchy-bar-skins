@@ -1,0 +1,43 @@
+{
+  "note": "Retro CRT «zen»: only the workspaces, music in the middle, sound, clock and power — pair with the crt skin",
+  "note_ru": "Retro CRT «zen»: только столы, музыка посередине, звук, часы и питание — в паре со скином crt",
+  "position": "top",
+  "layout": {
+    "left": [
+      {
+        "id": "crt-workspaces",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "workspaces"
+      }
+    ],
+    "center": [
+      {
+        "id": "crt-media",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "media"
+      }
+    ],
+    "right": [
+      {
+        "id": "crt-vol",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "vol"
+      },
+      {
+        "id": "crt-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "clock"
+      },
+      {
+        "id": "crt-power",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "power"
+      }
+    ]
+  }
+}

@@ -26,3 +26,9 @@ Third-party attributions for kamradsmeshnyavy.bar:
   https://github.com/elifouts/Dotfiles)
   Copyright (c) Eli Fouts
   Licensed under the GNU General Public License v3.0.
+
+- Retro CRT bar (`modules/CrtModule.qml`, `skins/crt.json`, `skins/crt-boxes.json`, `layouts/crt*.json`):
+  own code after elifouts/Dotfiles (`.config/hypr/quickshell/Retro/bar/*`: text readouts, workspace cells, the
+  typing effect of its `Retro/common/Type.qml`), https://github.com/elifouts/Dotfiles
+  Copyright (c) Eli Fouts
+  Licensed under the GNU General Public License v3.0.

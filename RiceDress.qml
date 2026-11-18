@@ -12,6 +12,7 @@ import "modules" as Mods
 //   cozytile  — значки и текст акцентом, справа — косая черта цвета язычков;
 //   unit3     — тонкая черта слева (текст 8 %), как между его модулями справа, при наведении — лёгкая подложка;
 //   space     — черта 2 px акцентом снизу при наведении и открытой панели (его Module.qml);
+//   crt       — подложка акцентом 18 % при наведении, на 3 px от краёв (его Retro Module.qml);
 //   yami      — квадратная ячейка, при наведении — текст 14 %;
 //   vitreus   — скруглённая подложка (текст 10 %) при наведении, как у иконок Vitreus;
 //   glyph     — круглая подложка (текст 8 %) при наведении;
@@ -39,7 +40,7 @@ Item {
 
   // ── поля и перекраска ──
   readonly property var pads: ({
-    bruteon: [9, 12], rumda: [8, 8], surface: [12, 12], cozytile: [8, 30], unit3: [9, 8], space: [5, 5],
+    bruteon: [9, 12], rumda: [8, 8], surface: [12, 12], cozytile: [8, 30], unit3: [9, 8], space: [5, 5], crt: [5, 5],
     yami: [6, 6], vitreus: [6, 6], glyph: [6, 6], dotmatrix: [6, 6]
   })
   readonly property real padStart: !pads[rice] ? 0 : separators ? pads[rice][0] : 8
@@ -127,6 +128,16 @@ Item {
     color: dress.a(dress.fg, 0.06)
     opacity: dress.hot ? 1 : 0
     Behavior on opacity { NumberAnimation { duration: 120 } }
+  }
+
+  // Retro CRT: подложка акцентом 18 % при наведении
+  Rectangle {
+    visible: dress.rice === "crt"
+    x: dress.vertical ? 3 : 0
+    y: dress.vertical ? 0 : 3
+    width: dress.vertical ? dress.width - 6 : dress.width
+    height: dress.vertical ? dress.height : dress.height - 6
+    color: Qt.rgba(dress.accent.r, dress.accent.g, dress.accent.b, dress.hot ? 0.18 : 0)
   }
 
   // Space: черта акцентом снизу, вырастает из середины

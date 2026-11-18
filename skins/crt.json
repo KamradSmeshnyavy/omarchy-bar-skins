@@ -1,0 +1,23 @@
+{
+  "note": "Retro CRT (after the Retro style of elifouts/Dotfiles, GPL-3.0 — its bar/Bar.qml, «default»): one 24 px strip across the top, solid background, a 1 px line in the tube colour at 55 % under it, Terminess uppercase readouts",
+  "note_ru": "Retro CRT (по мотивам стиля Retro из elifouts/Dotfiles, GPL-3.0 — его bar/Bar.qml, «default»): одна полоса 24 px во весь верх, сплошной фон, черта 1 px цветом трубки на 55 % снизу, показания Terminess капсом",
+  "shape": "full",
+  "gap": 0,
+  "margin": 0,
+  "width": 1.0,
+  "height": 24,
+  "backgroundAlpha": 1.0,
+  "border": "accent",
+  "borderWidth": 1,
+  "borderAlpha": 0.55,
+  "radius": 0,
+  "padding": 0,
+  "background": "background",
+  "hardShadow": 0,
+  "shadow": false,
+  "text": "foreground",
+  "active": "accent",
+  "moduleStyle": "plain",
+  "spacing": 10,
+  "font": "Terminess Nerd Font Mono"
+}

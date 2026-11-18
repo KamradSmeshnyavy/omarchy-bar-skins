@@ -1,0 +1,102 @@
+{
+  "note": "Retro CRT «default»: user and workspaces on the left; CPU, MEM │ music │ net, sound, battery, tray, messages, clock and power on the right — pair with the crt skin",
+  "note_ru": "Retro CRT «default»: слева пользователь и столы; справа CPU, MEM │ музыка │ сеть, звук, батарея, трей, сообщения, часы и питание — в паре со скином crt",
+  "position": "top",
+  "layout": {
+    "left": [
+      {
+        "id": "crt-user",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "user"
+      },
+      {
+        "id": "crt-sep-1",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "sep"
+      },
+      {
+        "id": "crt-workspaces",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "workspaces"
+      }
+    ],
+    "center": [],
+    "right": [
+      {
+        "id": "crt-cpu",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "cpu"
+      },
+      {
+        "id": "crt-mem",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "mem"
+      },
+      {
+        "id": "crt-sep-2",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "sep"
+      },
+      {
+        "id": "crt-media",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "media"
+      },
+      {
+        "id": "crt-sep-3",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "sep"
+      },
+      {
+        "id": "crt-net",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "net"
+      },
+      {
+        "id": "crt-vol",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "vol"
+      },
+      {
+        "id": "crt-battery",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "battery"
+      },
+      {
+        "id": "crt-tray",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "tray"
+      },
+      {
+        "id": "crt-msg",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "msg"
+      },
+      {
+        "id": "crt-clock",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "clock"
+      },
+      {
+        "id": "crt-power",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/CrtModule.qml",
+        "kind": "power"
+      }
+    ]
+  }
+}

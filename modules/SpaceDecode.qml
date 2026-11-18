@@ -2,7 +2,7 @@ import QtQuick
 
 // «Расшифровка» текста HUD Space (elifouts/Dotfiles, GPL-3.0 — его common/DecodeText.qml и decode.js): при появлении и
 // смене строка проступает слева направо через шум «#$%&*+=<>/\|01». Капсом вразрядку (1.6), 11 px.
-// Тикающее (часы, проценты) — decode: false. Копия есть в kamradsmeshnyavy.widgets/space/SpaceDecode.qml.
+// Тикающее (часы, проценты) — decode: false. Копия — kamradsmeshnyavy.widgets/SpaceDecode.qml (правку переносить в обе).
 Item {
   id: hud
   property string text
