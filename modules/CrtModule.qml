@@ -41,8 +41,18 @@ Item {
   function fa(a) { return Qt.rgba(fg.r, fg.g, fg.b, a) }
   readonly property color dim: fa(0.5)
   readonly property color low: aa(0.18)
-  readonly property string font: Qt.fontFamilies().indexOf("Terminess Nerd Font Mono") !== -1 ? "Terminess Nerd Font Mono" : "monospace"
-  readonly property int size: 14
+  // шрифт и размер — свои из панели настроек (crt.json → ui, его retro.font / retro.size), иначе Terminess 14
+  property string uiFont: ""
+  property int uiSize: 0
+  FileView {
+    path: Quickshell.env("HOME") + "/.config/omarchy/crt.json"
+    watchChanges: true
+    printErrors: false
+    onFileChanged: reload()
+    onLoaded: { try { var u = JSON.parse(text()).ui || {}; root.uiFont = String(u.font || ""); root.uiSize = Number(u.size) || 0 } catch (e) {} }
+  }
+  readonly property string font: uiFont !== "" ? uiFont : Qt.fontFamilies().indexOf("Terminess Nerd Font Mono") !== -1 ? "Terminess Nerd Font Mono" : "monospace"
+  readonly property int size: uiSize > 0 ? uiSize : 14
   // узкий экран (< 1700 логических px, у него — fit() с запасными модулями): без хоста у user, трек короче
   readonly property bool narrow: Screen.width > 0 && Screen.width < 1700
 
