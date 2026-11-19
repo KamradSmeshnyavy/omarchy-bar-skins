@@ -1,0 +1,23 @@
+{
+  "note": "Modern «attached»: the pills hang from the top edge of the screen",
+  "note_ru": "Modern «attached»: пилюли свисают от верхнего края экрана",
+  "shape": "islands",
+  "gap": 0,
+  "margin": 8,
+  "width": 1.0,
+  "height": 30,
+  "islandGap": 6,
+  "backgroundAlpha": 0.0,
+  "radius": 0,
+  "padding": 0,
+  "background": "background",
+  "border": "foreground",
+  "borderWidth": 0,
+  "hardShadow": 0,
+  "shadow": false,
+  "text": "foreground",
+  "active": "accent",
+  "moduleStyle": "plain",
+  "spacing": 6,
+  "font": "CodeNewRoman Nerd Font Propo"
+}

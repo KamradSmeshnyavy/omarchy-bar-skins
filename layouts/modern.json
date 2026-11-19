@@ -1,0 +1,53 @@
+{
+  "note": "Modern «default»: user and workspace dots on the left, music / date and the clock in the middle, tray, updates, network, sound and power on the right — pair with the modern skin",
+  "note_ru": "Modern «default»: слева пользователь и точки столов, посередине музыка / дата и часы, справа трей, обновления, сеть, звук и питание — в паре со скином modern",
+  "position": "top",
+  "layout": {
+    "left": [
+      {
+        "id": "modern-pill-1",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/ModernModule.qml",
+        "kind": "pill",
+        "modules": [
+          "user",
+          "workspaces"
+        ],
+        "align": "left"
+      }
+    ],
+    "center": [
+      {
+        "id": "modern-pill-2",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/ModernModule.qml",
+        "kind": "pill",
+        "modules": [
+          "media",
+          "date",
+          "timer",
+          "clock"
+        ],
+        "align": "center"
+      }
+    ],
+    "right": [
+      {
+        "id": "modern-pill-3",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/ModernModule.qml",
+        "kind": "pill",
+        "modules": [
+          "tray",
+          "|",
+          "updates",
+          "network",
+          "audio",
+          "|",
+          "power"
+        ],
+        "align": "right"
+      }
+    ]
+  }
+}

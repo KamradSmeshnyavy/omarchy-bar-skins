@@ -1,0 +1,22 @@
+{
+  "note": "Modern «full»: one 24 px strip across the top in the theme background at 60 %, pills without their own glass",
+  "note_ru": "Modern «full»: одна полоса 24 px во весь верх фоном темы на 60 %, пилюли без своего стекла",
+  "shape": "full",
+  "gap": 0,
+  "margin": 0,
+  "width": 1.0,
+  "height": 24,
+  "backgroundAlpha": 0.6,
+  "radius": 0,
+  "padding": 0,
+  "background": "background",
+  "border": "foreground",
+  "borderWidth": 0,
+  "hardShadow": 0,
+  "shadow": false,
+  "text": "foreground",
+  "active": "accent",
+  "moduleStyle": "plain",
+  "spacing": 6,
+  "font": "CodeNewRoman Nerd Font Propo"
+}

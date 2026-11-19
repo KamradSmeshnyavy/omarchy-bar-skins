@@ -1,0 +1,23 @@
+{
+  "note": "Modern (after the Modern style of elifouts/Dotfiles, GPL-3.0 — its quickshell bar «default»): three floating 30 px pills of frosted glass (the theme background at 60 % with a thin edge), corners of 10; the pills draw themselves (ModernModule)",
+  "note_ru": "Modern (по мотивам стиля Modern из elifouts/Dotfiles, GPL-3.0 — его quickshell-бар «default»): три плавающие пилюли 30 px из матового стекла (фон темы на 60 % с тонкой окантовкой), скругление 10; пилюли рисует сам ModernModule",
+  "shape": "islands",
+  "gap": 6,
+  "margin": 8,
+  "width": 1.0,
+  "height": 30,
+  "islandGap": 6,
+  "backgroundAlpha": 0.0,
+  "radius": 0,
+  "padding": 0,
+  "background": "background",
+  "border": "foreground",
+  "borderWidth": 0,
+  "hardShadow": 0,
+  "shadow": false,
+  "text": "foreground",
+  "active": "accent",
+  "moduleStyle": "plain",
+  "spacing": 6,
+  "font": "CodeNewRoman Nerd Font Propo"
+}

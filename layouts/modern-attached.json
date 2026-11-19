@@ -1,0 +1,53 @@
+{
+  "note": "Modern «attached»: the default pills hanging from the top edge — pair with the modern-attached skin",
+  "note_ru": "Modern «attached»: пилюли default, свисающие от верхнего края — в паре со скином modern-attached",
+  "position": "top",
+  "layout": {
+    "left": [
+      {
+        "id": "modern-pill-1",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/ModernModule.qml",
+        "kind": "pill",
+        "modules": [
+          "user",
+          "workspaces"
+        ],
+        "align": "left"
+      }
+    ],
+    "center": [
+      {
+        "id": "modern-pill-2",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/ModernModule.qml",
+        "kind": "pill",
+        "modules": [
+          "media",
+          "date",
+          "timer",
+          "clock"
+        ],
+        "align": "center"
+      }
+    ],
+    "right": [
+      {
+        "id": "modern-pill-3",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/ModernModule.qml",
+        "kind": "pill",
+        "modules": [
+          "tray",
+          "|",
+          "updates",
+          "network",
+          "audio",
+          "|",
+          "power"
+        ],
+        "align": "right"
+      }
+    ]
+  }
+}

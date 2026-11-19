@@ -1,0 +1,26 @@
+{
+  "note": "Modern «zen»: one bare pill in the middle — workspaces, the date, network, updates and the clock — pair with the modern skin",
+  "note_ru": "Modern «zen»: одна пилюля без стекла посередине — столы, дата, сеть, обновления и часы — в паре со скином modern",
+  "position": "top",
+  "layout": {
+    "left": [],
+    "center": [
+      {
+        "id": "modern-pill-1",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/ModernModule.qml",
+        "kind": "pill",
+        "modules": [
+          "workspaces",
+          "constdate",
+          "network",
+          "updates",
+          "clock"
+        ],
+        "align": "center",
+        "bare": true
+      }
+    ],
+    "right": []
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "note": "Modern «full»: the default modules on one strip — pair with the modern-full skin",
+  "note_ru": "Modern «full»: модули default на одной полосе — в паре со скином modern-full",
+  "position": "top",
+  "layout": {
+    "left": [
+      {
+        "id": "modern-pill-1",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/ModernModule.qml",
+        "kind": "pill",
+        "modules": [
+          "user",
+          "workspaces"
+        ],
+        "align": "left",
+        "bare": true
+      }
+    ],
+    "center": [
+      {
+        "id": "modern-pill-2",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/ModernModule.qml",
+        "kind": "pill",
+        "modules": [
+          "media",
+          "date",
+          "timer",
+          "clock"
+        ],
+        "align": "center",
+        "bare": true
+      }
+    ],
+    "right": [
+      {
+        "id": "modern-pill-3",
+        "type": "qml",
+        "source": "~/.config/omarchy/plugins/kamradsmeshnyavy.bar/modules/ModernModule.qml",
+        "kind": "pill",
+        "modules": [
+          "tray",
+          "|",
+          "updates",
+          "network",
+          "audio",
+          "|",
+          "power"
+        ],
+        "align": "right",
+        "bare": true
+      }
+    ]
+  }
+}
