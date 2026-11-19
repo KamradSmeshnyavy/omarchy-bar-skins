@@ -27,6 +27,8 @@ Third-party attributions for kamradsmeshnyavy.bar:
   Copyright (c) Eli Fouts
   Licensed under the GNU General Public License v3.0.
 
+- Modern bar (`modules/ModernModule.qml`, `skins/modern*.json`, `layouts/modern*.json`): after the Modern quickshell bar
+  of elifouts/Dotfiles (GPL-3.0: Modern/bar Pill / Module / Workspaces / Island) — own code.
 - Retro CRT bar (`modules/CrtModule.qml`, `skins/crt.json`, `skins/crt-boxes.json`, `layouts/crt*.json`):
   own code after elifouts/Dotfiles (`.config/hypr/quickshell/Retro/bar/*`: text readouts, workspace cells, the
   typing effect of its `Retro/common/Type.qml`), https://github.com/elifouts/Dotfiles
