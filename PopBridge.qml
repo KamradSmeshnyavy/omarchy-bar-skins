@@ -17,7 +17,7 @@ Scope {
   // карточку утащили за язычок — она больше не у бара
   // утащенная за язычок карточка сливается только с той кромкой, у которой её отпустили (popCard.edge)
   // стеклянные основы Vitreus сливает с баром само стекло карточки (PopDress.qml) — мост не нужен
-  readonly property bool want: bar.mergePopups && !bar.riceLook.glass && bar.popCard !== null && (bar.popDetached === null || !!bar.popCard.edge) && screen && bar.popCard.screen === String(screen.name)
+  readonly property bool want: bar.mergePopups && !bar.riceLook.glass && !(bar.riceLook.liquid && bar.riceLook.base === "uwu") && bar.popCard !== null && (bar.popDetached === null || !!bar.popCard.edge) && screen && bar.popCard.screen === String(screen.name)
 
   // Окно создаётся заново на каждое открытие: новый слой Overlay ложится выше карточки, открытой перед ним
   // (заранее созданное окно Hyprland держал под ней).

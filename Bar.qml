@@ -872,7 +872,7 @@ Item {
     // стеклянные основы Vitreus: карточка — жидкое стекло одним куском с баром, «капля» из кнопки (PopDress.qml)
     // (contentItem у KeyboardPanel — его содержимое, а не корень окна: одёжку кладём рядом с карточкой)
     var host = card.parent
-    if (root.riceLook.glass && host && host.children) {
+    if ((root.riceLook.glass || (root.riceLook.liquid && root.riceLook.base === "uwu")) && host && host.children) {
       var dressed = false
       for (var di = 0; di < host.children.length; di++) if (host.children[di].objectName === "omarchyPopDress") dressed = true
       if (!dressed) popDressComponent.createObject(host, { kp: kp, card: card, bar: root, owner: owner })
@@ -1112,7 +1112,7 @@ Item {
       function snap(best) {
         var c = card, w = kp.screen ? kp.screen.width : kp.width, h = kp.screen ? kp.screen.height : kp.height
         // стекло Vitreus сливается с кромкой само (PopDress) — вплотную; иначе зазор под мост
-        var g = root.riceLook.glass ? 0 : 6
+        var g = root.riceLook.glass || root.riceLook.base === "uwu" ? 0 : 6
         if (best === "left") c.x = inset("left") + g
         else if (best === "right") c.x = w - inset("right") - c.width - g
         else if (best === "top") c.y = inset("top") + g

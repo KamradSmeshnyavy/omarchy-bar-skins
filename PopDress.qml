@@ -20,7 +20,10 @@ Item {
 
   anchors.fill: parent
   z: -1
-  visible: look.glass
+  // UwU — «конфетный пластик»: тело — пастельный градиент с контуром deep и розовой жёсткой тенью, вплотную к бару
+  readonly property bool candy: look.liquid && look.base === "uwu"
+  readonly property bool dressed: look.glass || candy
+  visible: dressed
 
   readonly property real sw: kp.screen ? kp.screen.width : width
   readonly property real sh: kp.screen ? kp.screen.height : height
@@ -38,7 +41,7 @@ Item {
 
   DripMotion {
     id: drop
-    active: dress.look.glass && dress.look.drip
+    active: dress.dressed && dress.look.drip
     motion: dress.look.motion
     revealDelay: 160
     screenName: dress.kp.screen ? String(dress.kp.screen.name) : ""
@@ -106,6 +109,53 @@ Item {
     cutRect: dress.edge === "" ? Qt.rect(0, 0, 0, 0) : Qt.rect(dress.cut.x - x, dress.cut.y - y, dress.cut.width, dress.cut.height)
   }
 
+  // UwU: жёсткая тень, тело (слитый с баром край уходит под обрезку — контура там нет), изгибы у кромки
+  readonly property color ink: Commons.Color.foreground
+  readonly property color deep: Qt.darker(ink, 1.45)
+  readonly property bool sideMerged: dress.edge !== "" && dress.merge && !dress.loose
+  Item {
+    visible: dress.candy && dress.d > 0.001
+    // обрезка: всё, что за внутренней кромкой бара (минус 3 px), не рисуется
+    x: dress.edge === "left" && dress.sideMerged ? dress.inner - 3 : 0
+    y: dress.edge === "top" && dress.sideMerged ? dress.inner - 3 : 0
+    width: (dress.edge === "right" && dress.sideMerged ? dress.inner + 3 : dress.sw) - x
+    height: (dress.edge === "bottom" && dress.sideMerged ? dress.inner + 3 : dress.sh) - y
+    clip: true
+    Rectangle {
+      x: dress.body.x + 4 - parent.x; y: dress.body.y + 5 - parent.y
+      width: dress.body.width; height: dress.body.height; radius: dress.bodyR
+      color: Qt.rgba(dress.deep.r * 0.25 + 0.75, dress.deep.g * 0.25 + 0.43, dress.deep.b * 0.25 + 0.78, 0.9)
+    }
+    Rectangle {
+      readonly property real g: dress.sideMerged ? 30 : 0
+      x: dress.body.x - parent.x - (dress.edge === "left" ? g : 0)
+      y: dress.body.y - parent.y - (dress.edge === "top" ? g : 0)
+      width: dress.body.width + (dress.edge === "left" || dress.edge === "right" ? g : 0)
+      height: dress.body.height + (dress.edge === "top" || dress.edge === "bottom" ? g : 0)
+      radius: dress.bodyR
+      border.width: 3
+      border.color: dress.deep
+      gradient: Gradient {
+        orientation: Gradient.Horizontal
+        GradientStop { position: 0; color: "#ffb3dc" }
+        GradientStop { position: 0.38; color: "#cfc4ff" }
+        GradientStop { position: 0.68; color: "#aab4ff" }
+        GradientStop { position: 1; color: "#ffd0ea" }
+      }
+    }
+  }
+  Repeater {
+    model: dress.candy && dress.sideMerged && dress.d > 0.6 ? [-1, 1] : []
+    MergeFillet {
+      required property var modelData
+      x: dress.body.x; y: dress.body.y
+      edge: dress.edge; side: modelData
+      w: dress.body.width; h: dress.body.height
+      f: 22; bw: 3; ext: 3
+      fill: "#cfc4ff"; line: dress.deep
+    }
+  }
+
   // карточка: прозрачная, без контура; держится на экране, пока капля втягивается; содержимое — после формы
   function holder() {
     for (var i = 0; i < card.children.length; i++) {
@@ -117,8 +167,8 @@ Item {
   Component.onCompleted: {
     var k = kp, cd = card, dr = dress, h = holder()
     if (bar.mergePopups) k.gap = 0
-    cd.color = Qt.binding(function() { return dr.look.glass ? "transparent" : Commons.Color.popups.background })
-    cd.borderSpec = Qt.binding(function() { return dr.look.glass ? Border.none() : k.borderSpec })
+    cd.color = Qt.binding(function() { return dr.dressed ? "transparent" : Commons.Color.popups.background })
+    cd.borderSpec = Qt.binding(function() { return dr.dressed ? Border.none() : k.borderSpec })
     cd.opacity = Qt.binding(function() { return drop.active ? (drop.d > 0.002 || k.open ? 1 : 0) : cd.shown })
     if (h) h.opacity = Qt.binding(function() { return Math.min(1, k.morph * 1.6) * (drop.active ? drop.reveal : 1) })
     drop.open = Qt.binding(function() { return k.open })
