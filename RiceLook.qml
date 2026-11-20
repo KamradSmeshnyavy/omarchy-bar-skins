@@ -62,6 +62,29 @@ QtObject {
     return !isOwn(name, source)
   }
 
+  // Материал панелей (как BarStyle в kamradsmeshnyavy.widgets): liquid — стекло Vitreus, base — основа темы (пластик:
+  // retro, doodle, proxy, milk, paper). Карточки стоковых панелей модулей одевает PopDress.qml.
+  readonly property string material: String(raw.material || "")
+  readonly property bool liquid: material === "liquid"
+  readonly property string base: liquid && raw.base ? String(raw.base) : "glass"
+  readonly property bool plastic: liquid && ["retro", "doodle", "proxy", "milk", "paper"].indexOf(base) !== -1
+  readonly property bool glass: liquid && !plastic
+  readonly property real squareness: ({ retro: 1, doodle: 1, proxy: 1, cyber: 1, paper: 0.6 })[base] || 0
+  readonly property real motion: { var m = Number(raw.motion); return isFinite(m) ? Math.max(0, m) : 1 }
+  // «капля» (panel-shadow.json panelAppear — выбор пользователя, auto — style.json appear, у liquid — drip)
+  property var shade: ({})
+  readonly property string appear: ["drip", "classic"].indexOf(String(shade.panelAppear)) !== -1 ? String(shade.panelAppear)
+    : ["drip", "classic"].indexOf(String(raw.appear)) !== -1 ? String(raw.appear) : (liquid ? "drip" : "classic")
+  readonly property bool drip: appear === "drip" && motion > 0
+  property FileView shadeFile: FileView {
+    path: Quickshell.env("HOME") + "/.config/omarchy/panel-shadow.json"
+    watchChanges: true
+    printErrors: false
+    onLoaded: { try { look.shade = JSON.parse(text() || "{}") || {} } catch (e) { look.shade = {} } }
+    onLoadFailed: look.shade = {}
+    onFileChanged: reload()
+  }
+
   // палитра Cozytile (роли из colors.toml темы) — одна на бар, её берут все одетые модули
   readonly property var cozy: cozyPal
   property Mods.CozyPal cozyPal: Mods.CozyPal {}

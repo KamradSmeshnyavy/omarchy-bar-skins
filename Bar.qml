@@ -869,6 +869,14 @@ Item {
     if (!kp) { attachPopupTab(owner, key); return }
     var card = findIn(kp, function(o) { return o !== kp && o.borderSpec !== undefined && o.contentTopInset !== undefined && o.width > 0 }, 0)
     if (!card) return
+    // стеклянные основы Vitreus: карточка — жидкое стекло одним куском с баром, «капля» из кнопки (PopDress.qml)
+    // (contentItem у KeyboardPanel — его содержимое, а не корень окна: одёжку кладём рядом с карточкой)
+    var host = card.parent
+    if (root.riceLook.glass && host && host.children) {
+      var dressed = false
+      for (var di = 0; di < host.children.length; di++) if (host.children[di].objectName === "omarchyPopDress") dressed = true
+      if (!dressed) popDressComponent.createObject(host, { kp: kp, card: card, bar: root, owner: owner })
+    }
     for (var i = 0; i < card.children.length; i++) if (card.children[i].objectName === "omarchyPopTab") return
     // ключ места — имя модуля бара, у которого открыта панель (слот над anchorItem), иначе плагин / тип владельца
     for (var a = kp.anchorItem, n = 0; a && n < 12; a = a.parent, n++)
@@ -915,8 +923,8 @@ Item {
       readonly property real ph: pc ? pc.implicitHeight : 0
       readonly property color accent: Commons.Color.accent
       readonly property color line: root.skin.borderWidth > 0 ? root.skin.borderColor : Commons.Color.popups.border
-      x: 24; y: 2
-      width: 78; height: 14
+      x: grip ? ((card ? card.width : 0) - width) / 2 : 24; y: 2
+      width: grip ? 64 : 78; height: 14
       z: 100
       function inset(e) { return e === root.position ? root.barSize : root.skin.framed ? root.skin.frameWidth : 0 }
       // сообщить мосту, где карточка (у кнопки — где её поставил PopupCard)
@@ -1026,11 +1034,23 @@ Item {
           ptab.destroy()
         }
       }
-      // язычок внутри карточки у верхней кромки (xdg-popup не рисует за своими краями)
-      Rectangle { anchors.fill: parent; radius: 5; color: Qt.darker(ptab.accent, 1.35) }
-      Rectangle { width: parent.width; height: parent.height - 3; radius: 5; color: ptab.accent }
-      Rectangle { x: 6; y: 2; width: parent.width - 12; height: 2; radius: 1; color: Qt.rgba(1, 1, 1, 0.55) }
-      Rectangle { anchors.fill: parent; radius: 5; color: "transparent"; border.width: 1.2; border.color: ptab.line }
+      // язычок внутри карточки у верхней кромки (xdg-popup не рисует за своими краями); у Vitreus (кроме Retro) —
+      // тонкая ручка по центру, как у его карточек
+      readonly property bool grip: root.riceLook.liquid && root.riceLook.base !== "retro"
+      Rectangle {
+        visible: ptab.grip
+        anchors.centerIn: parent
+        width: 40; height: 4; radius: 2
+        color: Qt.rgba(Commons.Color.foreground.r, Commons.Color.foreground.g, Commons.Color.foreground.b, 0.45)
+      }
+      Item {
+        visible: !ptab.grip
+        anchors.fill: parent
+        Rectangle { anchors.fill: parent; radius: 5; color: Qt.darker(ptab.accent, 1.35) }
+        Rectangle { width: parent.width; height: parent.height - 3; radius: 5; color: ptab.accent }
+        Rectangle { x: 6; y: 2; width: parent.width - 12; height: 2; radius: 1; color: Qt.rgba(1, 1, 1, 0.55) }
+        Rectangle { anchors.fill: parent; radius: 5; color: "transparent"; border.width: 1.2; border.color: ptab.line }
+      }
       MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons }
       Item {
         anchors.fill: parent
@@ -1066,6 +1086,10 @@ Item {
     }
   }
   Component {
+    id: popDressComponent
+    PopDress {}
+  }
+  Component {
     id: popTabComponent
     Item {
       id: tab
@@ -1087,10 +1111,12 @@ Item {
       // прижать к кромке e (или ни к какой) и сообщить мосту
       function snap(best) {
         var c = card, w = kp.screen ? kp.screen.width : kp.width, h = kp.screen ? kp.screen.height : kp.height
-        if (best === "left") c.x = inset("left") + 6
-        else if (best === "right") c.x = w - inset("right") - c.width - 6
-        else if (best === "top") c.y = inset("top") + 6
-        else if (best === "bottom") c.y = h - inset("bottom") - c.height - 6
+        // стекло Vitreus сливается с кромкой само (PopDress) — вплотную; иначе зазор под мост
+        var g = root.riceLook.glass ? 0 : 6
+        if (best === "left") c.x = inset("left") + g
+        else if (best === "right") c.x = w - inset("right") - c.width - g
+        else if (best === "top") c.y = inset("top") + g
+        else if (best === "bottom") c.y = h - inset("bottom") - c.height - g
         root.popCard = best ? { screen: kp.screen ? String(kp.screen.name) : "", x: c.x, y: c.y, width: c.width, height: c.height, edge: best } : null
       }
       // высота карточки меняется (список устройств растёт) — у нижней кромки она остаётся прижатой
@@ -1103,15 +1129,27 @@ Item {
       }
       readonly property color accent: Commons.Color.accent
       readonly property color line: root.skin.borderWidth > 0 ? root.skin.borderColor : Commons.Color.popups.border
-      x: 24; y: -11
-      width: 78; height: 24
+      // у Vitreus (кроме Retro) — тонкая ручка по центру верхней кромки, как у его карточек; иначе литой язычок
+      readonly property bool grip: root.riceLook.liquid && root.riceLook.base !== "retro"
+      x: grip ? (card.width - width) / 2 : 24; y: grip ? 4 : -11
+      width: grip ? 64 : 78; height: grip ? 14 : 24
       z: 100
+      Rectangle {
+        visible: tab.grip
+        anchors.centerIn: parent
+        width: 40; height: 4; radius: 2
+        color: Qt.rgba(Commons.Color.foreground.r, Commons.Color.foreground.g, Commons.Color.foreground.b, tabHover.hovered ? 0.7 : 0.4)
+      }
       // литой язычок: основание темнее, лицо цветом акцента, блик, контур
-      Rectangle { x: 2; y: 3; width: parent.width; height: parent.height; radius: 6; color: Qt.rgba(0, 0, 0, 0.28) }
-      Rectangle { anchors.fill: parent; radius: 6; color: Qt.darker(tab.accent, 1.35) }
-      Rectangle { width: parent.width; height: 19; radius: 6; color: tab.accent }
-      Rectangle { x: 6; y: 2; width: parent.width - 12; height: 2.2; radius: 1.1; color: Qt.rgba(1, 1, 1, 0.55) }
-      Rectangle { anchors.fill: parent; radius: 6; color: "transparent"; border.width: 1.4; border.color: tab.line }
+      Item {
+        visible: !tab.grip
+        anchors.fill: parent
+        Rectangle { x: 2; y: 3; width: parent.width; height: parent.height; radius: 6; color: Qt.rgba(0, 0, 0, 0.28) }
+        Rectangle { anchors.fill: parent; radius: 6; color: Qt.darker(tab.accent, 1.35) }
+        Rectangle { width: parent.width; height: 19; radius: 6; color: tab.accent }
+        Rectangle { x: 6; y: 2; width: parent.width - 12; height: 2.2; radius: 1.1; color: Qt.rgba(1, 1, 1, 0.55) }
+        Rectangle { anchors.fill: parent; radius: 6; color: "transparent"; border.width: 1.4; border.color: tab.line }
+      }
       // клик по язычку — не «мимо»: не пускать его к закрывающей области окна
       MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons }
       property point start
@@ -1124,7 +1162,7 @@ Item {
       // поверх MouseArea: DragHandler в её родителе нажатия не видит
       Item {
         anchors.fill: parent
-        HoverHandler { cursorShape: tabDrag.active ? Qt.ClosedHandCursor : Qt.OpenHandCursor }
+        HoverHandler { id: tabHover; cursorShape: tabDrag.active ? Qt.ClosedHandCursor : Qt.OpenHandCursor }
         // двойной клик — обратно к бару, место забыто
         TapHandler {
           onDoubleTapped: {

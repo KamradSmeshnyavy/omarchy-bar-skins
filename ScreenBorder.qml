@@ -54,6 +54,27 @@ Scope {
     onLoadFailed: border.spotsFloat = []
   }
 
+  // Рябь: панель «капля» втянулась в бар (DripMotion в kamradsmeshnyavy.widgets пишет
+  // $XDG_RUNTIME_DIR/omarchy-bar-ripple.json: { screen, x, y, t }) — по краю стекла бара и рамки расходятся волны, как у
+  // Vitreus (ring 510 мс). Только у стеклянной рамки (vitreus); в покое шейдер не перерисовывается.
+  property point rippleAt: Qt.point(0, 0)
+  property real rippleT: 0
+  NumberAnimation { id: rippleRun; target: border; property: "rippleT"; from: 0; to: 1; duration: 620 }
+  FileView {
+    path: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/omarchy-bar-ripple.json"
+    watchChanges: true
+    printErrors: false
+    onFileChanged: reload()
+    onLoaded: {
+      try {
+        var r = JSON.parse(text())
+        if (!r || (r.screen && r.screen !== border.screenName) || Date.now() - Number(r.t) > 1500) return
+        border.rippleAt = Qt.point(Number(r.x) || 0, Number(r.y) || 0)
+        rippleRun.restart()
+      } catch (e) {}
+    }
+  }
+
   Variants {
     model: ["top", "bottom", "left", "right"].filter(e => e !== border.position)
 
@@ -129,6 +150,9 @@ Scope {
                              overlay.height - border.inset("top") - border.inset("bottom"))
           frameHoleRadius: border.radius
           frameK: 0
+          rippleAt: border.rippleAt
+          rippleT: border.rippleT
+          rippleAmp: rippleRun.running ? 4 : 0
         }
 
         Shape {
