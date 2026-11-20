@@ -38,6 +38,7 @@ QtObject {
     gradient: "",           // второй цвет горизонтального градиента
     gradientAlpha: -1,      // альфа второго цвета; -1 = как у фона
     gradientVertical: false, // градиент сверху вниз (Space: фон 0.72 → 0.42)
+    candy: false,           // «конфетный пластик» UwU у Vitreus: пастельный градиент через весь экран (розовый → сиреневый → голубой)
     brackets: 0,            // islands: уголки-скобки на углах острова, px (Space — 7); 0 = нет
     bracketAlpha: 0.9,      // альфа уголков (цвет — border)
     border: "accent",
@@ -201,6 +202,9 @@ QtObject {
     return withAlpha(c, a < 0 ? backgroundColor.a : a)
   }
   readonly property bool gradientVertical: value("gradientVertical") === true
+  readonly property bool candy: value("candy") === true
+  // стопы его градиента (pages/bar_glass.plm: #ffb3dc, #cfc4ff 38 %, #aab4ff 68 %, #ffd0ea)
+  readonly property var candyStops: [[0, "#ffb3dc"], [0.38, "#cfc4ff"], [0.68, "#aab4ff"], [1, "#ffd0ea"]]
   readonly property int brackets: Math.max(0, Math.round(num("brackets")))
   readonly property color bracketColor: withAlpha(resolve(value("border"), Commons.Color.accent), num("bracketAlpha"))
   readonly property color borderColor: withAlpha(resolve(value("border"), Commons.Color.accent), num("borderAlpha"))

@@ -67,7 +67,7 @@ QtObject {
   readonly property string material: String(raw.material || "")
   readonly property bool liquid: material === "liquid"
   readonly property string base: liquid && raw.base ? String(raw.base) : "glass"
-  readonly property bool plastic: liquid && ["retro", "doodle", "proxy", "milk", "paper"].indexOf(base) !== -1
+  readonly property bool plastic: liquid && ["retro", "doodle", "proxy", "milk", "paper", "uwu"].indexOf(base) !== -1
   readonly property bool glass: liquid && !plastic
   readonly property real squareness: ({ retro: 1, doodle: 1, proxy: 1, cyber: 1, paper: 0.6 })[base] || 0
   readonly property real motion: { var m = Number(raw.motion); return isFinite(m) ? Math.max(0, m) : 1 }

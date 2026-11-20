@@ -155,6 +155,14 @@ Scope {
           rippleAmp: rippleRun.running ? 4 : 0
         }
 
+        LinearGradient {
+          id: candyFill
+          x1: 0; y1: 0; x2: overlay.width; y2: overlay.height
+          GradientStop { position: 0; color: "#ffb3dc" }
+          GradientStop { position: 0.38; color: "#cfc4ff" }
+          GradientStop { position: 0.68; color: "#aab4ff" }
+          GradientStop { position: 1; color: "#ffd0ea" }
+        }
         Shape {
           visible: !border.skin.vitreus && border.frameFade > 0
           opacity: border.frameFade
@@ -165,6 +173,8 @@ Scope {
             id: path
 
             fillColor: border.skin.backgroundColor
+            // UwU (skin candy): его пастельный градиент через весь экран
+            fillGradient: border.skin.candy ? candyFill : null
             fillRule: ShapePath.OddEvenFill
             strokeWidth: -1
 

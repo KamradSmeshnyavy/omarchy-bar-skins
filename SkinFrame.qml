@@ -159,7 +159,16 @@ Item {
     border.width: frame.shape === "underline" || frame.shape === "hug" || frame.shape === "frame" ? 0 : frame.skin.borderWidth
     border.color: frame.skin.borderColor
 
-    gradient: frame.skin.hasGradient && !frame.transparent ? plateGradient : null
+    gradient: frame.skin.candy && !frame.transparent ? candyGradient : frame.skin.hasGradient && !frame.transparent ? plateGradient : null
+
+    Gradient {
+      id: candyGradient
+      orientation: frame.vertical ? Gradient.Vertical : Gradient.Horizontal
+      GradientStop { position: 0; color: "#ffb3dc" }
+      GradientStop { position: 0.38; color: "#cfc4ff" }
+      GradientStop { position: 0.68; color: "#aab4ff" }
+      GradientStop { position: 1; color: "#ffd0ea" }
+    }
 
     Gradient {
       id: plateGradient

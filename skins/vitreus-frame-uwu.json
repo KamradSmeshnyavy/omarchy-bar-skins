@@ -1,0 +1,16 @@
+{
+  "note": "Vitreus frame in UwU's candy plastic: a pastel gradient across the whole screen (pink, lilac, sky), a thick grape outline",
+  "note_ru": "Рамка Vitreus из «конфетного пластика» UwU: пастельный градиент через весь экран (розовый, сиреневый, голубой), толстый контур цвета винограда",
+  "shape": "frame",
+  "height": 46,
+  "frameWidth": 9,
+  "radius": 22,
+  "background": "background",
+  "backgroundAlpha": 1,
+  "border": "#271a5e",
+  "borderWidth": 3,
+  "moduleStyle": "hover",
+  "moduleAlpha": 0.12,
+  "tabs": true,
+  "candy": true
+}
