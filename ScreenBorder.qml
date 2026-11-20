@@ -140,6 +140,7 @@ Scope {
           screenOrigin: Qt.point(0, 0)
           belowWindows: true
           tintColor: Qt.rgba(border.skin.backgroundColor.r, border.skin.backgroundColor.g, border.skin.backgroundColor.b, 1)
+          tintOverride: border.skin.glassTint
           radius: 0
           panelRect: border.position === "left" ? Qt.rect(0, 0, border.barSize, overlay.height)
             : border.position === "right" ? Qt.rect(overlay.width - border.barSize, 0, border.barSize, overlay.height)
@@ -153,6 +154,43 @@ Scope {
           rippleAt: border.rippleAt
           rippleT: border.rippleT
           rippleAmp: rippleRun.running ? 4 : 0
+        }
+
+        // Cyber у Vitreus: волосяная линия акцентом по внутренней кромке рамки и HUD-скобки со свечением на её углах
+        Shape {
+          visible: border.skin.vitreus && border.skin.hasHairline
+          anchors.fill: parent
+          preferredRendererType: Shape.CurveRenderer
+          ShapePath {
+            fillColor: "transparent"
+            strokeColor: Qt.rgba(border.skin.hairlineColor.r, border.skin.hairlineColor.g, border.skin.hairlineColor.b, 0.75)
+            strokeWidth: 1
+            PathRectangle {
+              x: border.inset("left") + 0.5; y: border.inset("top") + 0.5
+              width: overlay.width - border.inset("left") - border.inset("right") - 1
+              height: overlay.height - border.inset("top") - border.inset("bottom") - 1
+              radius: border.radius
+            }
+          }
+        }
+        Repeater {
+          model: border.skin.vitreus && border.skin.hud ? 4 : 0
+          Item {
+            id: hb
+            required property int index
+            readonly property bool rgt: index % 2 === 1
+            readonly property bool bot: index > 1
+            readonly property real len: 22
+            readonly property color c: border.skin.hairlineColor
+            x: rgt ? overlay.width - border.inset("right") - len - 3 : border.inset("left") + 3
+            y: bot ? overlay.height - border.inset("bottom") - len - 3 : border.inset("top") + 3
+            width: len; height: len
+            // свечение — та же скобка шире и прозрачнее
+            Rectangle { x: hb.rgt ? -2 : -2; y: hb.bot ? hb.len - 4 : -2; width: hb.len + 4; height: 6; radius: 3; color: Qt.rgba(hb.c.r, hb.c.g, hb.c.b, 0.22) }
+            Rectangle { x: hb.rgt ? hb.len - 4 : -2; y: -2; width: 6; height: hb.len + 4; radius: 3; color: Qt.rgba(hb.c.r, hb.c.g, hb.c.b, 0.22) }
+            Rectangle { y: hb.bot ? hb.len - 2 : 0; width: hb.len; height: 2; color: hb.c }
+            Rectangle { x: hb.rgt ? hb.len - 2 : 0; width: 2; height: hb.len; color: hb.c }
+          }
         }
 
         LinearGradient {

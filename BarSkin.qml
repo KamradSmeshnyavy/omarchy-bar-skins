@@ -38,7 +38,10 @@ QtObject {
     gradient: "",           // второй цвет горизонтального градиента
     gradientAlpha: -1,      // альфа второго цвета; -1 = как у фона
     gradientVertical: false, // градиент сверху вниз (Space: фон 0.72 → 0.42)
-    candy: false,           // «конфетный пластик» UwU у Vitreus: пастельный градиент через весь экран (розовый → сиреневый → голубой)
+    candy: false,
+    glassTint: -1,          // стеклянная рамка (vitreus): сколько цвета фона в стекле, −1 — как в glass.json (Cyber — 0.86)
+    hairline: "",           // волосяная линия по внутренней кромке рамки (роль или #hex; Cyber — accent)
+    hud: false,             // HUD-скобки на внутренних углах рамки со свечением (Cyber у Vitreus)           // «конфетный пластик» UwU у Vitreus: пастельный градиент через весь экран (розовый → сиреневый → голубой)
     brackets: 0,            // islands: уголки-скобки на углах острова, px (Space — 7); 0 = нет
     bracketAlpha: 0.9,      // альфа уголков (цвет — border)
     border: "accent",
@@ -203,6 +206,10 @@ QtObject {
   }
   readonly property bool gradientVertical: value("gradientVertical") === true
   readonly property bool candy: value("candy") === true
+  readonly property real glassTint: num("glassTint")
+  readonly property bool hasHairline: String(value("hairline") || "") !== ""
+  readonly property color hairlineColor: resolve(value("hairline"), Commons.Color.accent)
+  readonly property bool hud: value("hud") === true
   // стопы его градиента (pages/bar_glass.plm: #ffb3dc, #cfc4ff 38 %, #aab4ff 68 %, #ffd0ea)
   readonly property var candyStops: [[0, "#ffb3dc"], [0.38, "#cfc4ff"], [0.68, "#aab4ff"], [1, "#ffd0ea"]]
   readonly property int brackets: Math.max(0, Math.round(num("brackets")))

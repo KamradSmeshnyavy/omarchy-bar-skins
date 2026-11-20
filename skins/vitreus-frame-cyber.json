@@ -1,0 +1,18 @@
+{
+  "note": "Vitreus frame for Cyber: the same glass piece, but dark (theme background at 86 %), near-square inner corners, an accent hairline along the inner edge and glowing HUD brackets at its corners",
+  "note_ru": "Рамка Vitreus для Cyber: тот же кусок стекла, но тёмный (фон темы на 86 %), почти прямые внутренние углы, волосяная линия акцентом по внутренней кромке и светящиеся HUD-скобки на углах",
+  "shape": "frame",
+  "height": 46,
+  "frameWidth": 9,
+  "radius": 6,
+  "backgroundAlpha": 0.3,
+  "border": "foreground",
+  "borderWidth": 0,
+  "moduleStyle": "hover",
+  "moduleAlpha": 0.1,
+  "vitreus": true,
+  "tabs": true,
+  "glassTint": 0.86,
+  "hairline": "accent",
+  "hud": true
+}
